@@ -1,0 +1,56 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(tiposcadenza$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/evento_edit.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="data.tipoScadenzaID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <button *ngIf="data.tipoScadenzaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+            <mat-grid-list class="mt10" [cols]="1" rowHeight="60px" >
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" required placeholder="Descrizione" minlength= "3" formControlName="descrizione" #nome>
+                        <mat-error *ngIf="form.controls['descrizione'].errors?.['required']"> Campo obbligatorio</mat-error>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="Codice colore" formControlName="color" #color>
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <button type="button" class="_btnColorPicker" 
+                    (click)="openColorPicker()"  [ngStyle]="{'background-color': form.controls['color'].value}" > </button>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-checkbox color="primary" formControlName="ckNota" matTooltip="Il comportamento degli eventi così flaggati è differente">
+                        Tipo Scadenza per nota
+                    </mat-checkbox>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+        </form>
+    </mat-card-content>
+</mat-card>

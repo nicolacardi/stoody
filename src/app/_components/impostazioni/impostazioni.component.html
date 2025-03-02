@@ -1,0 +1,106 @@
+<mat-tab-group mat-align-tabs="center" class="h100-64">
+
+    <!-- ********************************    MAT TAB Risorse Documenti ********************************** -->
+
+    <mat-tab  label="Anni Scolastici">
+        <app-annoscolastico-page></app-annoscolastico-page>
+    </mat-tab>
+
+    <mat-tab label="Gestione Classi">
+        <app-classi-sezioni-anni-page [dove]="'impostazioni'"></app-classi-sezioni-anni-page>
+    </mat-tab>
+
+    <mat-tab  label="Parametri Base">
+        <app-parametri-page></app-parametri-page>
+    </mat-tab>
+    <!-- ********************************    MAT TAB Domande per procedura iscrizione  ****************** -->
+    <mat-tab  label="Domande Iscrizione">
+        <app-domande-page> </app-domande-page>
+    </mat-tab>
+
+    <!-- ********************************    MAT TAB Risorse Documenti ********************************** -->
+    <mat-tab  label="Upload File">
+        <app-risorse-page> </app-risorse-page>
+    </mat-tab>
+
+
+    <!-- ********************************    MAT TAB Risorse grafiche *********************************** -->
+    <mat-tab  label="Upload Immagini">
+        <app-imguploads> </app-imguploads>
+    </mat-tab>
+
+
+    <!-- ********************************    MAT TAB Parametri ****************************************** -->
+    <!-- <mat-tab  label="Parametri Base">
+        <h1 class="_titolo-pagina">Impostazione Parametri</h1> -->
+
+        <!-- <form *ngIf="obsAnni$ | async" [formGroup] = "form"> 
+
+            <div class="w180px ma">
+                <mat-form-field>
+                    <mat-label>Anno Scolastico di Default</mat-label>
+                    <mat-select formControlName="selectAnnoScolastico"> 
+                        <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                        {{element.annoscolastico}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>   
+            </div>
+
+
+
+            <h1 class="_titolo-pagina fs14">Ripartizione standard quote</h1>
+
+            <mat-grid-list *ngIf="parQuoteDefault" class="ma w50 _bordered-grey p5" [cols]="12" rowHeight="20px">
+                <mat-grid-tile *ngFor="let mese of mesiArr; let i = index" >
+                    <mat-label>{{placeholderMeseArr[i]}}</mat-label>
+                </mat-grid-tile>
+
+                <mat-grid-tile  *ngFor="let placeholderMese of placeholderMeseArr; let i = index;" #QuoteList>
+                    <mat-checkbox color="warn"  #QuoteListElement [attr.id]="'arrQuote'+i" [checked]="!!+ parQuoteDefault.parValue.substring(i,i+1)"></mat-checkbox>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <div class="ma w50 _bordered-grey mt10">
+
+                <mat-list class="left mt10 ml20">
+                    <mat-list-item> <mat-checkbox *ngIf="parQuoteRidotteFratelli" formControlName="quoteRidotteFratelli">Quota ridotta per fratelli minori</mat-checkbox>   </mat-list-item>
+                </mat-list>
+
+            </div>
+
+
+
+        </form> -->
+
+        <!-- <div class="center mt10">
+            <button type="button" mat-button matSuffix class="w180px ma mt10" mat-stroked-button (click)="save()">Salva</button>
+        </div>
+ 
+    </mat-tab> -->
+
+    <!-- ********************************    MAT TAB Materie ****************************************** -->
+    <mat-tab  label="Materie">
+        <app-materie-page></app-materie-page>
+    </mat-tab>
+
+    <!-- ********************************    MAT TAB Tipi scadenze ************************************ -->
+    <mat-tab  label="Tipi Scadenze">
+        <app-tipiscadenza-page></app-tipiscadenza-page>
+    </mat-tab>
+
+    <!-- ********************************    MAT TAB Tipi Voto x Pagella ****************************** -->
+    <mat-tab  label="Tipi Voto">
+        <app-classi-anni-materie-page></app-classi-anni-materie-page>
+    </mat-tab>
+
+    <!-- ********************************    MAT TAB Obiettivi x Pagella ****************************** -->
+    <mat-tab  label="Obiettivi">
+        <app-obiettivi-page></app-obiettivi-page>
+    </mat-tab>
+
+
+    <!-- <mat-tab  label="Templates">
+        <app-templates-manager></app-templates-manager>
+    </mat-tab> -->
+</mat-tab-group>

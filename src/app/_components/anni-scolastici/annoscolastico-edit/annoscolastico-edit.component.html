@@ -1,0 +1,120 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(anno$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/anno_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="data.annoID" mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
+                        
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <!-- 
+                <button *ngIf="data.annoID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button> 
+                -->
+
+
+            </div>
+
+            
+            <mat-grid-list class="mt10" [cols]="1" rowHeight="60px" >
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Anno Scolastico</mat-label>
+                        <input matInput type="text" required placeholder="AnnoScolastico"   formControlName="annoscolastico" #annoscolastico>
+                        <mat-error *ngIf="form.controls['annoscolastico'].errors?.['required']"> Campo obbligatorio</mat-error>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Anno 1</mat-label>
+                        <input matInput type="text" required placeholder="Anno1" minlength= "4" formControlName="anno1" #anno1>
+                        <mat-error *ngIf="form.controls['anno1'].errors?.['required']"> Campo obbligatorio</mat-error>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Anno 2</mat-label>
+                        <input matInput type="text" required placeholder="Anno2" minlength= "4" formControlName="anno2" #anno2>
+                        <mat-error *ngIf="form.controls['anno2'].errors?.['required']"> Campo obbligatorio</mat-error>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <!-- <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Anno prec</mat-label>
+                        <input matInput type="text" formControlName="iD_annoscolasticoPrec">
+                    </mat-form-field>
+                </mat-grid-tile> -->
+
+                <mat-grid-tile>
+                    <mat-form-field class="w60">
+                        <mat-label>Data di Inizio a.s.</mat-label>
+                        <input matInput #dtInizio required
+                              formControlName = "dtInizio"
+                              [matDatepicker]= "dpDtInizio"
+                              (change) = "updateDt(dtInizio.value, 'dtInizio')"
+                              >
+                        <mat-datepicker-toggle matSuffix [for]="dpDtInizio" ></mat-datepicker-toggle>
+                        <mat-datepicker #dpDtInizio  ></mat-datepicker>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field class="w60">
+                        <mat-label>Data di Fine 1° Quad.</mat-label>
+                        <input matInput #dtFineQ1 required
+                              formControlName = "dtFineQ1"
+                              [matDatepicker]= "dpDtFineQ1"
+                              (change) = "updateDt(dtFineQ1.value, 'dtFineQ1')"
+                              >
+                        <mat-datepicker-toggle matSuffix [for]="dpDtFineQ1" ></mat-datepicker-toggle>
+                        <mat-datepicker #dpDtFineQ1  ></mat-datepicker>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field class="w60">
+                        <mat-label>Data di Fine a.s.</mat-label>
+                        <input matInput #dtFine required
+                              formControlName = "dtFine"
+                              [matDatepicker]= "dpDtFine"
+                              (change) = "updateDt(dtFine.value, 'dtFine')"
+                              >
+                        <mat-datepicker-toggle matSuffix [for]="dpDtFine" ></mat-datepicker-toggle>
+                        <mat-datepicker #dpDtFine  ></mat-datepicker>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile class="tileCk ml15">
+                    <mat-checkbox color="primary" formControlName="ckChiuso" (change) = "changedCkChiuso($event)" #ckChiuso>
+                        Anno Chiuso
+                    </mat-checkbox>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <button *ngIf="!ckCorrente" class="_btn-text" mat-button cdkFocusInitial (click)="setAnnoCorrente()">Imposta come anno corrente</button>
+                    <button *ngIf="ckCorrente" class="_btn-text-greyed" mat-button cdkFocusInitial disabled>Impostato come anno corrente</button>
+
+                </mat-grid-tile>
+            </mat-grid-list>
+            
+        </form>
+    </mat-card-content>
+</mat-card>

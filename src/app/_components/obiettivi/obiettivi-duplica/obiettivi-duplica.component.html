@@ -1,0 +1,49 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form class="data-form flex-form" [formGroup]="form">
+            <img class="iconaMenuBig" src="./assets/obiettivo_duplica.svg">
+
+            <div>
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close"
+                    mat-dialog-close></button>
+            </div>
+            <mat-label class="center mt10">Copia Obiettivi</mat-label>
+            <mat-label class="center mt10">da un Anno Scolastico</mat-label>
+            <mat-label class="center mt10">ad un altro</mat-label>
+
+
+            <mat-grid-list class="mt10" [cols]="1" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Anno di origine</mat-label>
+                        <mat-select required formControlName="selectAnnoFrom">
+                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                                {{element.annoscolastico}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Anno di destinazione</mat-label>
+                        <mat-select required formControlName="selectAnnoTo">
+                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                                {{element.annoscolastico}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-label class="center mt10">NB: la copia sovrascriverà eventuali obiettivi</mat-label>
+            <mat-label class="center mt10">presenti per l'anno di destinazione</mat-label>
+
+        </form>
+
+        <div mat-dialog-actions class="_btn-text-container mat-dialog-buttonsContainer">
+            <button class="_btn-text" mat-button cdkFocusInitial [disabled]="!form.valid"
+                (click)="duplica()">Procedi</button>
+        </div>
+    </mat-card-content>
+</mat-card>

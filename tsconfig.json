@@ -3,6 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
@@ -30,4 +31,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   }
+
 }

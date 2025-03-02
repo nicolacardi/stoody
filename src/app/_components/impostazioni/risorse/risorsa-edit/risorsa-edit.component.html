@@ -1,0 +1,63 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(file$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/documento_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <!-- <button *ngIf="data.risorsaID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button> -->
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <!-- <button *ngIf="data.risorsaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button> -->
+            </div>
+
+            <mat-grid-list class="mt10" [cols]="1" rowHeight="120px" >
+                <mat-grid-tile>
+
+                    <mat-form-field class="w100 h100px pl5 pt5" appearance="outline">
+                        <mat-label>Nome File</mat-label>
+                        <textarea required class="w300px  _noresize" placeholder="Nome File" matInput formControlName="nomeFile"></textarea>
+                    </mat-form-field>
+
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+
+                    <mat-form-field class="w100 h100px pl5 pt5" appearance="outline">
+                        <mat-label>Descrizione</mat-label>
+                        <textarea class="w300px  _noresize" placeholder="Descrizione" matInput formControlName="descrizione"></textarea>
+                    </mat-form-field>
+
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <div class="_bordered-drop-file w100 h100px mt10 center" appearance="outline" appFileDrop  (drop)="onImageDrop($event)">
+                        <img class="ma" *ngIf="!fileDropped" src="./assets/drop_file_area.svg">
+                        <img class="ma" *ngIf="fileDropped" src="./assets/dropped_file_area.svg">
+                    </div>
+                </mat-grid-tile>
+            </mat-grid-list>
+            <div class="center">rilascia il file (PDF) nell'area qui sopra oppure...</div>
+            <input type="file" id="file" accept=".docx,.pdf,.jpg,.png" (change)="onImageSelect($event.target)"hidden #selectFile1>
+            <button type="button" mat-button matSuffix class="w150px ma mt10" mat-stroked-button (click)="selectFile1.click()" >Seleziona file</button>
+            <div class="center" *ngIf="nomeFile!=null">file selezionato: {{nomeFile}}</div>
+
+
+        </form>
+    </mat-card-content>
+</mat-card>

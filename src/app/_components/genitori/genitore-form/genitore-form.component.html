@@ -1,0 +1,34 @@
+<!-- genitore form + persona form = genitore edit -->
+<form *ngIf="(genitore$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+    <mat-label class="frameLabelRel t10">Dati del Genitore</mat-label>
+
+    <mat-icon class="_pos-absolute r20 mt5 pointer topZIndex" (click)="deleteRole()">delete</mat-icon>
+    
+    <mat-grid-list class="mt10" [cols]="3" rowHeight="60px">
+
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Tipo</mat-label>
+                <mat-select formControlName="tipoGenitoreID">
+                    <mat-option *ngFor="let element of (obsTipiGenitore$ | async)" [value]="element.id">
+                        {{element.descrizione}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Titolo di Studio</mat-label>
+                <input matInput type="text" formControlName="titoloStudio" #titoloStudio>
+            </mat-form-field>
+        </mat-grid-tile>
+        
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Professione</mat-label>
+                <input matInput type="text" formControlName="professione" #professione>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+</form>

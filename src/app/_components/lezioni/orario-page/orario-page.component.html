@@ -1,0 +1,24 @@
+
+<table>
+    <tr>
+        <td class="  _columnleft-dashboard _cell-align-top" >
+                <div class=" w330px _table-container">
+                    <app-classi-sezioni-anni-list 
+                        [dove] = "'orario-page'"
+                        (annoID)="annoIdEmitted($event)"
+                        (classeSezioneAnnoID)="classeSezioneAnnoIDEmitted($event)"
+                        (docenteId)="docenteIdEmitted($event)" >
+                    </app-classi-sezioni-anni-list>
+                </div>
+        </td>
+        <td class=" w100 _border-left _cell-align-top">
+            
+            <app-lezioni-calendario 
+                [classeSezioneAnnoID]="classeSezioneAnnoID" 
+                [annoID]= "annoID"
+                [docenteID] = "docenteID" 
+                [dove]="'orario'" 
+                #orarioLezioniDOM></app-lezioni-calendario>
+        </td>
+    </tr>
+<table>

@@ -1,0 +1,46 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+<!-- ********************************    BOTTONI     ************************************* -->
+        <div class="center">
+
+            <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+            <button mat-mini-fab aria-label="Imposta Default" matTooltip="Imposta Default" class="btn ml10"
+            (click)="default()" >
+                <mat-icon>restart_alt</mat-icon>
+            </button>
+            <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                    (click)="save()" >
+                <mat-icon>save</mat-icon>
+            </button>
+
+        </div>
+
+        <div cdkDropListGroup>
+            <div class="flex-box">
+                <div class="container">
+                    <h2>Colonne Disponibili</h2>
+                    <div cdkDropList #InvisibleList="cdkDropList"  class="list"  [cdkDropListData]="lstHidden" (cdkDropListDropped)="drop($event)"
+                        cdkDropListSortingDisabled >
+                        <div class="box" *ngFor="let column of lstHidden" cdkDrag>{{column.colName}}</div>
+                    </div>
+                    
+                </div>
+
+                <div class="container">
+                    <h2>Colonne Selezionate</h2>
+                    <div cdkDropList class="list"  [cdkDropListData]="lstDisabled" >
+                        <div class="box" *ngFor="let column of lstDisabled" cdkDrag [cdkDragDisabled]="true">{{column.colName}}</div>
+                    </div>
+
+                    <div cdkDropList #VisibleList="cdkDropList" class="list"  [cdkDropListData]="lstVisible"  (cdkDropListDropped)="drop($event)">
+                        <div class="box" *ngFor="let column of lstVisible" cdkDrag  >{{column.colName}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </mat-card-content>
+</mat-card>

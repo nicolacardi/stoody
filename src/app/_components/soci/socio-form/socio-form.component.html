@@ -1,0 +1,140 @@
+<form *ngIf="(socio$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+
+    <mat-grid-list class="_low-list-row no-overflowx w70 ma" [cols]="2" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Nome</mat-label>
+                <input matInput type="text" formControlName="nome">
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Cognome</mat-label>
+                <input matInput type="text" formControlName="cognome">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list class="_low-list-row no-overflowx w70 ma" [cols]="2" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Data di Nascita</mat-label>
+                <input matInput type="text" formControlName="dtNascita">
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>C.F.</mat-label>
+                <input matInput type="text" formControlName="cf">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list [cols]="1" rowHeight="60px" *ngIf="!socioID">
+                
+        <mat-grid-tile>
+            <mat-form-field>
+                <input type="text"
+                        placeholder="persona"
+                        matInput
+                        formControlName="nomeCognomePersona"
+                        [matAutocomplete]="autoPersona"  >
+                <!-- #nomeCognomePersona -->
+                <!-- (keydown.enter) = "enterPersonaInput()" dovrebbe essere superata da autoActiveFirstOption-->
+                <mat-autocomplete autoActiveFirstOption #autoPersona="matAutocomplete" (optionSelected)="selected($event)">
+                    <!-- <mat-spinner *ngIf="nomeAlunnoIsLoading" class="is-loading" diameter="40"></mat-spinner> -->
+                    <mat-option *ngFor="let element of filteredPersone$ | async"  [value]="element.nome + ' ' + element.cognome" [id]="element.id.toString()" #option>
+                        <small>{{element.nome}} {{element.cognome}}</small>
+                    </mat-option>
+                </mat-autocomplete>
+
+                <mat-error *ngIf="form.controls['nomeCognomePersona'].hasError('unmatched')">
+                    Selezionare un valore dalla lista
+                </mat-error>
+            </mat-form-field>
+
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list  class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Tipo Socio</mat-label>
+                <mat-select matNativeControl formControlName="tipoSocioID" >
+                    <mat-option *ngFor="let element of (obsTipiSocio$ | async)" [value]="element.id">
+                        {{element.descrizione}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    
+    <mat-grid-list class="_low-list-row no-overflowx mt10" [cols]="3" rowHeight="100px">
+        <mat-grid-tile>
+            <mat-form-field class="w80">
+                <mat-label>Data di Richiesta</mat-label>
+                <input matInput #dtRichiesta required
+                      formControlName = "dtRichiesta"
+                      [matDatepicker]= "dpDtRichiesta"
+                      (change) = "updateDt(dtRichiesta.value, 'dtRichiesta')"
+                      >
+                <mat-datepicker-toggle matSuffix [for]="dpDtRichiesta" ></mat-datepicker-toggle>
+                <mat-datepicker #dpDtRichiesta  ></mat-datepicker>
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-form-field class="w80">
+                <mat-label>Data Accettazione</mat-label>
+                <input matInput #dtAccettazione
+                      formControlName = "dtAccettazione"
+                      [matDatepicker]= "dpDtAccettazione"
+                      (change) = "updateDt(dtAccettazione.value, 'dtAccettazione')"    >
+                <mat-datepicker-toggle matSuffix [for]="dpDtAccettazione" ></mat-datepicker-toggle>
+                <mat-datepicker #dpDtAccettazione  ></mat-datepicker>
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>quota</mat-label>
+                <input matInput type="text" formControlName="quota">
+            </mat-form-field>
+        </mat-grid-tile>
+
+    </mat-grid-list>
+
+    <mat-grid-list class="_low-list-row no-overflowx mt10" [cols]="3" rowHeight="100px">
+        <mat-grid-tile>
+            <mat-form-field class="w80">
+                <mat-label>Data Disiscrizione</mat-label>
+                <input matInput #dtDisiscrizione
+                      formControlName = "dtDisiscrizione"
+                      [matDatepicker]= "dpDtDisiscrizione"
+                      (change) = "updateDt(dtDisiscrizione.value, 'dtDisiscrizione')">
+                <mat-datepicker-toggle matSuffix [for]="dpDtDisiscrizione" ></mat-datepicker-toggle>
+                <mat-datepicker #dpDtDisiscrizione  ></mat-datepicker>
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-form-field class="w80">
+                <mat-label>Data Rest. Quota</mat-label>
+                <input matInput #dtRestQuota
+                      formControlName = "dtRestQuota"
+                      [matDatepicker]= "dpDtRestQuota"
+                      (change) = "updateDt(dtRestQuota.value, 'dtRestQuota')">
+                <mat-datepicker-toggle matSuffix [for]="dpDtRestQuota" ></mat-datepicker-toggle>
+                <mat-datepicker #dpDtRestQuota  ></mat-datepicker>
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+                <mat-checkbox color="primary" formControlName="ckRinunciaQuota">
+                    Rinuncia Rest. Quota
+                </mat-checkbox>
+        </mat-grid-tile>
+    </mat-grid-list>
+</form>

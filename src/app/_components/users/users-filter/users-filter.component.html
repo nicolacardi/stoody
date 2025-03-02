@@ -1,0 +1,44 @@
+<div class="pt60">
+
+    <!-- <div style="text-align: center; margin-bottom: 10px;">
+        Filtri Avanzati
+    </div> -->
+    
+    <div class="ml12 mt10">
+        <button mat-button matSuffix class="w180px ml15" mat-stroked-button aria-label="Clear" (click)="resetAllInputsAndClearFilters()" >
+            Pulisci Filtri
+        </button>
+    </div>
+
+    <mat-form-field class="ml12">
+        <mat-label>Nome</mat-label>
+        <input matInput [formControl]="nomeFilter">
+    </mat-form-field>
+    
+    <mat-form-field class="ml12">
+        <mat-label>Cognome</mat-label>
+        <input matInput [formControl]="cognomeFilter">
+    </mat-form-field>
+    
+    <mat-form-field class="ml12">
+        <mat-label>Email</mat-label>
+        <input matInput [formControl]="emailFilter">
+    </mat-form-field>
+
+    <!-- <mat-form-field  class="ml12">
+        <mat-label>Tipo persona</mat-label>
+        <mat-select [formControl]="tipoPersonaFilter" #tipoPersona>
+            <mat-option [value]="null">
+                
+            </mat-option>
+            <mat-option *ngFor="let element of (obsTipiPersona$ | async)" [value]="element.id">
+                {{element.descrizione}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field> -->
+
+
+
+</div>
+
+

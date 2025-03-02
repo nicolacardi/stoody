@@ -1,0 +1,94 @@
+<mat-card appearance="outlined" style="height: 100%;" class="card mat-elevation-z8">
+    
+    <form [formGroup] = "form">
+        <mat-form-field  class="ml20 mt10 topZIndex">
+            
+            <mat-label>Anno Scolastico</mat-label>
+
+            <mat-select formControlName="selectAnnoScolastico">
+                <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id" >
+                {{element.annoscolastico}}
+                </mat-option>
+            </mat-select>
+            
+        </mat-form-field>
+        <h2 class="_titolo-pagina-home">Alunni</h2>
+    </form>
+
+    <mat-table class="_table-row-low transparent" [dataSource]="matDataSource">
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="actionsColumn">
+            <mat-header-cell *matHeaderCellDef cdkDrag></mat-header-cell>
+            <mat-cell  *matCellDef="let element"> 
+                <img class="iconaMenu pointer" src="./assets/alunno_edit.svg">
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef> </mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="descrizioneBreve">
+            <mat-header-cell class="center" *matHeaderCellDef >Classe</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element">{{element.descrizioneBreve}}</mat-cell>
+            <mat-footer-cell class="bold center" *matFooterCellDef> Totale </mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="sezione">
+            <mat-header-cell class="center" *matHeaderCellDef >Sez.</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element">{{element.sezione}}</mat-cell>
+            <mat-footer-cell class="center" *matFooterCellDef> </mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numAlunni">
+            <mat-header-cell class="al-right" *matHeaderCellDef>Alunni</mat-header-cell>
+            <mat-cell class="al-right" *matCellDef="let element">{{element.numAlunni}}</mat-cell>
+            <mat-footer-cell class="bold al-right" *matFooterCellDef> {{getTotal()}} </mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numMaschi">
+            <mat-header-cell class="al-right" *matHeaderCellDef>M</mat-header-cell>
+            <mat-cell class="al-right" *matCellDef="let element">{{element.numMaschi}}</mat-cell>
+            <mat-footer-cell class="bold al-right" *matFooterCellDef> {{getTotalM()}} </mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numFemmine">
+            <mat-header-cell class="al-right" *matHeaderCellDef>F</mat-header-cell>
+            <mat-cell class="al-right" *matCellDef="let element">{{element.numFemmine}}</mat-cell>
+            <mat-footer-cell class="bold al-right" *matFooterCellDef> {{getTotalF()}} </mat-footer-cell>
+        </ng-container>
+      
+        
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <mat-header-row *matHeaderRowDef="displayedColumns;"></mat-header-row>
+        
+        <!-- **************************   MAT-ROW   ******************* -->
+        <mat-row *matRowDef="let element;columns: displayedColumns"
+            class="element-row"
+            (contextmenu)="onRightClick($event, element)" >
+        </mat-row>
+
+        <mat-footer-row class="grey low-row" *matFooterRowDef="displayedColumns"></mat-footer-row>
+    </mat-table>
+
+    <!-- ***********************  MENU RIGHT CLICK ****************** -->
+    <div style="visibility: hidden; position: fixed;" 
+        [style.left]="menuTopLeftPosition.x" 
+        [style.top]="menuTopLeftPosition.y" 
+        [matMenuTriggerFor]="rightMenu">
+    </div> 
+
+    <mat-menu #rightMenu="matMenu"> 
+        <ng-template matMenuContent let-item="item"> 
+            <mat-label class="_titolo-filtri-avanzati">{{item.descrizioneBreve | uppercase}} {{item.sezione | uppercase}}</mat-label>
+            <!-- <button mat-menu-item routerLink="/coordinatore-dashboard" [queryParams]="{ annoID: item.anno }">Gestione Classe</button> -->
+            <button mat-menu-item (click)="openGestioneClasse(item)">Gestione Classe</button> 
+            <!-- <button mat-menu-item>Pagelle</button> -->
+            <button mat-menu-item (click)="openPagamentiClasse(item)">Quote e Pagamenti</button>
+        </ng-template> 
+    </mat-menu> 
+
+</mat-card>
+
+
+
+
+

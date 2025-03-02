@@ -1,0 +1,57 @@
+<!-- **************************   MAT-TABLE   ******************* -->
+<table mat-table class="_table-row-low transparent w100 headerColored" 
+    [dataSource]="matDataSource">
+
+    <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+    <ng-container matColumnDef="actionsColumn">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell matTooltip="Scarica Documento" *matCellDef="let element;  let j = index;" > 
+            <mat-icon *ngIf="element.statoID == 3" class="pointer" (click)="downloadFile(element.tipo, element.docID)">file_download</mat-icon>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="annoScolastico">
+        <th mat-header-cell *matHeaderCellDef>a.s.</th>
+        <!-- <td mat-cell *matCellDef="let element">{{element.nome}}</td> -->
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.annoScolastico"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="classe">
+        <th mat-header-cell *matHeaderCellDef>Classe</th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.classe"></td>
+    </ng-container>
+    
+    <ng-container matColumnDef="sezione">
+        <th mat-header-cell *matHeaderCellDef>Sez.</th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.sezione"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="periodo">
+        <th mat-header-cell *matHeaderCellDef>Quadr.</th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.periodo"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="dtDocumento">
+        <th mat-header-cell *matHeaderCellDef>dt Documento</th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.dtDocumento | highlightDate: filterValue"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef>Tipo Doc</th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.tipo"></td>
+    </ng-container>
+ 
+    <ng-container matColumnDef="statoID">
+        <th mat-header-cell *matHeaderCellDef>Stato</th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.statoID==1? 'In Compilazione': element.statoID==2? 'Chiuso': 'Pubblicato'"></td>
+    </ng-container>
+    <!-- **************************   MAT-HEADER-ROW   ******************* -->
+    <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    
+    <!-- **************************   MAT-ROW   ******************* -->
+    <tr mat-row *matRowDef="let element;columns: displayedColumns"
+        class="element-row"
+>
+    </tr>
+</table>
+

@@ -1,0 +1,41 @@
+:host ::ng-deep .mat-grid-tile-content {
+    justify-content: flex-start !important ;
+    /* align-items: flex-start !important; */
+}
+
+.mat-mdc-radio-button {
+    display: flex;
+    flex-direction: column; 
+    gap: 5px; 
+  }
+
+.mat-column-domanda {
+    max-width: 300px;
+    white-space: normal;
+}
+
+._unacolonna {
+    text-align: center;
+    /* border: 1px solid lightgray;
+    border-radius: 5px; */
+    background-color: rgb(245, 245, 245);
+}
+  
+._tabellaquote td {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+      }
+
+._tabellaquote th {
+    border: 1px solid #dddddd;
+    background-color: rgb(245, 245, 245);
+    text-align: center;
+    padding: 8px;
+
+    }
+
+._tabellaquote {
+    position: sticky;
+}
+

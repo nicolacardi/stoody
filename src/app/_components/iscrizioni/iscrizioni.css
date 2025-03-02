@@ -1,0 +1,71 @@
+
+  ._table-container {
+    position: relative;
+    min-height: 200px;
+    max-height: 100%;
+    overflow: auto;
+}
+
+/* Bordo inferiore nelle checkbox */
+th.mat-mdc-header-cell._no-bottom-border, td.mat-mdc-cell._no-bottom-border {
+  border-bottom-width: 0px !important;
+}
+
+/*colonna di sx classi dashboard*/ 
+._columnleft-dashboard {
+  /* width:315px; */
+  width:25%;
+  height: 85% ;
+  /* position: absolute; */
+  top: 75px;
+  left: 8px;
+}
+
+  /*colonna di dx classi dashboard*/ 
+._columnright-dashboard {
+  width:75%;
+  height: 83%;
+  position: absolute;
+  top: 75px;
+  left: 330px
+}
+
+
+._highlightStato{
+  color: red;
+  font-weight: bold;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+:host ::ng-deep .noBottomPadding .mat-form-field-wrapper {
+/* padding-bottom: 0px !important; */
+}
+
+:host ::ng-deep .headerColored .mat-mdc-header-row {
+background-color: #f9f9f9;
+}
+
+
+    /* low-list-row è una classe creata per  ridurre l'altezza dei form:
+    /* attenzione però: toglie il mat-hint sottostante !!!*/
+
+    :host ::ng-deep ._low-list-row .mat-mdc-text-field-wrapper {
+      height: 50px;
+    }
+
+    :host ::ng-deep ._low-list-row .mat-grid-tile {
+        height: 55px !important;
+    }
+
+    :host ::ng-deep ._low-list-row {
+        height: 55px !important;
+    }
+
+
+
+    .mat-column-emailgenitori {
+      white-space: normal;
+      word-wrap: break-word;
+      max-width: 200px;
+  }

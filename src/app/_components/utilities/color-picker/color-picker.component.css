@@ -1,0 +1,28 @@
+:host {
+    display: block;
+    width: 316px;
+    padding: 16px;
+  }
+  .color-wrapper {
+    display: flex;
+    height: 250px;
+    margin-top:60px;
+  }
+  
+  .input-wrapper {
+    margin-top: 16px;
+    display: flex;
+    border-radius: 1px;
+    border: 1px solid rgb(220, 220, 220);
+    padding: 8px;
+    height: 32px;
+    justify-content: center;
+  }
+  
+
+  
+  .text {
+    flex: 1;
+    font-family: 'Helvetica';
+    line-height: 32px;
+  }

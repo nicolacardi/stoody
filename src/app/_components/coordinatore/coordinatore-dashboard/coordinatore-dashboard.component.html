@@ -1,0 +1,133 @@
+<div class="center _fixed-header">
+    <h1 class="_titolo-pagina">Cruscotto Coordinatore Didattico per Classe</h1>
+
+    <button *ngIf="classeSezioneAnno" mat-button class="_pos-absolute_i t10 l10  _btn-text" (click)="drawer.toggle()">
+        Classe: <span >{{classeSezioneAnno.classeSezione!.classe!.descrizione2}} {{classeSezioneAnno.classeSezione!.sezione}}</span>
+    </button>
+</div>
+
+<mat-drawer-container style="display: inline">
+    <mat-drawer class=" w330px transparent"  #drawer mode="side" opened="true">
+        <app-classi-sezioni-anni-list 
+            [dove] = "'coordinatore-dashboard'"
+            (annoID)="annoIdEmitted($event)"
+            (classeSezioneAnnoID)="classeSezioneAnnoIDEmitted($event)"
+            (docenteId)="docenteIdEmitted($event)" >
+        </app-classi-sezioni-anni-list>
+    </mat-drawer>
+    
+    <mat-drawer-content class="mat-drawer-classi">
+        <mat-tab-group >
+            
+            
+            <mat-tab  label="Alunni">
+                <button mat-mini-fab aria-label="Iscrivi alunno alla Classe" matTooltip="Iscrivi alunno alla Classe" class="_btn-add _btn-pos-right-1 "  (click)="addAlunnoToClasse()" >
+                    <img class="iconaMenu" src="./assets/alunnoPlus.svg">
+                </button>
+                <button mat-mini-fab aria-label="Rimuovi alunno dalla Classe" matTooltip="Rimuovi alunno dalla Classe" class="_btn-add _btn-pos-right-2 " (click)="removeAlunnoFromClasse()">
+                    <img class="iconaMenu" src="./assets/alunnoMinus.svg">
+                </button>
+                <button mat-mini-fab aria-label="Promuovi alunni" matTooltip="Promuovi" class="_btn-add _btn-pos-right-3 "  (click)="promuovi()">
+                    <img class="iconaMenu" src="./assets/promuovi_white.svg">
+                </button>
+                    <div class="_table-container mt50">
+                        <app-iscrizioni-classe-list [dove]="'coord-dashboard-alunni'" 
+                            [classeSezioneAnnoID]="classeSezioneAnnoID">
+                        </app-iscrizioni-classe-list>
+                    </div>
+            </mat-tab>
+
+
+            <mat-tab  label="Materie & Docenti">
+                <button mat-mini-fab aria-label="Aggiungi Docente alla Classe" matTooltip="Aggiungi docente alla Classe" class="_btn-add _btn-pos-right-1 "  (click)="addDocenteToClasse()" >
+                    <img class="iconaMenu" src="./assets/docentePlus.svg">
+                </button>
+                <button mat-mini-fab aria-label="Rimuovi docente dalla Classe" matTooltip="Rimuovi docente dalla Classe" class="_btn-add _btn-pos-right-2 "  (click)="removeDocenteFromClasse()">
+                    <img class="iconaMenu" src="./assets/docenteMinus.svg">
+                </button>
+
+                <div class="_table-container mt50">
+                    <app-docenze-list   [classeSezioneAnnoID]="classeSezioneAnnoID">
+
+                    </app-docenze-list>
+                </div>
+
+            </mat-tab>
+
+            <mat-tab  label="Pagelle">
+                <table>
+                    <tr>
+                        <td class="_cell-align-top w30 w330px">
+                            <app-iscrizioni-classe-list [dove]="'coord-dashboard-pagelle'"  
+                                [classeSezioneAnnoID]="classeSezioneAnnoID"  
+                                (iscrizioneID)="iscrizioneIDEmitted($event)"
+                                 >
+                            </app-iscrizioni-classe-list>
+                        </td>
+                        <td class="_cell-align-top pl10 _border-left">
+                            <div style="display: flex">
+                                <app-pagella-voto-edit 
+                                    [iscrizioneID]="iscrizioneID"
+                                    [periodo] = "1">
+                                </app-pagella-voto-edit>
+                                <app-pagella-voto-edit 
+                                    [iscrizioneID]="iscrizioneID"
+                                    [periodo] = "2">
+                                </app-pagella-voto-edit>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </mat-tab>
+
+            <mat-tab  *ngIf="classeSezioneAnnoID" label="Cert. Competenze">
+                <table>
+                    <tr>
+                        <td class="_cell-align-top w300px">
+                            <app-iscrizioni-classe-list [dove]="'coord-dashboard-certcompetenze'"  
+                                [classeSezioneAnnoID]="classeSezioneAnnoID"  
+                                (iscrizioneID)="iscrizioneIDEmitted($event)">
+                            </app-iscrizioni-classe-list>
+                        </td>
+                        <td class="_cell-align-top pl10 _border-left w100">
+                            <app-iscrizione-risposte  
+                                [iscrizioneID]="iscrizioneID"
+                                [contesto]="'CertificazioneCompetenze'"
+                                >
+                          </app-iscrizione-risposte>
+                        </td>
+                    </tr>
+                </table>
+            </mat-tab>
+            <mat-tab  *ngIf="classeSezioneAnnoID" label="Cons. Orientativo" >
+                <table >
+                    <tr>
+                        <td class="_cell-align-top w300px">
+                            <app-iscrizioni-classe-list [dove]="'coord-dashboard-consorientativi'"  
+                                [classeSezioneAnnoID]="classeSezioneAnnoID"  
+                                (iscrizioneID)="iscrizioneIDEmitted($event)">
+                            </app-iscrizioni-classe-list>
+                        </td>
+                        <td class="_cell-align-top pl10 _border-left w100" >
+                            <app-iscrizione-risposte  
+                                [iscrizioneID]="iscrizioneID"
+                                [contesto]="'ConsiglioOrientativo'"
+                                >
+                          </app-iscrizione-risposte>
+                        </td>
+                    </tr>
+                </table>
+            </mat-tab>
+            
+            <mat-tab  label="Note Disciplinari" style="">
+                <app-note-page 
+                    [classeSezioneAnnoID]="classeSezioneAnnoID"
+                    [dove] = "'coordinatore-dashboard'"
+                >
+                </app-note-page>
+            </mat-tab>
+        </mat-tab-group>
+            
+    </mat-drawer-content>
+</mat-drawer-container>
+

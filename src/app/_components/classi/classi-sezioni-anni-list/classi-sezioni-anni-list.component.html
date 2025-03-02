@@ -1,0 +1,221 @@
+<!-- Component di selezione Anno/Docente(opz)/Classe 
+    USATO IN: 
+        CoordinatoreDashBoard
+        DocentiDashBoard
+        .... 
+-->
+
+
+<h1 *ngIf="dove=='segreteria-dashboard'" class="_titolo-pagina">Classi e Iscrizioni</h1>
+<h3 *ngIf="dove=='orario-page'" class="_titolo-pagina">Orario per Classe</h3>
+<h1 *ngIf="dove=='impostazioni'" class="_titolo-pagina">Classi-Sezioni per Anno</h1>
+<h3 *ngIf="dove=='impostazioni'" class="_titolo-pagina">(gestione e documentazione)</h3>
+
+
+    <form [formGroup] = "form">
+        <mat-form-field class="_pos-relative ml20 mt10 topZIndex noBottomPadding"  >
+            <mat-label>Anno Scolastico</mat-label>
+            <mat-select formControlName="selectAnnoScolastico">
+                <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                    {{element.annoscolastico}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="showSelectDocente">
+            <mat-form-field class="ml20 topZIndex"  >
+                <mat-label>Seleziona il Docente</mat-label>
+                <mat-select formControlName="selectDocente" >
+                <!-- [disabled] = "docenteID != 0 && docenteID != null" -->
+                <!-- [compareWith]="compareObjects"  compareWith sembra la soluzione per impostare il valore correttamente -->
+                
+                <mat-option value="0" *ngIf="dove=='coordinatore-dashboard'">Tutti i docenti-</mat-option>
+                
+                <mat-option *ngFor="let element of (obsDocenti$ | async)" [value]="element.id">
+                    {{element.persona.cognome + ' '+ element.persona.nome }}
+                </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+<!-- **************************   FILTER   ******************* -->
+        <mat-form-field *ngIf="showTableRibbon" class="_pos-relative ml20 topZIndex">
+            <mat-label>Filtro (Classe, sezione)</mat-label>
+            <input matInput (keyup)="applyFilter($event)" #filterInput>
+        </mat-form-field>
+    </form>
+
+<!-- **************************   PAGINATOR   ******************* -->
+<mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="10" [pageSizeOptions]="[10, 15, 50]" showFirstLastButtons></mat-paginator>
+
+<!-- **************************   MAT-TABLE   ******************* -->
+<table mat-table class=" w100 transparent headerColored" matSort [dataSource]="matDataSource">
+    <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+
+    <ng-container matColumnDef="select" >
+        <!-- masterToggle delle checkbox di selezione record -->
+        <th mat-header-cell *matHeaderCellDef >
+            <mat-checkbox class="w40px _pos-relative"
+                          (change)="$event ? masterToggle() : null"
+                          [checked] = "toggleChecks"
+                          [aria-label]="checkboxLabel()"
+                          color="warn" #mstToggle>
+                <!-- [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()" -->
+            </mat-checkbox>
+
+            <mat-icon class="_pos-absolute ml10"> 
+                check_circle_outline
+            </mat-icon>
+        </th>
+
+        <td mat-cell *matCellDef="let element; let i = index" class="w100px" >
+                <mat-checkbox class="w40px _pos-relative _floatleft"
+                              (click)="$event.stopPropagation()"
+                              (change) = "$event ? selectedRow(element) : null"
+                              [checked]="selection.isSelected(element)"
+                              [aria-label]="checkboxLabel(element)"
+                              color="warn" #ckSelected
+                              style="vertical-align: middle"
+                              [disabled]="element.numAlunni == element.numStato20 || element.numAlunni == 0">
+                </mat-checkbox>
+
+            <mat-icon #endedIcons 
+                      [attr.id]="'endedIcon_'+element.id" 
+                      class="_icona-check-green invisible ml10 _floatleft">
+                      check_circle_outline
+            </mat-icon>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actionsColumn">
+        <th  mat-header-cell *matHeaderCellDef cdkDrag></th>
+        <td mat-cell matTooltip="Modifica Classe" *matCellDef="let element;  let j = index;"> 
+            <img (click)="openDetail(element.id)" class="iconaMenu pointer" src="./assets/classe_edit.svg">
+        </td>
+    </ng-container>
+
+
+
+    <ng-container matColumnDef="documents">
+        <th  mat-header-cell *matHeaderCellDef cdkDrag></th>
+        <td mat-cell  matTooltip="Template documenti" *matCellDef="let element;  let j = index;"> 
+            <img (click)="openDetailDocs(element)" class="iconaMenu pointer" src="./assets/risorseclasse_edit.svg">
+        </td>
+    </ng-container>
+
+    <!-- <ng-container matColumnDef="annoscolastico">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>anno scolastico</th>
+        <td mat-cell *matCellDef="let element">{{element.annoScolastico}}</td>
+    </ng-container> -->
+
+    <ng-container matColumnDef="descrizione">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header >Classe</th>
+        <!-- <td mat-cell *matCellDef="let element">{{element.classeSezione.classe.descrizione2}}</td> -->
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.descrizione2 | highlight:filterValue"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="sezione">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Sez.</th>
+        <!-- <td mat-cell *matCellDef="let element">{{element.classeSezione.sezione}}</td> -->
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.sezione | highlight:filterValue"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="descrizioneAnnoSuccessivo">
+        <th mat-header-cell *matHeaderCellDef >Classe Successiva</th>
+        <td mat-cell *matCellDef="let element">{{element.descrizione2AnnoSucc}}</td>
+        <!-- <td mat-cell *matCellDef="let element"></td> -->
+    
+    </ng-container>
+
+    <ng-container matColumnDef="sezioneAnnoSuccessivo">
+        <th mat-header-cell *matHeaderCellDef >Sezione Cl. Successiva</th>
+        <td mat-cell *matCellDef="let element">{{element.sezioneAnnoSucc}}</td>
+        <!-- <td mat-cell *matCellDef="let element"></td> -->
+
+    </ng-container>
+
+    <ng-container matColumnDef="importo">
+        <th mat-header-cell *matHeaderCellDef >importo</th>
+        <td mat-cell *matCellDef="let element">{{element.importo}}</td>
+        <!-- <td mat-cell *matCellDef="let element"> -->
+            <!-- <input matInput type="text" required placeholder="Importo" [value] = "element.classeSezione.classe.importo" (change)="updateImporto(element, importo.value)" #importo> -->
+        <!-- </td> -->
+    </ng-container>
+
+    <ng-container matColumnDef="importo2">
+        <th mat-header-cell *matHeaderCellDef >importo2</th>
+        <td mat-cell *matCellDef="let element">{{element.importo2}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numAlunni" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>N. Alunni</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numAlunni}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato10" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.10</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato10}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato20Highlight" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.20</th>
+        <td mat-cell class="center" [ngClass]="{'_highlightStato': element.numStato20 < element.numAlunni}" *matCellDef="let element">{{element.numStato20}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato20" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.20</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato20}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato30" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.30</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato30}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato40" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.40</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato40}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato50" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.50</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato50}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato60" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.60</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato60}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato70" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.70</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato70}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato80" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.80</th>
+        <td mat-cell class="center" *matCellDef="let element">{{element.numStato80}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="addToAttended">
+        <th mat-header-cell *matHeaderCellDef ></th>
+        <td mat-cell *matCellDef="let element">
+            <mat-icon class="pointer" (click) = "addToAttendedEmit(element)">add_circle_outline</mat-icon>
+        </td>
+    </ng-container>
+
+
+    <!-- **************************   MAT-HEADER-ROW   ******************* -->
+    <tr mat-header-row class="_table-title-low" *matHeaderRowDef="displayedColumns;  sticky: true" ></tr>
+
+    <!-- **************************   MAT-ROW   ******************* -->
+    <tr mat-row *matRowDef="let element;columns: displayedColumns"
+        class="element-row"
+        
+        [ngClass]="{
+            '_table-row-selected-highlight': selectedRowIndex == element.id && (dove == 'coordinatore-dashboard'|| dove =='docenti-dashboard' || dove == 'orario-page'),
+            '_row-pointercursor': (dove == 'coordinatore-dashboard' || dove =='docenti-dashboard' || dove == 'orario-page')
+            }"
+        (click)="rowclicked(element.id)" >
+    </tr>
+</table>

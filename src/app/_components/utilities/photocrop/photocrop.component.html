@@ -1,0 +1,35 @@
+
+
+
+<!-- <div style="position:relative">
+
+<div class="w100px h100px ma-lr mt50 _big-border" style="z-index: 100; position: absolute;  margin-left: auto;"> -->
+    <!-- <div class="w100px h100px ma-lr mt50 br200 _bordered-grey" style="z-index: 100; overflow: visible"> -->
+       
+    <!-- <div> -->
+<!-- </div>
+        <img #myImg *ngIf="imgFile" class="w100px" style="position: absolute; top: 10px; z-index: 50;" [src]="imgFile">
+
+
+</div> -->
+
+
+<h3 class="center">Utility di CROP</h3>
+<div class="example-boundary ma">
+
+    <div class="example-box" color="primary" cdkDragBoundary=".example-boundary" (cdkDragEnded)="dragEnded($event)" style="position: absolute;" [cdkDragFreeDragPosition] = "dragPosition" cdkDrag>
+    </div>
+
+    <img #myImg *ngIf="imgFile"
+    style="position: relative; display: block; margin: auto; max-width: 100%; max-height: 100%;" 
+    [width] = "w"
+    [src]="imgFile">
+
+    <!-- <canvas #myCanvas style="position: relative; max-width: 100%; max-height: 100%"></canvas> -->
+</div>
+
+<mat-slider class="w100" #ngSlider><input matSliderThumb /><input matSliderThumb (input)="onSliderChange({source: ngSliderThumb, parent: ngSlider, value: ngSliderThumb.value})" #ngSliderThumb="matSliderThumb" value="100" /></mat-slider>
+
+
+<button type="button" mat-button matSuffix class="w100 ma" mat-stroked-button >Ancora non Funziona</button>
+

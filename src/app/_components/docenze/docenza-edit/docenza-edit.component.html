@@ -1,0 +1,78 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(docenza$ | async)" class="data-form flex-form" [formGroup] = "form">
+
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/docenza_edit.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            
+            <mat-grid-list class="no-overflowx mt20" [cols]="1" rowHeight="60px">
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Classe - Sezione</mat-label>
+                        <input matInput type="text" placeholder="Classe" [value]="classeSezioneAnno.classeSezione.classe?.descrizione2 + ' ' + classeSezioneAnno.classeSezione.sezione" [disabled] = "true">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Docente</mat-label>
+                        <input matInput type="text" placeholder="Docente" [value]="strDocente" [disabled] = "true">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Materia</mat-label>
+                        <input matInput type="text" placeholder="Materia" [value]="strMateria" [disabled] = "true">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile class="ml60 tileCk">
+                    <mat-checkbox color="primary" formControlName="ckOrario">
+                        Materia in Orario
+                    </mat-checkbox>
+                </mat-grid-tile>
+
+                <mat-grid-tile class="ml60 tileCk">
+                    <mat-checkbox color="primary" formControlName="ckPagella">
+                        Materia in Pagella
+                    </mat-checkbox>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-checkbox color="primary" formControlName="ckImpostaTutteSezioni">
+                        Imposta la stessa materia per tutte le sezioni della classe <br>
+                         <span *ngIf="docenzaID" class="fs16 bold">{{classeSezioneAnno.classeSezione.classe?.descrizione2}}</span> dello stesso anno <br>
+                         (sovrascrive impostazioni diverse)
+                    </mat-checkbox>
+                </mat-grid-tile>
+
+            </mat-grid-list>
+ 
+        </form>
+    </mat-card-content>
+</mat-card>

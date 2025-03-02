@@ -1,0 +1,29 @@
+:host ::ng-deep .mat-mdc-paginator-container{
+    width:50% !important;
+}
+
+.resize-vertical-only {
+     resize: vertical; 
+} 
+
+.max-height {
+    max-height: 120px;
+}
+
+
+table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  /* .mat-column-nota {
+    flex: 0 0 30% !important;
+} */
+
+  
+  .ellipsisColumn {
+    overflow: hidden;
+    width:auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }

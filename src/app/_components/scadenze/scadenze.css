@@ -1,0 +1,109 @@
+/* NON RIESCO A CANCELLARE QUESTO FILE */
+/*ATTENZIONE: overriding element standard su ../Styles.css  */
+.mat-mdc-cell {
+  white-space: normal;
+}
+
+:host ::ng-deep .fc-event-title {
+    font-size: 1.2em
+}
+
+:host ::ng-deep .fc-icon-settings-icon {
+    background: url("../../../assets/settings_white.svg");
+    background-repeat: no-repeat;
+    color: transparent !important;
+    width: 30px;
+    height: 30px;
+    padding: 0px;
+    z-index: 2;
+  }
+
+
+  :host ::ng-deep ._iconFirma {
+      width: 20px;
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      z-index: 1000;
+  }
+
+  :host ::ng-deep ._iconEpoca {
+  width: 20px;
+  position: absolute;
+  top: 2px;
+  right: 25px;
+  z-index: 1000;
+}
+
+:host ::ng-deep ._iconCompito {
+  width: 20px;
+  position: absolute;
+  top: 2px;
+  right: 48px;
+  z-index: 1000;
+}
+
+:host ::ng-deep ._iconFirmaListWeek {
+  width: 20px;
+  top: 2px;
+  right: 2px;
+  z-index: 1000;
+}
+
+:host ::ng-deep ._iconEpocaListWeek {
+width: 20px;
+top: 2px;
+right: 25px;
+z-index: 1000;
+}
+
+:host ::ng-deep ._iconCompitoListWeek {
+width: 20px;
+top: 2px;
+right: 48px;
+z-index: 1000;
+}
+
+
+:host ::ng-deep .may-form-field {
+  width: 300px;
+}
+
+
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+:host ::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+  line-height: 20px !important;
+}
+
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+:host ::ng-deep .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+  padding: 0 5px !important;
+}
+
+:host ::ng-deep .mat-mdc-card-actions, .mat-mdc-card-subtitle, .mat-mdc-card-content {
+  margin-bottom: 0px ! important;
+}
+
+:host ::ng-deep .mat-mdc-option {
+  min-height: 23px ! important;
+}
+
+
+.no-select {
+  pointer-events: none; /* Prevents the entire option from responding to clicks */
+  color: inherit;        /* Keep text color as it is */
+
+}
+
+.no-select mat-icon {
+  pointer-events: auto; /* Allows the icon to remain clickable */
+  color: initial;        /* Ensure the icon has its normal color */
+
+}
+
+
+
+
+

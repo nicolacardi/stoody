@@ -1,0 +1,51 @@
+<form *ngIf="(alunno$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+    <mat-label class="frameLabelRel t10">Dati dell'alunno</mat-label>
+    
+    <!-- <button mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn _pos-absolute r20 mt5 pointer"  > -->
+        <mat-icon class="_pos-absolute r20 mt5 pointer topZIndex" (click)="deleteRole()">delete</mat-icon>
+    <!-- </button> -->
+
+    <mat-grid-list class="no-overflowx" [cols]="3" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Scuola di provenienza</mat-label>
+                <input matInput type="text" formControlName="scuolaProvenienza">
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Indirizzo Sc. provenienza</mat-label>
+                <input matInput type="text" formControlName="indirizzoScuolaProvenienza">
+            </mat-form-field>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="tileCk">
+
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list class="no-overflowx" [cols]="3" rowHeight="60px">
+
+        <mat-grid-tile class="tileCk ml15">
+            <mat-checkbox color="primary" formControlName="ckDSA">
+                Alunno con DSA
+            </mat-checkbox>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="tileCk ml15" >
+            <mat-checkbox color="primary" formControlName="ckDisabile">
+                Alunno Disabile
+            </mat-checkbox>
+        </mat-grid-tile>
+
+
+        <mat-grid-tile class="_pos-absolute" style="position: absolute; top: 0px">
+            <div >
+                <button mat-button *ngFor="let genitore of (alunno$ | async)?._Genitori; let i = index">
+                    copia residenza da genitore {{genitore.id}}  <!-- qui mettere "padre" "madre"-->
+                </button>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
+</form>

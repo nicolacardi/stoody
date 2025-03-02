@@ -1,0 +1,78 @@
+/* NON RIESCO A CANCELLARE QUESTO FILE */
+
+
+:host ::ng-deep .fc-event-title {
+    font-size: 1.2em
+}
+
+:host ::ng-deep .fc-icon-settings-icon {
+    background: url("../../../assets/settings_white.svg");
+    background-repeat: no-repeat;
+    color: transparent !important;
+    width: 30px;
+    height: 30px;
+    padding: 0px;
+    z-index: 2;
+  }
+
+  :host ::ng-deep .fc-icon-download-registro {
+    background: url("../../../assets/documento_download_white.svg");
+    background-repeat: no-repeat;
+    color: transparent !important;
+    width: 30px;
+    height: 30px;
+    padding: 0px;
+    z-index: 2;
+  }
+
+
+  :host ::ng-deep ._iconFirma {
+      width: 20px;
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      z-index: 1000;
+  }
+
+  :host ::ng-deep ._iconEpoca {
+  width: 20px;
+  position: absolute;
+  top: 2px;
+  right: 25px;
+  z-index: 1000;
+}
+
+:host ::ng-deep ._iconCompito {
+  width: 20px;
+  position: absolute;
+  top: 2px;
+  right: 48px;
+  z-index: 1000;
+}
+
+:host ::ng-deep ._iconFirmaListWeek {
+  width: 20px;
+  top: 2px;
+  right: 2px;
+  z-index: 1000;
+}
+
+:host ::ng-deep ._iconEpocaListWeek {
+width: 20px;
+top: 2px;
+right: 25px;
+z-index: 1000;
+}
+
+:host ::ng-deep ._iconCompitoListWeek {
+width: 20px;
+top: 2px;
+right: 48px;
+z-index: 1000;
+}
+
+
+:host ::ng-deep .may-form-field {
+  width: 300px;
+}
+

@@ -1,0 +1,128 @@
+<div class="w90 ma no-overflow" >
+    <div *ngIf="contesto=='DatiEconomici'">
+        <table class="ma _tabellaquote" *ngIf="iscrizione">
+            <tr>
+              <th>Nome</th>
+              <th>Cognome</th>
+              <th>Classe</th>
+              <th>Quota annua</th>
+            </tr>
+            <tr>
+              <td>{{iscrizione.alunno.persona.nome}}</td>
+              <td>{{iscrizione.alunno.persona.cognome}}</td>
+
+              <td>{{iscrizione.classeSezioneAnno.classeSezione.classe!.descrizione2}}</td>
+              <td>{{rettaConcordata}}</td>
+            </tr>
+        </table>
+
+    </div>
+    
+
+    
+    <form [formGroup] = "formRisposte">
+
+        <ng-container *ngIf="contesto == 'CertificazioneCompetenze'|| contesto == 'ConsiglioOrientativo'">
+            <button  mat-mini-fab aria-label="Scarica Anteprima" matTooltip="Scarica Anteprima" class="_btn-add _btn-pos-right-2 mb10"
+                    (click)="downloadPreviewDocumento(contesto)" >
+                    <mat-icon>file_download</mat-icon>
+            </button>
+
+            <button  mat-mini-fab aria-label="Salva" matTooltip="Salva" class="_btn-add _btn-pos-right-1 mb10"
+                    [disabled] ="!formRisposte.valid"
+                    (click)="save(contesto)" >
+                    <mat-icon>save</mat-icon>
+            </button>
+
+            <button *ngIf="!chiuso" [disabled]="!docEsistente" mat-mini-fab aria-label="Chiudi Documento" matTooltip="Chiudi Documento" class="_btn-add _btn-pos-right-3" (click)="chiudiDocumento()">
+                <img class="iconaMini pointer" src="./assets/unlocked.svg">
+            </button>
+
+            <button *ngIf="chiuso" [disabled]="!docEsistente" mat-mini-fab aria-label="Apri Documento" matTooltip="Apri Documento" class="_btn-add-red _btn-pos-right-3" (click)="apriDocumento()">
+                <img class="iconaMini pointer" src="./assets/lock.svg">
+            </button>
+
+
+
+
+        </ng-container>
+        <div>
+            <br>
+        </div>
+        <table mat-table class="_table-row-low transparent w100" 
+            [dataSource]="matDataSource">
+
+            <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+            <ng-container matColumnDef="domanda">
+                <th mat-header-cell *matHeaderCellDef ></th>
+                <td mat-cell 
+                    *matCellDef="let element;  let j = index;"
+                    [attr.colspan] = "element.numOpzioni == 0 && element.tipo != 'Risposta Libera'? 3: 1"
+                    [ngClass]="{'_unacolonna': element.numOpzioni == 0 && element.tipo != 'Risposta Libera'}"
+                    >{{element.domanda}}</td>
+            </ng-container>
+
+            <!-- [ngStyle]="{'display': element.numOpzioni == 0 ? 'none': 'block'}" -->
+
+            <ng-container matColumnDef="opzioni" >
+                <th mat-header-cell *matHeaderCellDef ></th>
+                
+                <td mat-cell 
+                    *matCellDef="let element;  let j = index;" 
+                    [ngClass]="{'invisible': element.numOpzioni == 0 && element.tipo != 'Risposta Libera'}"
+                    >
+
+                    <mat-radio-group [formControlName]="element.id" 
+                        *ngIf="element.numOpzioni > 1 && element.tipo == 'Scelta Singola'" 
+                        >
+                        <mat-radio-button *ngIf="element.numOpzioni > 0" [value]="'1'">{{element.testo1}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 1" [value]="'2'">{{element.testo2}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 2" [value]="'3'">{{element.testo3}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 3" [value]="'4'">{{element.testo4}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 4" [value]="'5'">{{element.testo5}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 5" [value]="'6'">{{element.testo6}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 6" [value]="'7'">{{element.testo7}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 7" [value]="'8'">{{element.testo8}}</mat-radio-button>
+                        <mat-radio-button *ngIf="element.numOpzioni > 8" [value]="'9'">{{element.testo9}}</mat-radio-button>
+                    </mat-radio-group>
+
+                    <mat-checkbox  [formControlName]="element.id" *ngIf="element.numOpzioni == 1 && element.tipo == 'Scelta Singola'">{{element.testo1}}</mat-checkbox>
+
+                    <div
+                    *ngIf="element.tipo == 'Scelta Multipla'" 
+                    aria-label="Selezione una o più opzioni">
+                        <mat-checkbox [formControlName]="element.id+'_1'" *ngIf="element.numOpzioni > 0" value="1">{{element.testo1}}</mat-checkbox><br *ngIf="element.numOpzioni > 0">
+                        <mat-checkbox [formControlName]="element.id+'_2'" *ngIf="element.numOpzioni > 1" value="2">{{element.testo2}}</mat-checkbox><br *ngIf="element.numOpzioni > 1">
+                        <mat-checkbox [formControlName]="element.id+'_3'" *ngIf="element.numOpzioni > 2" value="3">{{element.testo3}}</mat-checkbox><br *ngIf="element.numOpzioni > 2">
+                        <mat-checkbox [formControlName]="element.id+'_4'" *ngIf="element.numOpzioni > 3" value="4">{{element.testo4}}</mat-checkbox><br *ngIf="element.numOpzioni > 3">
+                        <mat-checkbox [formControlName]="element.id+'_5'" *ngIf="element.numOpzioni > 4" value="5">{{element.testo5}}</mat-checkbox><br *ngIf="element.numOpzioni > 4">
+                        <mat-checkbox [formControlName]="element.id+'_6'" *ngIf="element.numOpzioni > 5" value="6">{{element.testo6}}</mat-checkbox><br *ngIf="element.numOpzioni > 5">
+                        <mat-checkbox [formControlName]="element.id+'_7'" *ngIf="element.numOpzioni > 6" value="7">{{element.testo7}}</mat-checkbox><br *ngIf="element.numOpzioni > 6">
+                        <mat-checkbox [formControlName]="element.id+'_8'" *ngIf="element.numOpzioni > 7" value="8">{{element.testo8}}</mat-checkbox><br *ngIf="element.numOpzioni > 7">
+                        <mat-checkbox [formControlName]="element.id+'_9'" *ngIf="element.numOpzioni > 8" value="9">{{element.testo9}}</mat-checkbox>
+                    </div>
+
+                    <textarea *ngIf="element.tipo == 'Risposta Libera'" class="w100  _noresize" placeholder="Risposta libera" matInput [formControlName]="element.id+'_RL'"></textarea>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="allegato">
+                <th mat-header-cell *matHeaderCellDef ></th>
+                <td mat-cell  
+                    class="_blue _underline pointer" 
+                    *matCellDef="let element;  let j = index;" 
+                    (click) = "downloadAllegato(element.risorsa!.id)"
+                    [ngClass]="{'invisible': element.numOpzioni == 0 && element.tipo != 'Risposta Libera'}"
+                    >{{element.risorsa? element.risorsa.nomeFile: ''}}</td>
+            </ng-container>
+
+            <!-- **************************   MAT-HEADER-ROW   ******************* -->
+            <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>
+            
+            <!-- **************************   MAT-ROW   ******************* -->
+
+            <tr mat-row *matRowDef="let element;columns: displayedColumns" class="element-row"></tr>
+
+        </table>
+    </form>
+</div>

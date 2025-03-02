@@ -1,0 +1,169 @@
+    <h1 *ngIf="showPageTitle" class="_titolo-pagina">Alunni</h1>
+
+    <!-- **************************   FILTER   ******************* -->
+    <mat-form-field *ngIf="showFilter" class="_pos-relative ml20 topZIndex">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #filterInput>
+    </mat-form-field>
+    
+    <!-- **************************   PAGINATOR   ******************* -->
+    <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator>
+
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table mat-table class="_table-row-low transparent w100 headerColored" 
+        [dataSource]="matDataSource"
+        matSort
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="drop($event)">
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="actionsColumn">
+            <th mat-header-cell *matHeaderCellDef cdkDrag></th>
+            <td mat-cell  *matCellDef="let element;  let j = index;"> 
+                <img (click)="openDetail(element.id)" class="iconaMenu pointer" src="./assets/alunno_edit.svg">
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="addToFam">
+            <th mat-header-cell *matHeaderCellDef cdkDrag></th>
+            <td mat-cell  *matCellDef="let element;"> 
+                <mat-icon class="pointer" (click) = "addToFamilyEmit(element)">add_circle_outline</mat-icon>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="removeFromFam">
+            <th mat-header-cell *matHeaderCellDef cdkDrag></th>
+            <td mat-cell  *matCellDef="let element;"> 
+                <mat-icon class="pointer" (click) = "removeFromFamilyEmit(element)">remove_circle_outline</mat-icon>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="select" >
+            <!-- masterToggle delle checkbox di selezione record -->
+            <th mat-header-cell *matHeaderCellDef >
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                            [checked] = "toggleChecks"
+                            [aria-label]="checkboxLabel()"
+                            color="warn" #mstToggle>
+                            <!-- [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()" -->
+              </mat-checkbox>
+            </th>
+            <!-- singole checkbox di selezione record -->
+            <td mat-cell *matCellDef="let element">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change) = "$event ? selectedRow(element) : null"
+                            [checked]="selection.isSelected(element)"
+                            [aria-label]="checkboxLabel(element)"
+                            color="warn">
+                            <!-- ho tolto questo (change)="$event ? selection.toggle(row) : null" -->
+              </mat-checkbox>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Nome<mat-icon class="iconaFilter" *ngIf="filterValues.nome">filter_alt</mat-icon></th>
+            <!-- <td mat-cell *matCellDef="let element">{{element.nome}}</td> -->
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.nome | highlight:filterValue"></td>
+        </ng-container>
+        
+        <ng-container matColumnDef="cognome">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
+            <!-- <td mat-cell *matCellDef="let element">{{element.cognome}}</td> -->
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.cognome | highlight: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="dtNascita">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>nato il<mat-icon class="iconaFilter" *ngIf="filterValues.dtNascita">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.dtNascita | highlightDate: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="indirizzo">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Indirizzo<mat-icon class="iconaFilter" *ngIf="filterValues.indirizzo">filter_alt</mat-icon></th>
+            <!-- <td mat-cell *matCellDef="let element">{{element.indirizzo}}</td> -->
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.indirizzo | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="comune">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Comune<mat-icon class="iconaFilter" *ngIf="filterValues.comune">filter_alt</mat-icon></th>
+            <!-- <td mat-cell *matCellDef="let element">{{element.comune}}</td> -->
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.comune | highlight: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="cap">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>CAP</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.cap | highlight: filterValue"></td>
+            <!-- <td mat-cell *matCellDef="let element">{{element.cap}}</td> -->
+        </ng-container>
+
+        <ng-container matColumnDef="prov">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Prov<mat-icon class="iconaFilter" *ngIf="filterValues.prov">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.prov | highlight: filterValue"></td>
+            <!-- <td mat-cell *matCellDef="let element">{{element.prov}}</td> -->
+        </ng-container>
+
+        <ng-container matColumnDef="cf">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>CF</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.cf | highlight: filterValue"></td>
+            <!-- <td mat-cell *matCellDef="let element">{{element.cf}}</td> -->
+        </ng-container>
+
+        <ng-container matColumnDef="comuneNascita">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Comune Nascita</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.comuneNascita | highlight: filterValue"></td>
+            <!-- <td mat-cell *matCellDef="let element">{{element.comuneNascita}}</td> -->
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>email<mat-icon class="iconaFilter" *ngIf="filterValues.email">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.email | highlight: filterValue"></td>
+            <!-- <td mat-cell *matCellDef="let element">{{element.email}}</td> -->
+        </ng-container>
+
+        <ng-container matColumnDef="telefono">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>telefono<mat-icon class="iconaFilter" *ngIf="filterValues.telefono">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.telefono | highlight: filterValue"></td>
+            <!-- <td mat-cell *matCellDef="let element">{{element.telefono}}</td> -->
+        </ng-container>
+
+        <ng-container matColumnDef="ckAttivo">
+            <th mat-header-cell class="center w50px"  *matHeaderCellDef cdkDrag >
+                attivo<br>
+                <button mat-icon-button (click)="toggleAttivi()" class="topZIndex">
+                    <mat-icon *ngIf="ckSoloAttivi" color="primary">visibility_off</mat-icon>
+                    <mat-icon *ngIf="!ckSoloAttivi" color="primary">visibility</mat-icon>
+                </button>
+            </th>
+            <td mat-cell class="center" *matCellDef="let element">
+                <mat-checkbox [checked]="element.persona.ckAttivo" color="primary" disabled></mat-checkbox>
+            </td>
+        </ng-container>
+        
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns"
+            class="element-row"
+            (contextmenu)="onRightClick($event, element)" >
+        </tr>
+    </table>
+
+    <!-- ***********************  MENU RIGHT CLICK ****************** -->
+    <div style="visibility: hidden; position: fixed;" 
+        [style.left]="menuTopLeftPosition.x" 
+        [style.top]="menuTopLeftPosition.y" 
+        [matMenuTriggerFor]="rightMenu">
+    </div> 
+
+    <mat-menu #rightMenu="matMenu"> 
+        <ng-template matMenuContent let-item="item"> 
+            <mat-label class="_titolo-filtri-avanzati">{{item.persona.nome | uppercase}} {{item.persona.cognome | uppercase}}</mat-label> 
+            <button mat-menu-item (click)="openGenitori(item)">Genitori/Tutori</button> 
+            <button mat-menu-item>Classi Frequentate</button>
+            <button mat-menu-item>Pagelle</button>
+            <button mat-menu-item (click)="openPagamenti(item.id)">Quote e Pagamenti</button>
+        </ng-template> 
+    </mat-menu> 

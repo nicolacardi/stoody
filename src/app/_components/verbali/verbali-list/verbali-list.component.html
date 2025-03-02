@@ -1,0 +1,79 @@
+    <h1 *ngIf="showPageTitle" class="_titolo-pagina">Verbali</h1>
+
+    <!-- **************************   FILTER   ******************* -->
+    <form *ngIf="obsAnni$ | async" [formGroup] = "form"> 
+
+    <mat-form-field  class="ml20 topZIndex">
+        <mat-select formControlName="selectAnnoScolastico" #annoscolastico>
+            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id" >
+            {{element.annoscolastico}}
+            </mat-option>
+        </mat-select>
+        </mat-form-field>
+
+
+        <mat-form-field *ngIf="showTableRibbon" class="ml20 topZIndex">
+            <mat-label>Filtro</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="" #filterInput>
+        </mat-form-field>   
+        
+        <button mat-icon-button *ngIf="filterValue" (click)="resetSearch();applyFilter($event)"  class="topZIndex">
+            <mat-icon  color="primary">clear</mat-icon>
+        </button>
+    </form>
+    <!-- **************************   PAGINATOR   ******************* -->
+    <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator>
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table mat-table matSort class="_table-row-low transparent w100" 
+        [dataSource]="matDataSource"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="drop($event)">
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="actionsColumn">
+            <th mat-header-cell *matHeaderCellDef cdkDrag></th>
+            <td mat-cell  *matCellDef="let element;  let j = index;"> 
+                <img (click)="openDetail(element)" class="iconaMenu pointer" src="./assets/verbale_edit.svg">
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Creato da<mat-icon class="iconaFilter" *ngIf="filterValues.nome || filterValues.cognome">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.persona.nome + ' ' + element.persona.cognome) | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoVerbale">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Tipo<mat-icon class="iconaFilter" *ngIf="filterValues.tipo">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.tipoVerbale.descrizione) | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="dtVerbale">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Data<mat-icon class="iconaFilter" *ngIf="filterValues.dtVerbale">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.dtVerbale) | highlightDate:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="classe">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Classe<mat-icon class="iconaFilter" *ngIf="filterValues.classe">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.classeSezioneAnno.classeSezione.classe.descrizione2 + ' ' + element.classeSezioneAnno.classeSezione.sezione) | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="titolo">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Titolo<mat-icon class="iconaFilter" *ngIf="filterValues.titolo">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.titolo) | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="contenuti">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Contenuti</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.contenuti) | highlight:filterValue"></td>
+        </ng-container>
+    
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>
+        
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns" class="element-row"></tr>
+    </table>
+
+

@@ -1,0 +1,67 @@
+<h1 *ngIf="showPageTitle" class="_titolo-pagina">Elenco Iscritti per Anno</h1>
+
+
+
+    <!-- **************************   FILTER   ******************* -->  
+    <!-- <mat-form-field *ngIf="showTableRibbon" class="ml20 topZIndex">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="" #filterInput>
+    </mat-form-field>
+    <button mat-icon-button *ngIf="filterValue" (click)="resetSearch();applyFilter($event)"  class="topZIndex">
+        <mat-icon  color="primary">clear</mat-icon>
+    </button> -->
+
+
+    
+    <!-- **************************   PAGINATOR   ******************* -->
+    <!-- <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator> -->
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table  mat-table class="_table-row-low transparent w100 headerColored" [dataSource]="matDataSource"
+            matSort
+            cdkDropList
+            cdkDropListOrientation="horizontal"
+            (cdkDropListDropped)="drop($event)">
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+   
+        <ng-container matColumnDef="classe">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Classe</th>
+            <td mat-cell *matCellDef="let element" >{{element.classeSezioneAnno.classeSezione.classe!.descrizioneBreve}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="sezione">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Sez</th>
+            <td mat-cell *matCellDef="let element" >{{element.classeSezioneAnno.classeSezione.sezione}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="annoscolastico">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>a.s.</th>
+            <td mat-cell *matCellDef="let element" >{{element.classeSezioneAnno.anno.annoscolastico}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="stato">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>St.Iscrizione</th>
+            <td mat-cell class="_grey-background" *matCellDef="let element" >{{element.stato.descrizione}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="removeFromAttended">
+            <th mat-header-cell *matHeaderCellDef ></th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon class="pointer" (click) = "removeFromAttendedEmit(element.classeSezioneAnno)">remove_circle_outline</mat-icon>
+            </td>
+         </ng-container>
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>  
+
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns"
+            class="element-row"
+            >
+        </tr>
+
+        <!-- <td mat-footer-cell *matFooterCellDef> ciao </td> -->
+
+    </table>
+
+

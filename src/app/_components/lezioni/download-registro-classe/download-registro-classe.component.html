@@ -1,0 +1,56 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form class="data-form flex-form" [formGroup] = "form">
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center mb10">
+                <img class="iconaMenuBig" src="./assets/documento_download_T.svg">
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+            </div>
+
+            <div class="mt50">
+
+                <div class="center  mt10 ">
+                    <mat-form-field class="_pos-relative ml20 mt10 topZIndex noBottomPadding"  >
+                        <mat-label>Anno Scolastico</mat-label>
+                        <mat-select formControlName="selectAnnoScolastico">
+                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                                {{element.annoscolastico}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    
+                    <mat-form-field class="_pos-relative ml20 mt10 topZIndex noBottomPadding"  >
+                        <mat-label>Classe</mat-label>
+                        <mat-select formControlName="selectClasseSezioneAnno">
+                            <mat-option *ngFor="let element of (obsClassiSezioniAnni$ | async)" [value]="element.id">
+                                {{element.classeSezione.classe?.descrizione +  ' ' + element.classeSezione.sezione}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field >
+                        <mat-label>Selezione Intervallo</mat-label>
+                        <mat-date-range-input
+                          [rangePicker]="campaignOnePicker">
+                          <input matStartDate #start placeholder="Start date" formControlName="start" (dateChange) = "changedDt(start.value, 'start')">
+                          <input matEndDate #end placeholder="End date" formControlName="end" (dateChange) = "changedDt(end.value, 'end')">
+                        </mat-date-range-input>
+                        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+                    </mat-form-field>
+
+
+
+                </div>
+
+                <div class="center  mt10 ">
+                    <button type="button" [disabled] ="!form.valid" mat-button matSuffix class="w500px ma mt10 mb10" mat-stroked-button (click)= "downloadRegistro()" >
+                        Scarica registro di classe
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

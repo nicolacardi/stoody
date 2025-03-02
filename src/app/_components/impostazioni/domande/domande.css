@@ -1,0 +1,56 @@
+.mat-column-domanda {
+    max-width: 250px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo1 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo2 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo3 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo4 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo5 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo6 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo7 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo8 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.mat-column-testo9 {
+    max-width: 100px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+
+.mat-column-file {
+    max-width: 200px !important;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+

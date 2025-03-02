@@ -1,0 +1,93 @@
+    <mat-card appearance="outlined" class="form-card">
+        <mat-card-content>
+            
+<!-- ********************************    BOTTONI     ************************************* -->
+
+            <div class="center">
+
+                <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" 
+                mat-dialog-close>
+                    <mat-icon>arrow_back</mat-icon>
+                </button> -->
+                <img class="iconaMenuBig" src="./assets/genitore_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+                <span [ngClass]="{'invisible': selectedTab != 0}">
+                    <button *ngIf="genitoreID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"    (click)="loadData()" >
+                        <mat-icon>restart_alt</mat-icon>
+                        <!-- [disabled]= "!personaFormComponent.form.valid"  -->
+                    </button>
+
+                    <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                            [disabled] ="!genitoreFormisValid || !personaFormisValid"
+                            (click)="save()" >
+                        <mat-icon>save</mat-icon>
+                    </button>
+
+                    <button *ngIf="genitoreID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10" (click)="delete()" >
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </span>
+            </div>
+            
+            <mat-tab-group mat-align-tabs="center" (selectedTabChange)="selectedTabValue($event)">
+<!-- ********************************    MAT TAB ANAGRAFICA *********************************** -->
+                <mat-tab  label="Dati Anagrafici">
+
+                    <!-- <form *ngIf="(genitore$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form"> -->
+                    <div *ngIf="(genitore$ | async) || emptyForm" class="mt10">
+                        <app-persona-form class="mt10"
+                            [personaID] = "personaID"
+                            [dove]="'genitore-edit'"
+                            (formValid)="formPersonaValidEmitted($event)">   
+                        </app-persona-form>
+
+                        <div class="_bordered-grey mt5">
+                            <app-genitore-form                           
+                                [genitoreID] = "genitoreID"
+                                (formValid)="formGenitoreValidEmitted($event)">
+                            </app-genitore-form>
+                        </div>
+                    <!-- </form>  -->
+                    </div>
+                </mat-tab>
+<!-- ********************************    MAT TAB FIGLI ************************************ -->
+                <mat-tab  *ngIf="genitoreID" label="Famiglia">
+                    <button mat-mini-fab aria-label="Nuova anagrafica Alunno" matTooltip="Nuova anagrafica Alunno" class= "_btn-addModal" (click)="addAlunno()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <mat-label class="frameLabel t10">I figli di {{genitoreNomeCognome}}</mat-label>
+                    <div class="_alunni-container _cell-bordered mt30">
+                        <app-alunni-list  [context]="'genitore-edit-famiglia'" 
+                                    [genitoreID] ="genitoreID" 
+                                    (removeFromFamily) = "removeFromFamily($event)" 
+                                    #alunniFamiglia>
+                        </app-alunni-list>
+                    </div>
+                    <mat-accordion>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Elenco di tutti gli alunni
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                (fare click per aprire)
+                            </mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <!-- <mat-label class="frameLabel">Elenco degli alunni </mat-label> -->
+                            <div class="_alunni-list-container _cell-bordered mt10">
+                                <!-- <app-alunni-list [dove]="'genitore-edit-list'" (addToFamily) = "addToFamily($event)"></app-alunni-list> -->
+                                <app-alunni-list 
+                                    [context]="'genitore-edit-list'" 
+                                    (addToFamily) = "addToFamily($event)">
+                                </app-alunni-list>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+
+                </mat-tab>
+            </mat-tab-group>
+            
+        </mat-card-content>
+    </mat-card>
+

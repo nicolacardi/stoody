@@ -1,0 +1,46 @@
+<h1 class="_titolo-pagina">Adesione all'ente</h1>
+
+<div class=" w30 ma">
+<!-- **************************   MAT-TABLE   ******************* -->
+<table mat-table class="_table-row-low transparent w100 headerColored" 
+    [dataSource]="matDataSource">
+
+    <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+    <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef cdkDrag>Nome</th>
+        <td mat-cell  *matCellDef="let element;  let j = index;"> 
+            {{element.persona.nome}}
+        </td>
+    </ng-container>
+
+    
+
+    <ng-container matColumnDef="cognome">
+        <th mat-header-cell *matHeaderCellDef cdkDrag>Cognome</th>
+        <td mat-cell  *matCellDef="let element;  let j = index;"> 
+            {{element.persona.cognome}} 
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="ckSocio">
+        <th mat-header-cell class="center w50px"  *matHeaderCellDef cdkDrag >Socio</th>
+        <td mat-cell class="center" *matCellDef="let element">
+            <mat-checkbox [checked]="element.persona.socio? true: false" color="primary" [disabled] = "element.persona.socio? true: false" (change)="ckSocioChange($event.checked, element.persona.id)"></mat-checkbox>
+        </td>
+    </ng-container>
+    
+    <!-- **************************   MAT-HEADER-ROW   ******************* -->
+    <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    
+    <!-- **************************   MAT-ROW   ******************* -->
+    <tr mat-row *matRowDef="let element;columns: displayedColumns"
+        class="element-row">
+    </tr>
+</table>
+<div class="center">
+    <mat-label>Almeno uno dei genitori/tutori/affidatari deve essere associato</mat-label><br>
+    <mat-divider></mat-divider>
+    <mat-label>ATTENZIONE: dopo il salvataggio di una nuova adesione<br>non sarà possibile eliminarla</mat-label>
+</div>
+</div>
+

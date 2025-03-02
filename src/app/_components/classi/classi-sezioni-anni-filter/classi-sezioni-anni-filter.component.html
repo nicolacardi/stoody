@@ -1,0 +1,25 @@
+
+<div class="pt60">
+
+    <div style="text-align: center; margin-bottom: 10px;">
+        Filtri Avanzati
+    </div>
+    <mat-form-field class="ml12">
+        <mat-label>Classe</mat-label>
+        <input matInput [formControl]="classeFilter">
+    </mat-form-field>
+
+    <mat-form-field class="ml12">
+        <mat-label>Sezione</mat-label>
+        <input matInput [formControl]="sezioneFilter">
+    </mat-form-field>
+
+    <div class="ml12 mt10">
+        <button mat-button matSuffix class="w180px ml15" mat-stroked-button aria-label="Clear" (click)="resetAllInputsAndClearFilters()" >
+            Pulisci Filtri
+        </button>
+    </div>
+
+</div>
+
+

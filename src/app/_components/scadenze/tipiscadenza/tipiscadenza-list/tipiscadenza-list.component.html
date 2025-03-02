@@ -1,0 +1,56 @@
+<h1 class="_titolo-pagina mb0">Tipi Scadenze</h1>
+<h3 class="center mt0">(trascinare le scadenze per ordinarle)</h3>
+    <!-- **************************   FILTER   ******************* -->
+    <mat-form-field class="ml20 topZIndex">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="" #filterInput>
+    </mat-form-field>
+    
+    <!-- **************************   PAGINATOR   ******************* -->
+    <!-- <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator> -->
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table mat-table class="_table-row-low transparent w100" 
+        [dataSource]="matDataSource"
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+        matSort>
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="actionsColumn">
+            <th mat-header-cell *matHeaderCellDef ></th>
+            <td mat-cell  *matCellDef="let element;  let j = index;"> 
+                <img (click)="openDetail(element.id)" class="iconaMenu pointer" src="./assets/evento_edit.svg">
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="descrizione">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header >Descrizione</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.descrizione | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="color">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header >Colore</th>
+            <td mat-cell *matCellDef="let element">
+                <div class="_color-div-mini" [ngStyle]="{'background-color': element.color || 'transparent'}"></div>
+            </td>
+
+        </ng-container>
+        
+        <ng-container matColumnDef="ckNota">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header >Tipo Nota Disciplinare</th>
+            <!-- <td mat-cell *matCellDef="let element" [innerHTML]="element.ckNota"></td> -->
+            <td mat-cell *matCellDef="let element">
+                <mat-checkbox [checked]="element.ckNota" [disabled]="true"></mat-checkbox>
+            </td>
+
+        </ng-container>
+        
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>
+        
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns" class="element-row" cdkDragLockAxis="y" cdkDrag> </tr>
+    </table>
+
+

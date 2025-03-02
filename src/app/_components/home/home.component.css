@@ -1,0 +1,7 @@
+.columnleft-home {
+    min-width: 500px;
+  }
+
+:host ::ng-deep .mat-grid-tile-content {
+  align-items: start !important;
+}

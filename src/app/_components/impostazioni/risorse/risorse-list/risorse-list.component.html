@@ -1,0 +1,67 @@
+<h1 class="_titolo-pagina">Elenco File</h1>
+<h3 class="_titolo-pagina">(è possibile caricare file di tipo .docX, .pdf, .jpg, .png - trascinare le righe per ordinarle a piacere)</h3>
+    <!-- **************************   FILTER   ******************* -->
+    <mat-form-field class="ml20 topZIndex">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="" #filterInput>
+    </mat-form-field>
+    
+    <!-- **************************   PAGINATOR   ******************* -->
+    <!-- <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator> -->
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table mat-table class="_table-row-low transparent w100" 
+           [dataSource]="matDataSource"
+           cdkDropList
+           (cdkDropListDropped)="drop($event)"
+           matSort>
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="download">
+            <th mat-header-cell *matHeaderCellDef ></th>
+            <td mat-cell  *matCellDef="let element;  let j = index;"> 
+                <img (click)="download(element.id)" matTooltip="Download File" class="iconaMenu pointer" src="./assets/documento_download.svg">
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef ></th>
+            <td mat-cell  *matCellDef="let element;  let j = index;"> 
+                <img (click)="delete(element.id)" matTooltip="Cancella File" class="iconaMenu pointer" src="./assets/documento_delete.svg">
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef ></th>
+            <td mat-cell  *matCellDef="let element;  let j = index;"> 
+                <img (click)="openDetail(element.id)" matTooltip="Modifica File" class="iconaMenu pointer" src="./assets/documento_edit.svg">
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nomeFile">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header >Nome del File</th>
+            <td mat-cell *matCellDef="let element"  [innerHTML]="element.nomeFile | highlight:filterValue" ></td>
+        </ng-container>
+
+        <ng-container matColumnDef="descrizione">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header >Descrizione</th>
+            <!-- <td mat-cell *matCellDef="let element"  [innerHTML]="element.descrizione | highlight:filterValue" ></td> -->
+            <td mat-cell *matCellDef="let element"  [innerHTML]="(element.descrizione?.length > 75 ? (element.descrizione | slice:0:75) + '...' : element.descrizione) | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoFile">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header >Tipo File</th>
+            <td mat-cell *matCellDef="let element"  [innerHTML]="element.tipoFile | highlight:filterValue" ></td>
+        </ng-container>
+
+
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>
+        
+        <!-- **************************   MAT-ROW   ******************* -->
+
+        <tr mat-row *matRowDef="let element;columns: displayedColumns" class="element-row" cdkDragLockAxis="y" cdkDrag></tr>
+
+    </table>
+
+

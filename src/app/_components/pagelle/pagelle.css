@@ -1,0 +1,210 @@
+._td-note1 {
+    padding-right: 2px !important;
+    padding-bottom: 4px;
+    padding-top: 4px;
+}
+
+._text-area-note1 {
+
+    border-radius: 2px;
+    border: 0.5px solid rgba(86, 86, 86, 0.279) !important;
+}
+
+.toggleQ {
+    width: 40px;
+    height: 40px;
+    padding-top: 0px;
+    padding-bottom: 5px;
+}
+
+.mat-column-nome {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 120px !important;
+    width: 120px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-cognome {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 120px !important;
+    width: 120px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-openOb1 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 100px !important;
+    width: 100px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-openOb2 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 100px !important;
+    width: 100px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-VotiOb1 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 60px !important;
+    width: 60px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-VotiOb2 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 60px !important;
+    width: 60px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-idle {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 10px !important;
+    width: 10px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-VotiNum1 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 80px !important;
+    width: 80px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-VotiNum2 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 80px !important;
+    width: 80px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-VotiGiu1 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 160px !important;
+    width: 160px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+  .mat-column-VotiGiu2 {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 160px !important;
+    width: 160px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+
+
+/* togliamo i selettori dalla input numerica nelle pagelle */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  height: 40px !important;
+}
+::ng-deep .mat-mdc-form-field-flex {
+  margin-top: -7px !important;
+}

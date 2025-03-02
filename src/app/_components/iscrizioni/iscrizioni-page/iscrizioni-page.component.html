@@ -1,0 +1,32 @@
+<button mat-mini-fab aria-label="Strumenti" matTooltip="Strumenti" class="_btn-toolbar _btn-pos-top-1" (click)="toolSidenav.toggle()" >
+    <mat-icon>construction</mat-icon>
+</button>
+
+<button mat-mini-fab aria-label="Filtri Avanzati" matTooltip="Filtri Avanzati" class="_btn-add _btn-pos-right-1 _btn-pos-top-1" [ngClass]="{'_btn-add-red': !appiscrizionifilter.formClean}" (click)="filterSidenav.toggle();" >
+    <mat-icon>filter_alt</mat-icon>
+</button>
+
+<mat-drawer-container [hasBackdrop]="false" style="min-height: 91%">
+    <mat-drawer position="end" #filterSidenav class="filterSidenav"  [mode]="'side'">
+        <app-iscrizioni-filter [iscrizioniListComponent] = "appiscrizionilist" #appiscrizionifilter></app-iscrizioni-filter>    
+    </mat-drawer>
+
+    <mat-drawer position="start" #toolSidenav class="toolSidenav"  [mode]="'side'">
+        <app-toolbar [rptTitle]="appiscrizionilist.rptTitle" 
+                     [rptFieldsToKeep]="appiscrizionilist.rptFieldsToKeep" 
+                     [rptColumnsNames]="appiscrizionilist.rptColumnsNames" 
+                     [rptData]="appiscrizionilist.matDataSource.data"
+                     [rptFileName]="appiscrizionilist.rptFileName"
+                     [columnsComponent] = "appiscrizionilist"
+                     [emailsYN] = "true"
+                     [emailAddresses] = "appiscrizionilist.emailAddresses"
+                     >
+        </app-toolbar>
+    </mat-drawer>
+
+    <mat-drawer-content>
+        <app-iscrizioni-list [iscrizioniFilterComponent] = "appiscrizionifilter" #appiscrizionilist >
+            <!-- (openDrawer) = "openDrawer()" -->
+        </app-iscrizioni-list>
+    </mat-drawer-content>
+</mat-drawer-container>

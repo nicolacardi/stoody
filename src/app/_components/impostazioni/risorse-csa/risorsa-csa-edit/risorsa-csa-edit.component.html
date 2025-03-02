@@ -1,0 +1,69 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(risorsaCSA$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/risorsaclasse_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="data.risorsaCSAID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+            <!--
+                <button *ngIf="data.parametroID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            -->
+            </div>
+
+            <mat-grid-list class="mt10" [cols]="1" rowHeight="80px">
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Nome File</mat-label>
+                        <mat-select formControlName="risorsaID">
+                            <mat-option *ngFor="let element of (obsRisorse$ | async)" [value]="element.id">
+                                {{element.nomeFile}}.{{element.tipoFile}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Tipo Documento</mat-label>
+                        <mat-select formControlName="tipoDocumentoID">
+                            <mat-option *ngFor="let element of (obsTipiDocumento$ | async)" [value]="element.id">
+                                {{element.descrizione}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-checkbox color="primary" formControlName="ckImpostaTutteSezioni">
+                        Imposta lo stesso documento per tutte le sezioni della classe <br>
+                         <span *ngIf="classeSezioneAnno" class="fs16 bold">{{classeSezioneAnno.classeSezione.classe?.descrizione2}}</span> dello stesso anno <br>
+                         (sovrascrive impostazioni diverse)
+                    </mat-checkbox>
+                </mat-grid-tile>
+
+
+
+                <br>
+            </mat-grid-list>
+
+        </form>
+    </mat-card-content>
+</mat-card>

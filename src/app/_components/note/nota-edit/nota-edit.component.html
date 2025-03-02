@@ -1,0 +1,100 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(obsNota$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/nota_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="data.notaID" mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+                <span matTooltip="Nota già inviata ai genitori e per questo non modificabile" [matTooltipDisabled]="!disabilitato">
+                    <button *ngIf="data.notaID || data.notaID == 0 || data.notaID == null" mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                            [disabled]= "!form.valid || disabilitato" 
+                            (click)="save()" >
+                        <mat-icon>save</mat-icon>
+                    </button>
+                </span>
+
+                <button *ngIf="data.notaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+            <mat-grid-list *ngIf="disabilitato" class="mt20 center" [cols]="1" rowHeight="30px">
+                <mat-label class="fs16 _red">Nota già inviata ai genitori e non più modificabile</mat-label>
+
+            </mat-grid-list>
+
+
+            <mat-grid-list class="mt20 center" [cols]="1" rowHeight="30px">
+                <mat-label class="mt20 fs16">Nota emessa da {{personaNomeCognome}}</mat-label>
+            </mat-grid-list>
+            
+            <mat-grid-list class="center" [cols]="2" rowHeight="30px">
+                <mat-label class="mt20 fs16">Per i genitori degli alunni: </mat-label>
+            </mat-grid-list>
+            
+            <mat-grid-list class="center" [cols]="1" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field >
+                        <mat-select formControlName="iscrizioni" multiple>
+                            <mat-option *ngFor="let element of (obsIscrizioni$ | async)" [value]="element.id">
+                                {{element.alunno.persona.nome}} {{element.alunno.persona.cognome}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list [cols]="2" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field >
+                        <input matInput required formControlName = "dtNota" placeholder="Data della Nota" [matDatepicker]= "dpDtNota"  #date >
+                        <mat-datepicker-toggle matSuffix [for]="dpDtNota" ></mat-datepicker-toggle>
+                        <mat-datepicker #dpDtNota  ></mat-datepicker>
+
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field >
+                        <input matInput
+                            required
+                            formControlName = "h_Ini"
+                            type="time"
+                            placeholder="Ora della Nota"
+                            >
+                        <mat-datepicker></mat-datepicker>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list class="no-overflowx" [cols]="breakpoint" rowHeight="160px">
+                <mat-grid-tile>
+                    <mat-form-field class="w400px">
+                        <textarea   matInput 
+                                    required 
+                                    type="text" 
+                                    placeholder="Nota" 
+                                    formControlName="nota"
+                                    class="resize-vertical-only max-height">
+                        </textarea>
+                        <mat-error *ngIf="form.controls['nota'].errors?.['required']"> Campo obbligatorio</mat-error>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-checkbox color="primary" formControlName="ckInvioMsg" (click)="warnDisabilitazione()">
+                Invio nota ai genitori
+            </mat-checkbox>
+
+        </form>
+    </mat-card-content>

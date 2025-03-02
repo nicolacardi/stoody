@@ -1,0 +1,75 @@
+
+
+<mat-card appearance="outlined" style="height: 100%;" class="card mat-elevation-z8 pb10">
+
+
+        <mat-card-header class="h30px">
+          <h2>Notifiche</h2>
+        </mat-card-header>
+        <mat-checkbox color="primary" (click)="toggleAttivi()">
+          mostra notifiche già lette
+        </mat-checkbox>
+
+
+    <mat-card appearance="outlined" *ngFor="let element of (obsMieScadenze$ | async)" class="mt10 ml10 mr10">
+ 
+        <mat-card-content>
+            <span class="fs14">{{element.scadenza!.dtCalendario| date: "dd/MM/yy"}}</span> <span class="fs12">  - h.{{element.scadenza!.h_Ini}} </span><br>
+            <span class="fs16">{{element.scadenza!.title}}</span>
+            <div *ngIf="element.link">
+                <a routerLink="/procedura-iscrizione" [queryParams]="{ iscrizioneID: element.link }">link a iscrizione</a>
+            </div>
+                    
+            <span class="fs40 _pos-absolute r10 t10" [ngStyle]="{'color': element.scadenza!.tipoScadenza!.color}">●</span>
+        </mat-card-content>
+
+        <mat-button-toggle-group *ngIf="element.scadenza!.ckRisposta" class="_noborder _pos-absolute l10 mb5 mt5" name="risposta" aria-label="risposta" >
+            <mat-button-toggle [checked]="element.ckAccettato" matTooltip="Invito Accettato" (click)="setAccettato(element)">
+                <mat-icon style="color: green;  transform: scale(0.8)">thumb_up</mat-icon> 
+            </mat-button-toggle>
+            <mat-button-toggle [checked]="element.ckRespinto" matTooltip="Invito Respinto" (click)="setRespinto(element)">
+                <mat-icon style="color: red;  transform: scale(0.8)">thumb_down</mat-icon> 
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+        <div class="mb5 mt5 ml10">
+            <mat-icon class="pointer" *ngIf="!element.ckLetto && !element.scadenza!.ckRisposta" matTooltip="Conferma di lettura" (click)="setLetto(element)">check_box_outline_blank</mat-icon>
+            <mat-icon class="defaultcursor" *ngIf="element.ckLetto && !element.scadenza!.ckRisposta" matTooltip="Conferma di lettura">check_box</mat-icon>
+        </div>
+    </mat-card>
+</mat-card>
+
+
+    <!-- <mat-table *ngIf="matDataSource.data.length > 0" class="_table-row-low transparent" [dataSource]="matDataSource">
+
+        <ng-container matColumnDef="message">
+            <mat-header-cell *matHeaderCellDef ></mat-header-cell>
+            <mat-cell *matCellDef="let element" [ngClass]="{'stroked': element.closed}">{{element.scadenza.title}}</mat-cell>
+            <mat-footer-cell class="bold" *matFooterCellDef> </mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actionsColumn">
+            <mat-header-cell *matHeaderCellDef>Letto</mat-header-cell>
+            <mat-cell  *matCellDef="let element" matTooltip="Segna Scadenza come letta" (click)="closeMsg(element)"> 
+                <mat-icon class="pointer" *ngIf="!element.ckLetto">check_box_outline_blank</mat-icon>
+                <mat-icon class="defaultcursor" *ngIf="element.ckLetto">check_box</mat-icon>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell  *matCellDef="let element" matTooltip="Cancella Messaggio" (click)="deleteMsg(element.id)"> 
+                <mat-icon class="pointer"  *ngIf="element.closed">delete</mat-icon>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row class="_table-title-low" *matHeaderRowDef="displayedColumns;"></mat-header-row>
+        <mat-row *matRowDef="let element;columns: displayedColumns" 
+            >
+        </mat-row>
+
+    </mat-table> -->
+
+    <!-- <div *ngIf="matDataSource.data.length === 0">
+        Hai letto tutti i messaggi
+    </div> -->
+<!-- </mat-card> -->

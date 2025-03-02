@@ -1,0 +1,403 @@
+<span class="_visibility-rette-container">
+    <button mat-icon-button  (click)="togD()" [disabled]= "showNum == 1 && showD">
+        <mat-icon *ngIf="showD" color="primary">visibility</mat-icon>
+        <mat-icon *ngIf="!showD" color="primary">visibility_off</mat-icon>
+    </button>
+    Default
+    <button mat-icon-button  (click)="togC()" [disabled]= "showNum == 1 && showC">
+        <mat-icon *ngIf="showC" color="primary">visibility</mat-icon>
+        <mat-icon *ngIf="!showC" color="primary">visibility_off</mat-icon>
+    </button>
+    Concordate
+    <button mat-icon-button (click)="togP()" [disabled]= "showNum == 1 && showP">
+        <mat-icon *ngIf="showP" color="primary">visibility</mat-icon>
+        <mat-icon *ngIf="!showP" color="primary">visibility_off</mat-icon>
+    </button>
+    Pagamenti
+</span>
+
+<h1 class="_titolo-pagina">Rette</h1>
+<form *ngIf="obsAnni$ | async" [formGroup] = "form"> 
+    <mat-form-field class="ml20 topZIndex">
+        <mat-select formControlName="selectAnnoScolastico" (selectionChange)="updateList()" #annoscolastico>
+            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id" >
+            {{element.annoscolastico}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <!-- **************************   FILTER   ******************* -->
+    <mat-form-field class="ml20 mt10 topZIndex">
+        <mat-label>Filtro Alunno/Classe</mat-label>
+        <input matInput (keyup)="applyFilter(filterInput.value)" placeholder="nome, cognome o classe" formControlName="filterControl" #filterInput>
+    </mat-form-field>
+</form>
+
+<!-- **************************   PAGINATOR   ******************* -->
+<mat-paginator class="transparent" [pageSize]="5" [pageSizeOptions]="[1, 3, 5]" showFirstLastButtons></mat-paginator>
+
+<!-- **************************   MAT-TABLE   ******************* -->
+<mat-table class="_table-row-low transparent" [dataSource]="matDataSource"
+    multiTemplateDataRows
+    >
+    
+    <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+
+    <ng-container matColumnDef="actionsColumn">
+        <mat-header-cell *matHeaderCellDef ></mat-header-cell>
+        <mat-cell  *matCellDef="let element;  let j = index;"> 
+            <img (click)="openDetail(element.alunnoID, element.annoID)" class="iconaMenu pointer" src="./assets/money_edit.svg">
+        </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="nome">
+        <mat-header-cell *matHeaderCellDef >Nome</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.iscrizione.alunno.persona.nome}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="cognome">
+        <mat-header-cell *matHeaderCellDef >Cognome</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.iscrizione.alunno.persona.cognome}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="classe">
+        <mat-header-cell *matHeaderCellDef >Classe</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.iscrizione.classeSezioneAnno.classeSezione.classe!.descrizioneBreve + ' '+ element.iscrizione.classeSezioneAnno.classeSezione.sezione}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="tipoRec_C">
+        <mat-header-cell *matHeaderCellDef >Tipo</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="fs10">Concordate</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_SET">
+        <mat-header-cell class="center" *matHeaderCellDef >SET</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_SET < element.d_SET}"
+            >{{element.c_SET}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_OTT">
+        <mat-header-cell class="center" *matHeaderCellDef >OTT</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_OTT < element.d_OTT}"
+            >{{element.c_OTT}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_NOV">
+        <mat-header-cell class="center" *matHeaderCellDef >NOV</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_NOV < element.d_NOV}"
+            >{{element.c_NOV}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_DIC">
+        <mat-header-cell class="center" *matHeaderCellDef >DIC</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"
+            [ngClass]="{'_highlightConc': element.c_DIC < element.d_DIC}"
+            >{{element.c_DIC}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_GEN">
+        <mat-header-cell class="center" *matHeaderCellDef >GEN</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_GEN < element.d_GEN}"
+            >{{element.c_GEN}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_FEB">
+        <mat-header-cell class="center" *matHeaderCellDef >FEB</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_FEB < element.d_FEB}"
+            >{{element.c_FEB}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_MAR">
+        <mat-header-cell class="center" *matHeaderCellDef >MAR</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_MAR < element.d_MAR}"
+            >{{element.c_MAR}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_APR">
+        <mat-header-cell class="center" *matHeaderCellDef >APR</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_APR < element.d_APR}"
+            >{{element.c_APR}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_MAG">
+        <mat-header-cell class="center" *matHeaderCellDef >MAG</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_MAG < element.d_MAG}"
+            >{{element.c_MAG}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_GIU">
+        <mat-header-cell class="center" *matHeaderCellDef >GIU</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_GIU < element.d_GIU}"
+            >{{element.c_GIU}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_LUG">
+        <mat-header-cell class="center" *matHeaderCellDef >LUG</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightConc': element.c_LUG < element.d_LUG}"
+            >{{element.c_LUG}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_AGO">
+        <mat-header-cell class="center" *matHeaderCellDef >AGO</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'highlight': element.c_AGO < element.d_AGO}"
+            >{{element.c_AGO}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="c_TOT">
+        <mat-header-cell class="center _grey-background" *matHeaderCellDef >ANNO</mat-header-cell>
+            <mat-cell class="center _totAnno _grey-background" *matCellDef="let element" 
+            
+            >{{element.c_TOT}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="tipoRec_D">
+        <mat-header-cell *matHeaderCellDef >Tipo</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="fs10">Default</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_SET">
+        <mat-header-cell class="center" *matHeaderCellDef >SET</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"
+            ></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_OTT">
+        <mat-header-cell class="center" *matHeaderCellDef >OTT</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_NOV">
+        <mat-header-cell class="center" *matHeaderCellDef >NOV</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_DIC">
+        <mat-header-cell class="center" *matHeaderCellDef >DIC</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_GEN">
+        <mat-header-cell class="center" *matHeaderCellDef >GEN</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_FEB">
+        <mat-header-cell class="center" *matHeaderCellDef >FEB</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_MAR">
+        <mat-header-cell class="center" *matHeaderCellDef >MAR</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_APR">
+        <mat-header-cell class="center" *matHeaderCellDef >APR</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_MAG">
+        <mat-header-cell class="center" *matHeaderCellDef >MAG</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_GIU">
+        <mat-header-cell class="center" *matHeaderCellDef >GIU</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_LUG">
+        <mat-header-cell class="center" *matHeaderCellDef >LUG</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_AGO">
+        <mat-header-cell class="center" *matHeaderCellDef >AGO</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="d_TOT">
+        <mat-header-cell class="center _grey-background" *matHeaderCellDef >ANNO</mat-header-cell>
+            <mat-cell class="center _totAnno _grey-background" *matCellDef="let element" 
+            
+            >{{element.d_TOT}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="tipoRec_P">
+        <mat-header-cell *matHeaderCellDef >Tipo</mat-header-cell>
+            <mat-cell *matCellDef="let element" class="fs10">Pagamenti</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_SET">
+        <mat-header-cell class="center" *matHeaderCellDef >SET</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_SET < element.c_SET}">{{element.p_SET}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_OTT">
+        <mat-header-cell class="center" *matHeaderCellDef >OTT</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_OTT < element.c_OTT}">{{element.p_OTT}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_NOV">
+        <mat-header-cell class="center" *matHeaderCellDef >NOV</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_NOV < element.c_NOV}">{{element.p_NOV}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_DIC">
+        <mat-header-cell class="center" *matHeaderCellDef >DIC</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_DIC < element.c_DIC}">{{element.p_DIC}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_GEN">
+        <mat-header-cell class="center" *matHeaderCellDef >GEN</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_GEN < element.c_GEN}">{{element.p_GEN}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_FEB">
+        <mat-header-cell class="center" *matHeaderCellDef >FEB</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_FEB < element.c_FEB}">{{element.p_FEB}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_MAR">
+        <mat-header-cell class="center" *matHeaderCellDef >MAR</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_MAR < element.c_MAR}">{{element.p_MAR}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_APR">
+        <mat-header-cell class="center" *matHeaderCellDef >APR</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_APR < element.c_APR}">{{element.p_APR}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_MAG">
+        <mat-header-cell class="center" *matHeaderCellDef >MAG</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_MAG < element.c_MAG}">{{element.p_MAG}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_GIU">
+        <mat-header-cell class="center" *matHeaderCellDef >GIU</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_GIU < element.c_GIU}">{{element.p_GIU}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_LUG">
+        <mat-header-cell class="center" *matHeaderCellDef >LUG</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_LUG < element.c_LUG}">{{element.p_LUG}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_AGO">
+        <mat-header-cell class="center" *matHeaderCellDef >AGO</mat-header-cell>
+            <mat-cell class="center" *matCellDef="let element" 
+            [ngClass]="{'_highlightPagL': element.p_AGO < element.c_AGO}">{{element.p_AGO}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="p_TOT">
+        <mat-header-cell *matHeaderCellDef >ANNO</mat-header-cell>
+            <mat-cell class="center _totAnno _grey-background" *matCellDef="let element" 
+            
+            >{{element.p_TOT}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="blank">
+        <mat-header-cell *matHeaderCellDef ></mat-header-cell>
+            <mat-cell class="cellNoBorder" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="blank2">
+        <mat-header-cell *matHeaderCellDef ></mat-header-cell>
+            <mat-cell class="cellNoBorder" *matCellDef="let element"></mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quote[0][0]">
+        <mat-header-cell *matHeaderCellDef >quote</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.quote[0][0]}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="alunnoID">
+        <mat-header-cell *matHeaderCellDef >ID</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.alunnoID}}</mat-cell>
+    </ng-container>
+
+
+
+
+
+    <ng-container matColumnDef="mese">
+        <mat-header-cell *matHeaderCellDef >Mese</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{months[element.meseRetta] | date: 'MMMM'}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="anno">
+        <mat-header-cell *matHeaderCellDef >anno</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.iscrizione.anno}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quotaConcordata">
+        <mat-header-cell *matHeaderCellDef >Quota Concordata</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.quotaConcordata}}</mat-cell>
+    </ng-container>
+
+    
+    <!-- **************************   MAT-HEADER-ROW   ******************* -->
+    <mat-header-row *matHeaderRowDef="displayedTitles"></mat-header-row>
+    
+    <!-- **************************   MAT-ROW   ******************* -->
+    <mat-row *matRowDef="let element;columns: d_displayedColumns;"
+        class="element-row _default-row"
+        (contextmenu)="onRightClick($event, element)"
+        [ngClass]="{'hide': !showD, '_rette-border-bottom': showLinesD}">
+    </mat-row>
+
+    <mat-row *matRowDef="let element; columns: c_displayedColumns;"
+        class="element-row _concordate-row" 
+        [ngClass]="{'hide': !showC, '_rette-border-bottom': showLinesC}">
+    </mat-row>
+
+    <mat-row *matRowDef="let element; columns: p_displayedColumns;"
+        class="element-row pagamenti-row _rette-border-bottom"
+        [ngClass]="{'hide': !showP, '_rette-border-bottom': showLinesP}">
+    </mat-row>
+
+    <!-- [ngClass]="{'_rette-border-bottom': toggleP.checked}" -->
+</mat-table>
+
+<!-- ***********************  MENU RIGHT CLICK ****************** -->
+<div style="visibility: hidden; position: fixed;" 
+    [style.left]="menuTopLeftPosition.x" 
+    [style.top]="menuTopLeftPosition.y" 
+    [matMenuTriggerFor]="rightMenu">
+</div> 
+
+
+<div style="visibility: hidden; position: fixed;" 
+[style.left]="menuTopLeftPosition.x" 
+[style.top]="menuTopLeftPosition.y" 
+[matMenuTriggerFor]="rightMenu">
+</div> 
+
+<mat-menu #rightMenu="matMenu"> 
+    <ng-template matMenuContent let-item="item"> 
+        <mat-label class="_titolo-filtri-avanzati">{{item.nome | uppercase}} {{item.cognome | uppercase}}</mat-label> 
+        <button mat-menu-item (click)="openAlunno(item.alunnoID)"> Scheda Alunno</button> 
+    </ng-template> 
+</mat-menu> 
+

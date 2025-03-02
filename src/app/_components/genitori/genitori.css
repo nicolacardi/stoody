@@ -1,0 +1,45 @@
+/* GENITORE-EDIT*/
+  
+  /* figli del genitore selezionato */
+  ._alunni-container{
+    height: 150px;
+    overflow: auto;
+  }
+
+  /* elenco tutti i figli potenziali da cui attingere */
+  ._alunni-list-container{
+    height: 240px;
+    overflow: auto;
+  }
+
+  :host ::ng-deep  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+
+
+  .mat-mdc-card {
+    padding-bottom: 0px;
+  }
+
+
+  :host ::ng-deep .headerColored .mat-mdc-header-row {
+    background-color: #f9f9f9;
+  }
+  
+  
+
+    /* low-list-row è una classe creata per  ridurre l'altezza dei form:
+    /* attenzione però: toglie il mat-hint sottostante !!!*/
+
+    :host ::ng-deep ._low-list-row .mat-mdc-text-field-wrapper {
+      height: 50px;
+    }
+
+    :host ::ng-deep ._low-list-row .mat-grid-tile {
+        height: 55px !important;
+    }
+
+    :host ::ng-deep ._low-list-row {
+        height: 55px !important;
+    }
+  

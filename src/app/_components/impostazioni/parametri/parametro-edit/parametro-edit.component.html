@@ -1,0 +1,65 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(parametro$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/parametro_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="data.parametroID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+            <!--
+                <button *ngIf="data.parametroID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            -->
+            </div>
+
+            <mat-grid-list class="mt10" [cols]="1" rowHeight="80px">
+
+                <mat-grid-tile >
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="Nome" formControlName="parName">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+
+                <mat-grid-tile class="mb20">
+                    <mat-form-field class="w100 h40px mb20" style="height: 40px !important"  appearance="outline">
+                        <mat-label>Descrizione Estesa</mat-label>
+                        <textarea required class="w300px _noresize" type="text" placeholder="Descrizione estesa" matInput formControlName="parDescr"></textarea>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile *ngIf="!form.controls['ckCheckBox'].value">
+                    <mat-form-field >
+                        <mat-label>Valore</mat-label>
+                        <input matInput type="text" placeholder="Valore" formControlName="parValue">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile *ngIf="form.controls['ckCheckBox'].value">
+                    <ng-container *ngFor="let digit of form.controls['parValue'].value.split(''); let i = index">
+                        <mat-checkbox color="primary"  [formControlName]="'ck_'+i"></mat-checkbox>
+                        <!-- il checked è impostato dal file ts in alternativa posso impostare il valore così [checked]="digit === '1'" -->
+                    </ng-container>
+                </mat-grid-tile>
+
+                <br>
+            </mat-grid-list>
+
+        </form>
+    </mat-card-content>
+</mat-card>

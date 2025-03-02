@@ -1,0 +1,263 @@
+ 
+
+/* p {
+    font-size: 12px;
+    margin-bottom: 5px !important;
+} */
+
+/* 
+    :host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+        background-color: #044D7E;
+    }
+
+    :host ::ng-deep .mat-slide-toggle-bar {
+        height: 10px !important;
+        width: 24px !important;
+    }
+    :host ::ng-deep .mat-slide-toggle-thumb {
+        height: 15px !important;
+        width: 15px !important;
+    }
+
+    :host ::ng-deep .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb-container {
+        transform: translate3d(10px,0,0) !important;
+    }
+
+    :host ::ng-deep .mat-slide-toggle-thumb-container {
+        width: 12px !important;
+        height: 12px !important;
+    } */
+
+    /* :host ::ng-deep .mat-form-field-infix {
+        border: 0px !important;
+    } */
+    
+    /*
+    .bk-white {
+        background-color: white;
+    } */
+    
+
+    /*rette-border-bottom viene usato per gestire correttamente il bordo inferiore*/
+    /*nelle rette che possono essere nascoste per categoria*/
+    ._rette-border-bottom {
+        border-bottom: 1px solid #1B3663 !important;
+    }
+
+    ._default-row {
+        border-bottom-width: 0px;
+        }
+        
+    ._concordate-row {
+        border-bottom-width: 0px;
+    }
+
+    ._highlightConc {
+        background-color: rgba(173, 173, 173, 0.142);
+    }
+
+    ._highlightPagL {
+        background-color: rgb(212, 68, 68);
+        color: white;
+    }
+
+    ._highlightPag2 {
+        border-color: rgb(255, 0, 0) !important;
+    }
+
+    .center {
+        text-align: center;
+        justify-content:center;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    /*blocco con gli occhietti in alto sulle rette*/
+    ._visibility-rette-container {
+        position: absolute;
+        top: 67px;
+        left: 0px;
+        border: 1px solid rgb(182, 182, 182);
+        padding: 0px 10px 0px 0px;
+        border-radius: 4px;
+        margin-left: 20px;
+        margin-bottom: 10px;
+    }
+
+    ._visibility-rette-container mat-icon {
+        width: 25spx; 
+        color: #044D7E;
+    }
+
+
+    /*CELLETTE  RETTE D,C,P IN RETTA EDIT */
+    /* avvicina le celle nelle quali sono scritte le rette D C e P in retta edit*/
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    :host ::ng-deep .cellRetta .mat-mdc-form-field-wrapper { 
+        /* padding:0px;
+        margin: 0px; */
+    }
+
+    /*estetica delle cellette nelle quali sono scirtte le rete D C e P in retta edit */
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    :host ::ng-deep .cellRetta .mat-mdc-form-field-infix {
+        width: 50px; 
+        padding-top: 2px !important;
+        padding-bottom: 0px !important;
+        padding-right: 5px !important;
+        border: 0.5px solid rgba(86, 86, 86, 0.279) !important;
+        /* border-radius: 2px; */
+        height: 20px;
+        min-height: 30px;
+    }
+
+    :host ::ng-deep .cellRetta .mat-mdc-form-field-subscript-wrapper {
+        line-height: 0px !important;
+        display: none;
+    }
+
+    /*allineamento*/
+    .cellRetta input[matinput]::-webkit-outer-spin-button,
+    .cellRetta input[matinput]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    .cellRetta  input[matinput][type=number] {
+        -moz-appearance: textfield;
+    }
+
+    /*bordo inferiore nascosto (finiva a metà cella)*/
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    /* :host ::ng-deep .cellRetta .mat-form-field-underline {
+        display: none;
+    } */
+
+    /* :host ::ng-deep .cellRettaEdit .mat-form-field-wrapper { 
+        padding:5px;
+        margin: 0px;
+    } */
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    :host ::ng-deep ._highlightPag2 .mat-form-field-infix  {
+        background-color: rgb(212, 68, 68);
+        color: white !important;
+    }
+
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+    :host ::ng-deep ._highlightConc .mat-form-field-infix  {
+        background-color: rgba(173, 173, 173, 0.142);
+    }
+
+    :host ::ng-deep .mat-mdc-form-field-underline {
+        display: none !important;
+    }
+
+    /*distanza verticale tra i mat-form-field in retta-edit*/
+    .data-form mat-form-field {
+        margin-top: 5px;
+    }
+
+    /*larghezza colonna specifica*/
+    .mat-column-delete {
+        flex: 0 0 3% !important;
+        width: 3% !important;
+    }
+
+    /*rightfilter panel*/
+    .mini-filter {
+        max-width: 60px;
+    }
+
+    .midi-filter {
+        max-width:110px;
+    }
+
+
+
+
+    /*caratteristiche della card Rette*/
+    .form-cardRette {
+        box-shadow: none !important; /*da togliere nel caso di dialog*/
+        padding-top: 0px !important;
+    }
+
+
+    /*elenco pagamenti in retta-edit*/
+    ._pagamenti-container {
+        height: 150px;
+        overflow: auto;
+    }
+
+    /*utilities suddivisione rette in retta-edit*/
+    ._utilities-container {
+        height: 280px;
+    }
+
+    /*usato p.e. in retta-calcolo per vedere elenco classi*/
+    ._scrollable-classi-list-container{
+        height: 320px;
+        overflow: auto;
+    }
+
+    /*elenco pagamenti in retta-edit*/
+    ._pagamento-edit-container {
+        max-height: 200px;
+        text-align: left;
+        padding-left: 0px;
+        padding-top: 0px;
+        display: flex;
+        flex-direction: row;
+    }
+
+    /*larghezza ridotta dei mat-form-field*/
+    ._pagamento-edit-container mat-form-field {
+        width: 132px; 
+        flex: 1;
+    }
+
+    ._pagamento-edit-container button.addRetta {
+        width: 50px; /* Imposta la larghezza desiderata per il button */
+        margin-right: 10px; /* Aggiungi spazio tra il button e l'ultimo mat-form-field */
+    }
+
+    /*non funziona o non viene più usato BOH*/
+    .highlightHover {
+        box-shadow: 0 0 3pt 2pt #fffb01;
+        border-radius: 4px;
+        outline-width: 0px;
+    }
+
+    /*il mese deve essere ascosto quando in retta-edit non si seleziona come causale "retta"*/
+    ._mese-hidden {
+        display: none;
+    }
+
+    /*pulsante save in retta-edit sezione Nuovo Pagamento - posizionamento*/
+    .addRetta {
+        position: absolute;
+        right: 0px;
+    }
+
+
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+:host ::ng-deep ._no-padding-bottom .mat-form-field-wrapper {
+        padding-bottom: 0px !important;
+    }
+
+
+    .mat-mdc-card {
+        padding-bottom: 0px;
+      }
+
+
+
+
+

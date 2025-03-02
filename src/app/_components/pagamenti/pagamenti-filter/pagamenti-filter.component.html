@@ -1,0 +1,118 @@
+<div class="pt60">
+
+    <!-- <div style="text-align: center; margin-bottom: 10px;">
+        Filtri Avanzati
+    </div> -->
+
+    <div class="ml12 mt10">
+        <button mat-button matSuffix class="w180px ml15" mat-stroked-button aria-label="Clear" (click)="resetAllInputsAndClearFilters()" >
+            Pulisci Filtri
+        </button>
+    </div>
+
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Tipo pagamento</mat-label>
+                <mat-select [formControl]="tipoPagamentoFilter" #tipoPagamento>
+                    <mat-option [value]="null">
+                    </mat-option>
+                    <mat-option *ngFor="let element of (tipiPagamento$ | async)" [value]="element.id">
+                        {{element.descrizione}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>Causale</mat-label>
+                <mat-select [formControl]="causaleFilter" #causale>
+                    <mat-option [value]="null">
+                    </mat-option>
+                    <mat-option *ngFor="let element of (causaliPagamento$ | async)" [value]="element.id">
+                        {{element.descrizione}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>nome</mat-label>
+                <input matInput [formControl]="nomeFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field>
+                <mat-label>cognome</mat-label>
+                <input matInput [formControl]="cognomeFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="30px">
+        <mat-grid-tile>
+            Importo
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="3" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field class="mini-filter">
+                <mat-label>>=di</mat-label>
+                <input matInput [formControl]="importoPiuDiFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field class="mini-filter">
+                <mat-label>= a</mat-label>
+                <input matInput [formControl]="importoFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+            <mat-form-field class="mini-filter">
+                <mat-label><=di</mat-label>
+                <input matInput [formControl]="importoMenoDiFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="30px">
+        <mat-grid-tile>
+            Data pagamento
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        
+        <mat-grid-tile>
+            <mat-form-field >
+                <mat-label>dal</mat-label>
+                <input matInput [matDatepicker]="dpDal" [formControl]="dataDal">
+                <mat-datepicker-toggle matSuffix [for]="dpDal" ></mat-datepicker-toggle>
+                <mat-datepicker #dpDal  ></mat-datepicker>
+            </mat-form-field>
+       </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+       <mat-grid-tile>
+            <mat-form-field >
+                <mat-label>al</mat-label>
+                <input matInput [matDatepicker]="dpAl" [formControl]="dataAl">
+                <mat-datepicker-toggle matSuffix [for]="dpAl" ></mat-datepicker-toggle>
+                <mat-datepicker #dpAl  ></mat-datepicker>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+
+</div>
+
+
+

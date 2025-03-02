@@ -1,0 +1,238 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(scadenza$ | async) || emptyForm " class="data-form flex-form" [formGroup] = "form">
+
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/evento_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+                <span [ngClass]="{'invisible': selectedTab != 0}">
+                <button *ngIf="data.scadenzaID " mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <button *ngIf="data.scadenzaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+                </span>
+            </div>
+
+            <!-- In questo modo si fa il setting della data locale timezone fuso orario (keywords per trovarlo) -->
+            <mat-label class="center mt10 fs16" *ngIf="data.scadenzaID || emptyForm">{{strDtStart | date: 'EEEE, d MMMM, y' : '+0100' : 'it' }}</mat-label>
+                    <!-- <mat-label class="center" *ngIf="data.scadenzaID || emptyForm">dalle  {{strH_Ini}} - alle {{strH_end}}</mat-label> -->
+            <mat-grid-list class="no-overflowx mt10" [cols]="8" rowHeight="60px">
+                <mat-grid-tile>
+                </mat-grid-tile>
+                <mat-grid-tile colspan="3">
+                    <mat-form-field >
+                        <input matInput
+                            required
+                            formControlName = "h_Ini"
+                            type="time"
+                            placeholder="Ora Inizio"
+                            (focusout)="dp1Change()">
+                        <mat-datepicker></mat-datepicker>
+                        <!-- <mat-error *ngIf="form.controls['start'].errors?.['required']"> Campo obbligatorio</mat-error> -->
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile colspan="3">
+                    <mat-form-field >
+                        <input matInput required
+                                formControlName = "h_End"
+                                type="time"
+                                placeholder="Ora Fine"
+                                (focusout)="dp2Change()">
+                        <mat-datepicker #dpEnd ></mat-datepicker>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            
+            <mat-grid-list class="no-overflowx mt10" [cols]="8" rowHeight="100px">
+                <mat-grid-tile class="_align-top h100px" colspan="4">
+                    <mat-form-field class="w100 pl5 pt5" appearance="outline">
+                        <mat-label>Descrizione</mat-label>
+                        <textarea required class="w300px h50px _noresize" matInput formControlName="title"></textarea>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile class="_align-top h100px" colspan="3">
+                    <mat-form-field>
+                        <mat-label>Tipo Evento</mat-label>
+                        
+                        <mat-select required formControlName="tipoScadenzaID" #tipoScadenzaID (selectionChange)="changeColor()">
+                            <!-- <mat-select-trigger>
+                                <span class="fs40 _pos-absolute r5 t10" [ngStyle]="{'color': tipoScadenzaID.value.color}">●</span>{{tipoScadenzaID.value.descrizione}}
+                            </mat-select-trigger> -->
+                            <mat-option *ngFor="let element of (obsTipiScadenza$ | async)" [value]="element.id">
+                                
+                                {{element.descrizione}} 
+                                <!-- PROBLEMA: qui non valorizzo più l'ID -->
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <span class="fs40" [ngStyle]="{'color': colorSample}">●</span>
+                </mat-grid-tile>
+
+            </mat-grid-list>
+
+            
+            <mat-grid-list class="_bordered-bottom" [cols]="2" rowHeight="40px">
+                <mat-grid-tile>
+                    <mat-checkbox color="primary" formControlName="ckPromemoria">
+                        Invia Messaggio Promemoria alle persone
+                    </mat-checkbox>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-checkbox color="primary" formControlName="ckRisposta">
+                        Richiedi conferma di partecipazione
+                    </mat-checkbox>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <!-- <mat-grid-list class="no-overflowx mt10" [cols]="3" rowHeight="60px">
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="Codice colore" formControlName="color" #color>
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile >
+                    <button type="button" class="_btnColorPicker" 
+                    (click)="openColorPicker()"  [ngStyle]="{'background-color': form.controls['color'].value}" > </button>
+                </mat-grid-tile>
+            </mat-grid-list> -->
+            <mat-grid-list class="no-overflowx" [cols]="3" rowHeight="30px">
+                <mat-grid-tile class="h10px" colspan="1">
+                    <mat-label *ngIf="personeListArr" class="center fs16">Elenco persone<span class="fs12"> ({{personeListArr.length}})</span></mat-label>
+                </mat-grid-tile>
+                <mat-grid-tile class="h10px" colspan="2">
+                    <mat-label *ngIf="personeListArr"  class="center fs16">Visibile a<span class="fs12"> ({{personeListSelArr.length}})</span></mat-label>
+                </mat-grid-tile>
+
+
+
+                <!-- <mat-grid-tile >
+                    <mat-form-field>
+                        <mat-label>Gruppi</mat-label>
+                        <mat-select formControlName="gruppi" (selectionChange)="optChanged()" multiple>
+                            <mat-option *ngFor="let element of (obsTipiPersone$ | async)" [value]="element.id" >
+                            {{element.descrizioneP}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+ 
+                <mat-grid-tile >
+                    <mat-form-field>
+                        <mat-label>Persone</mat-label>
+                        <mat-select formControlName="persone" multiple>
+                            <mat-option *ngFor="let element of (obsPersone$ | async)" [value]="element.id">
+                            {{element.nome}} {{element.cognome}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile> -->
+
+
+            </mat-grid-list>
+
+
+            <mat-grid-list class="no-overflowx" [cols]="5" rowHeight="50px">
+                <mat-grid-tile  colspan="2">
+                    <mat-form-field>
+                        <mat-label>Cerca</mat-label>
+                        <input matInput type="text" formControlName="filtro" (keyup)="filtraPersoneListArr()">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile colspan="3">
+                    <mat-form-field>
+                        <mat-label>Gruppi</mat-label>
+                        <mat-select formControlName="gruppi" (selectionChange)="optChanged()" multiple>
+                            <mat-option *ngFor="let element of (obsTipiPersone$ | async)" [value]="element.id" >
+                            {{element.descrizioneP}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+ 
+                <!--<mat-grid-tile >
+                    <mat-form-field>
+                        <mat-label>Persone</mat-label>
+                        <mat-select formControlName="persone" multiple>
+                            <mat-option *ngFor="let element of (obsPersone$ | async)" [value]="element.id">
+                            {{element.nome}} {{element.cognome}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile> -->
+
+
+            </mat-grid-list>
+
+
+
+
+            <mat-grid-list [cols]="5" rowHeight="250px" >
+
+               <!-- Lista da cui si seleziona -->
+                <mat-grid-tile colspan="2" class="oflowyscroll _bordered-grey" >
+                    <!-- con mat-selection-list al posto di mat-list e mat-list-option ho già le selezioni fatte -->
+                    <!-- <span class="ml10 cgrey _pos-absolute l200">{{element.tipoPersona!.descrizione}}</span> -->
+
+                    <mat-list class="_pos-absolute t0 l0 w100"  >
+                        <mat-option class="fs12 left" *ngFor="let element of personeListArrFiltered" [value]="element.id">
+                        <!-- [disabled]="true" 
+                        class="no-select" -->
+                            <mat-icon (click)="addToSel(element)" class="pointer tx-right">add_circle_outline</mat-icon>
+                            <span class="ml10" >{{element.nome}} {{element.cognome}}</span>
+                        </mat-option>
+                    </mat-list>
+                </mat-grid-tile>
+
+                <!-- Lista in cui finiscono gli elementi aggiunti -->
+                <mat-grid-tile  class="oflowyscroll _bordered-grey ml10" colspan="3" >
+                    <!-- con mat-selection-list al posto di mat-list e mat-list-option ho già le selezioni fatte -->
+                    <mat-list class="_pos-absolute t0 l0 w100"  >
+
+                        <mat-option class="fs12 left" style="height: 23px; width: 500px" *ngFor="let element of personeListSelArr" [value]="element.id">
+                            <mat-icon (click)="removeFromSel(element)" class="pointer tx-right">remove_circle_outline</mat-icon> 
+                            <span class="ml10">{{element.persona!.nome}} {{element.persona!.cognome}}</span>
+                            <!-- <span class="ml10 cgrey _pos-absolute l200">{{element.persona!.tipoPersona!.descrizione}}</span> -->
+
+                            <!-- [ngClass]="{'invisible': element.ckLetto}" serve prima passare qui lo scadenzapersona-->
+                            <mat-icon matTooltip="letto" *ngIf="element.ckLetto" style="position:absolute; right: 10px; top: 0px">done</mat-icon> 
+                            <mat-icon matTooltip="Accettato" *ngIf="element.ckAccettato" style="color: green;  transform: scale(0.8); position:absolute; right: 10px; top: 0px">thumb_up</mat-icon> 
+                            <mat-icon matTooltip="Rifiutato" *ngIf="element.ckRespinto" style="color: red;  transform: scale(0.8); position:absolute; right: 10px; top: 0px">thumb_down</mat-icon> 
+
+                            <!-- <mat-icon style="color: red; transform: scale(0.8); position:absolute; right: 40px; top: 0px">thumb_down</mat-icon>  -->
+
+                        </mat-option>
+                    </mat-list>
+                </mat-grid-tile>
+
+            </mat-grid-list>
+
+
+
+        </form>
+    </mat-card-content>
+

@@ -1,0 +1,52 @@
+
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table mat-table class="_table-row-low transparent w100" 
+        [dataSource]="matDataSource"
+        matSort>
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+
+        <ng-container matColumnDef="ckPresente" >
+            <!-- masterToggle delle checkbox di selezione record -->
+            <th mat-header-cell *matHeaderCellDef class="_no-bottom-border" >
+                Presente
+            </th>
+            <!-- singole checkbox di selezione record -->
+            <td mat-cell *matCellDef="let element" class="_no-bottom-border" >
+                <mat-checkbox (change) = "changedCkPresente($event.checked, element)"
+                             [checked] = "element.ckPresente"
+                            color="warn">
+                </mat-checkbox>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dataLezione">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Data Lezione</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.lezione.dtCalendario | date: 'dd/MM/yyyy'"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="h_Ini">
+            <th mat-header-cell *matHeaderCellDef cdkDrag>Ora Lezione</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.lezione.h_Ini"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="materia">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Materia</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.lezione.materia.descrizione"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="docente">
+            <th mat-header-cell *matHeaderCellDef cdkDrag>Docente</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.lezione.docente.persona.nome+' '+element.lezione.docente.persona.cognome"></td>
+        </ng-container>
+        
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>  
+
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns"
+            class="element-row">
+        </tr>
+
+    </table>

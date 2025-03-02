@@ -1,0 +1,227 @@
+    <!-- **************************   FILTER   ******************* -->
+   
+    <mat-form-field class="ml20 topZIndex">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="" #filterInput>
+    </mat-form-field> 
+   
+    <!-- {{displayedColumns}} - {{tipoVoto}} -->
+    <!-- **************************   PAGINATOR   ******************* -->
+    <!-- <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator> -->
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table *ngIf="materiaID" mat-table class="_table-row-low transparent w100"  [dataSource]="matDataSource">
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="No">
+            <th mat-header-cell *matHeaderCellDef [attr.colspan]="2"></th>
+        </ng-container>
+        
+        <ng-container matColumnDef="PrimoQLbl" >
+            <th class="_border-left" style="text-align: center !important;" mat-header-cell *matHeaderCellDef [attr.colspan]="3">Primo Quadrimestre</th>
+        </ng-container>
+
+        <ng-container matColumnDef="SecondoQLbl" >
+            <th class="_border-left" style="text-align: center !important;" mat-header-cell *matHeaderCellDef [attr.colspan]="3">Secondo Quadrimestre</th>
+        </ng-container>
+
+        <ng-container matColumnDef="alunnoID" >
+            <th mat-header-cell *matHeaderCellDef>AlunnoID</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.id"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome | highlight:filterValue"></td>
+        </ng-container>
+        
+        <ng-container matColumnDef="cognome">
+            <th mat-header-cell *matHeaderCellDef>Cognome</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.cognome | highlight:filterValue"></td>
+        </ng-container>
+
+
+<!-- ******************************NUMERICI************************************ -->
+
+        <ng-container matColumnDef="idle">
+            <td mat-cell *matCellDef="let element"></td>
+        </ng-container>
+<!-- 
+        (change)="changeVoto(
+            element._Pagelle1[0]? element._Pagelle1[0] : null, 
+            element._Pagelle1[0] && element._Pagelle1[0]._PagellaVoti[0] ? element._Pagelle1[0]._PagellaVoti[0]: null, 
+            voto1.value, 
+            1)"  -->
+
+        <ng-container matColumnDef="VotiNum1">
+            <th class="_border-left" mat-header-cell *matHeaderCellDef class="w125px" >Voto</th>
+            <td class="_border-left" mat-cell *matCellDef="let element">    
+            <input class="w60 right"
+                    type="number"
+                    [value]="element.pagella1 && element.pagella1._PagellaVoti[0] ? element.pagella1._PagellaVoti[0].voto:0" 
+                    (change)="changeVoto(
+                        element.id, 
+                        element.pagella1? element.pagella1 : null, 
+                        element.pagella1 && element.pagella1._PagellaVoti[0] ? element.pagella1._PagellaVoti[0]: null, 
+                        voto1.value, 
+                        1)" 
+                    maxlength="2" #voto1>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="VotiNum2">
+            <th class="_border-left" mat-header-cell *matHeaderCellDef class="w125px">Voto</th>
+            <td class="_border-left" mat-cell *matCellDef="let element">    
+            <input class="w60 right"
+                    type="number"
+                    [value]="element.pagella2 && element.pagella2._PagellaVoti[0] ? element.pagella2._PagellaVoti[0].voto:0" 
+                    (change)="changeVoto(
+                        element.id, 
+                        element.pagella2? element.pagella2 : null, 
+                        element.pagella2 && element.pagella2._PagellaVoti[0] ? element.pagella2._PagellaVoti[0]: null, 
+                        voto2.value, 
+                        2)" 
+                    maxlength="2" #voto2>
+            </td>
+        </ng-container>
+
+<!-- ******************************GIUDIZI************************************ -->
+
+        <ng-container matColumnDef="VotiGiu1">
+            <th class="_border-left" mat-header-cell *matHeaderCellDef></th>
+            <td class="_border-left" mat-cell *matCellDef="let element">
+                <mat-select class="fs12 w100" 
+                    [value] = "element.pagella1 && element.pagella1._PagellaVoti[0] ? element.pagella1._PagellaVoti[0].tipoGiudizioID: 1"
+                    placeholder="giudizio"  
+                    (selectionChange)="changeSelectGiudizio(
+                        element.id, 
+                        element.pagella1? element.pagella1 : null, 
+                        element.pagella1 && element.pagella1._PagellaVoti[0] ? element.pagella1._PagellaVoti[0]: null, 
+                        selectGiudizio1.value, 
+                        1)" #selectGiudizio1> 
+                    <mat-option class="fs12" *ngFor="let giudizio of (obsTipiGiudizio$ | async)"  [value]="giudizio.id">
+                        {{giudizio.descrizione}}
+                    </mat-option>
+                </mat-select>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="VotiGiu2">
+            <th class="_border-left" mat-header-cell *matHeaderCellDef></th>
+            <td class="_border-left" mat-cell *matCellDef="let element">
+                <mat-select class="fs12" 
+                    [value] = "element.pagella2 && element.pagella2._PagellaVoti[0] ? element.pagella2._PagellaVoti[0].tipoGiudizioID: 1"
+                    placeholder="giudizio"  
+                    (selectionChange)="changeSelectGiudizio(
+                        element.id, 
+                        element.pagella2? element.pagella2 : null, 
+                        element.pagella2 && element.pagella2._PagellaVoti[0] ? element.pagella2._PagellaVoti[0]: null, 
+                        selectGiudizio2.value, 
+                        2)" #selectGiudizio2>  
+                    <mat-option class="fs12" *ngFor="let giudizio of (obsTipiGiudizio$ | async)"  [value]="giudizio.id">
+                        {{giudizio.descrizione}}
+                    </mat-option>
+                </mat-select>
+            </td>
+        </ng-container>
+
+<!-- ******************************OBIETTIVI************************************ -->
+
+        <ng-container matColumnDef="openOb1">
+            <th class="_border-left" mat-header-cell *matHeaderCellDef></th>
+            <td class="_border-left" mat-cell *matCellDef="let element">
+                <mat-icon class="pointer" (click) = "
+                openObiettivi(  element.id, 
+                                element.pagella1? element.pagella1.id : -1, 
+                                1, 
+                                (element.pagella1 && element.pagella1._PagellaVoti[0])? element.pagella1._PagellaVoti[0].id : 0
+                                ) ">add_circle_outline</mat-icon>
+                <mat-label class="fs10" 
+                [ngClass]="{'_col-red': element.pagella1 && element.pagella1._PagellaVoti[0]? element.pagella1._PagellaVoti[0].countVotiObiettivi<countObiettivi :  true}">
+                {{element.pagella1 && element.pagella1._PagellaVoti[0] ? element.pagella1._PagellaVoti[0].countVotiObiettivi : 0}}/{{countObiettivi}} </mat-label> 
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="VotiOb1">
+            <th mat-header-cell *matHeaderCellDef>Voti</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="element.pagella1 && element.pagella1._PagellaVoti[0]">
+                <mat-label class="fs10" *ngFor="let item of element.pagella1._PagellaVoti[0]._ObiettiviCompleti" matTooltip="{{item.descrizione}}">
+                    {{item.livelloObiettivo.descrizioneBreve}}<br>
+                </mat-label>
+                </div>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="openOb2">
+            <th class="_border-left" mat-header-cell *matHeaderCellDef></th>
+            <td class="_border-left" mat-cell *matCellDef="let element">
+                <mat-icon class="pointer" (click) = "
+                openObiettivi(  element.id, 
+                                element.pagella2? element.pagella2.id : -1, 
+                                2, 
+                                element.pagella2 && element.pagella2._PagellaVoti[0]? element.pagella2._PagellaVoti[0].id : 0
+                                )  ">add_circle_outline</mat-icon>
+                <mat-label class="fs10" 
+                [ngClass]="{'_col-red': element.pagella2 && element.pagella2._PagellaVoti[0]? element.pagella2._PagellaVoti[0].countVotiObiettivi<countObiettivi :  true}">
+                {{element.pagella2 && element.pagella2._PagellaVoti[0] ? element.pagella2._PagellaVoti[0].countVotiObiettivi : 0}}/{{countObiettivi}} </mat-label> 
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="VotiOb2">
+            <th mat-header-cell *matHeaderCellDef>Voti</th>
+            <td mat-cell *matCellDef="let element">
+                <div *ngIf="element.pagella2 && element.pagella2._PagellaVoti[0]">
+                <mat-label class="fs10" *ngFor="let item of element.pagella2._PagellaVoti[0]._ObiettiviCompleti" matTooltip="{{item.descrizione}}">
+                    {{item.livelloObiettivo.descrizioneBreve}}<br>
+                </mat-label>
+                </div>
+            </td>
+        </ng-container>
+
+<!-- ******************************NOTE/COMMENTI************************************ -->
+
+        <ng-container matColumnDef="note1">
+            <th mat-header-cell *matHeaderCellDef >Commento</th>
+            <td mat-cell class="h60px _td-note1" *matCellDef="let element">
+                <textarea 
+                    class="h50px w90 _noresize _text-area-note1 fs10" matInput 
+                    (change)="changeNote(element.id, 
+                    element.pagella1? element.pagella1 : null, 
+                    element.pagella1 && element.pagella1._PagellaVoti[0] ? element.pagella1._PagellaVoti[0]: null, 
+                    note1.value, 
+                    1)" 
+                    [innerHTML] = "element.pagella1 && element.pagella1._PagellaVoti[0] ? element.pagella1._PagellaVoti[0].note: ''"
+                    #note1></textarea>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="note2">
+            <th mat-header-cell *matHeaderCellDef >Commento</th>
+            <td mat-cell class="h60px _td-note1" *matCellDef="let element">
+                <textarea 
+                    class="h50px w90 _noresize _text-area-note1 fs10" matInput
+                    (change)="changeNote(element.id, 
+                    element.pagella2? element.pagella2 : null, 
+                    element.pagella2 && element.pagella2._PagellaVoti[0] ? element.pagella2._PagellaVoti[0]: null, 
+                    note2.value, 
+                    2)" 
+                    [innerHTML] = "element.pagella2 && element.pagella2._PagellaVoti[0] ? element.pagella2._PagellaVoti[0].note: ''"
+                    #note2></textarea>
+            </td>
+        </ng-container>
+
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row class="_table-title-low" *matHeaderRowDef="['No', 'PrimoQLbl', 'SecondoQLbl']"></tr>
+
+        <!-- <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>   -->
+
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns"
+            class="element-row">
+        </tr>
+
+    </table>
+
+
+

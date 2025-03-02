@@ -1,0 +1,48 @@
+
+  ._table-container {
+      position: relative;
+      min-height: 200px;
+      max-height: 100%;
+      overflow: auto;
+  }
+
+  /* Bordo inferiore nelle checkbox */
+  th.mat-mdc-header-cell._no-bottom-border, td.mat-mdc-cell._no-bottom-border {
+    border-bottom-width: 0px !important;
+  }
+
+  /*colonna di sx classi dashboard*/ 
+  ._columnleft-dashboard {
+    /* width:315px; */
+    width:25%;
+    height: 85% ;
+    /* position: absolute; */
+    top: 75px;
+    left: 8px;
+  }
+
+    /*colonna di dx classi dashboard*/ 
+  ._columnright-dashboard {
+    width:75%;
+    height: 83%;
+    position: absolute;
+    top: 75px;
+    left: 330px
+  }
+
+
+
+
+._fixed-header {
+  position: sticky;
+  top: 64px;
+  width: 100%;
+  background-color: #f9f9f9; /* Imposta il colore di sfondo desiderato */
+  z-index: 1000; /* Assicura che l'intestazione rimanga sopra il resto del contenuto */
+  padding: 10px; /* Aggiungi spazio per separare il contenuto sottostante */
+  border-bottom: lightgrey solid 1px;
+}
+
+.mat-drawer-classi {
+  height: calc(100vh - 143px) !important;
+}

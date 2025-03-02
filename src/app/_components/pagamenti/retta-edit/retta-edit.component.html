@@ -1,0 +1,168 @@
+<!-- 
+    Rev.0 - 28/08/2021
+    Componente per l'edit della retta
+    Composto da: 
+        - Barra Funzioni
+
+    /-retta-edit------------------------------------------------------------\
+    |          annoscolastico               nomeCognomeAlunno               |
+    |           (MatSelect)                 (MatAutoComplete)               |
+    |                                                                       |
+    |                                                                       |
+    |   /-retta-mese 1--\   /-retta-mese 2--\   /-retta-mese 3--\ ....      |
+    |   |               |   |               |   |               |           |
+    |   |               |   |               |   |               |           |
+    |   |               |   |               |   |               |           |
+    |   |               |   |               |   |               |           |
+    |   |               |   |               |   |               |           |
+    |   \---------------/   \---------------/   \---------------/ ....      |
+    |                                                                       |
+    |   /-rettapagamento-edit-----------------------------------\           |
+    |   |                                                       |           |
+    |   \-------------------------------------------------------/           |   
+    |   /-pagamenti-list----------------------------------------\           |
+    |   |                                                       |           |
+    |   |                                                       |           |
+    |   |                                                       |           |
+    |   |                                                       |           |
+    |   |                                                       |           |
+    |   \-------------------------------------------------------/           |
+    |                                                                       |
+    \-----------------------------------------------------------------------/
+-->
+
+    <form  [formGroup] = "formRetta" >
+
+        <mat-card appearance="outlined" class="form-cardRette data-form">
+            <img class="iconaMenuBig" src="./assets/money_edit_T.svg">
+
+            <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+            <mat-card-content>
+                <div class="center mt10 ml30 _no-padding-bottom" *ngIf="obsRette$ | async" >
+                    <mat-form-field appearance="outline">
+                        <mat-label>a.s.. </mat-label>
+                        <mat-select formControlName="selectAnnoScolastico">
+                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                            {{element.annoscolastico}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Alunno</mat-label>
+                        <input type="text"
+                                placeholder="<digita e seleziona>"
+                                matInput
+                                formControlName="nomeCognomeAlunno"
+                                [matAutocomplete]="autoAlunno" #nomeCognomeAlunno 
+                                (keydown.enter) = "enterAlunnoInput()"
+                                
+                                >
+                                <!-- [displayWith]="displayFn" DisplayWith impedisce che si possa scrivere qualcosa nella input in maniera programmatica-->
+                        <mat-autocomplete #autoAlunno="matAutocomplete" (optionSelected)="selected($event)" >
+                            <!-- <mat-spinner *ngIf="nomeAlunnoIsLoading" class="is-loading" diameter="40"></mat-spinner> -->
+                            <mat-option *ngFor="let element of (filteredAlunni$ | async)"  [value]="element.persona.nome + ' ' + element.persona.cognome" [id]="element.id.toString()" #option>
+                                <small>{{element.persona.nome}} {{element.persona.cognome}}</small>
+                            </mat-option>
+                        </mat-autocomplete>
+                        <!-- <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="resetInputAlunno('nomeCognomeAlunno')">
+                            <mat-icon>close</mat-icon>
+                        </button> -->
+                    </mat-form-field>
+                </div>  
+                <mat-grid-list [cols]="15" rowHeight="140px">
+                    <mat-grid-tile [colspan]=2>
+                        <div>
+                            <br>
+                            <div class="mt10">DEFAULT</div>
+                            <div class="mt10">CONCORDATE</div>
+                            <div class="mt10">PAGATE</div>
+                        </div>
+                    </mat-grid-tile>
+
+                    <mat-grid-tile class="mr20">
+                        <div>
+                            <div class="center">
+                                <mat-label>Anno</mat-label>
+                            </div>
+                            <app-rettaanno-edit
+                                [annoID]="data.annoID"
+                                [alunnoID]="data.alunnoID" 
+                                [quotaDefaultAnno] ="quotaDefaultAnno"
+                                [quotaConcordataAnno] ="quotaConcordataAnno"
+                                [totPagamentiAnno] = "totPagamentiAnno">
+                            </app-rettaanno-edit>
+                        </div>
+                    </mat-grid-tile>
+
+                    <mat-grid-tile *ngFor="let mese of mesiArr; let i = index" >
+                        <div>
+                            <div class="center">
+                                <mat-label>{{placeholderMeseArr[i]}}</mat-label>
+                            </div>
+
+                            <!-- ************ PARAMETRI PASSATI AD OGNI CHILD: rettamese-edit *************************     -->
+                            <!-- inputPagamenti: passa al component il tot Pagamenti del mese : serve per le                -->
+                            <!--    _highlightPag2 di quelli che hanno quota concordata > dei pagamenti                     -->
+                            <!-- rettaID: è l'id della retta                                                                -->
+                            <!-- indice: serve a questo component (retta-edit) per riferirsi all'n-esimo component child    -->
+                            <!--    in quanto deve uno ad uno lanciarne il metodo ngOnChanges                               -->
+
+                            <app-rettamese-edit 
+                                [rettaID] ="retteID[mese]"
+                                [quotaDefault] ="quoteDefault[mese]"
+                                [quotaConcordata] ="quoteConcordate[mese]"
+                                [totPagamenti] ="totPagamenti[mese]"
+                                [mese] ="mesi[mese]"
+                                [indice] ="i"
+                                (mesePagamentoClicked) = "mesePagamentoClicked($event)"  >
+                                <!-- [inputPagamenti] ="totPagamenti[mese]" -->
+                                <!--[toHighlight] = "idToHighlight"  -->
+                            </app-rettamese-edit>
+                        </div>
+                    </mat-grid-tile>
+                </mat-grid-list>
+                <mat-tab-group mat-align-tabs="center">
+
+                    <mat-tab label="Gestione Pagamenti">
+                        <mat-label class="frameLabel"> Nuovo Pagamento </mat-label>
+                        <div class="mt20">
+                            <app-rettapagamento-edit
+                                [alunnoID]="data.alunnoID"
+                                [annoID]="data.annoID"
+                                (nuovoPagamento) = "nuovoPagamentoArrivato($event)">
+                            </app-rettapagamento-edit>
+                        </div>
+                        <!-- <mat-label class="frameLabel"> Pagamenti </mat-label> -->
+                        <div class="_pagamenti-container _cell-bordered mt10">
+                            <app-pagamenti-list 
+                                [dove]="'retta-edit'" 
+                                [alunnoID]="data.alunnoID"
+                                [annoID]="data.annoID"
+                                (pagamentoEliminato) = "pagamentoEliminatoArrivato()">
+                                                <!-- (hoverPagamento) = "hoverPagamentoArrivato($event)" -->
+                            </app-pagamenti-list>
+                        </div>
+
+                    </mat-tab>
+
+                    <mat-tab label="Utilities Rette" *ngIf="data.alunnoID">
+                        <mat-label class="frameLabel"> Utilities per la definizione rapida delle rette </mat-label>
+                        <div class="_utilities-container _cell-bordered mt10">
+                            <app-retta-calcolo-alunno 
+                                [annoID]="data.annoID"
+                                [alunnoID]="data.alunnoID"
+                                (ricalcoloRette) = "ricalcoloRetteArrivato()"   >
+                            </app-retta-calcolo-alunno>
+                        </div>
+                        
+                    </mat-tab>
+                </mat-tab-group>
+                
+            </mat-card-content>
+        </mat-card>
+    </form>
+
+
+

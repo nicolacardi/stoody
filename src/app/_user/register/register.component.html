@@ -1,0 +1,21 @@
+<form [formGroup]="form" autocomplete="off" (submit)="onSubmit()" style="overflow-y: hidden" >
+    <div class="center">
+        <mat-label>Digita l'indirizzo mail</mat-label><br>
+        <mat-label>che la segreteria ti ha fornito per la registrazione</mat-label>
+    </div>
+
+    <div>
+        <mat-form-field class="w90">
+            <input matInput type="email" placeholder="Email" formControlName="Email">
+        </mat-form-field>
+    </div>
+
+    <div>
+        <button type="submit" mat-stroked-button [disabled]="form.invalid">
+            Procedi con la registrazione
+        </button>
+    </div>
+    <div class="mt20">
+        <button mat-flat-button (click)="backToLogin($event)">Torna alla pagina di Login</button>
+    </div>
+</form>

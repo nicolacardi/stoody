@@ -1,0 +1,25 @@
+<form  [formGroup] = "form" >
+    <mat-form-field class="cellRetta grey  center" >
+        <input matInput type="number"
+        (change) = "save()"
+        formControlName="quotaDefaultAnno" 
+        class="right"
+        #inpQuotaD>
+    </mat-form-field>
+
+    <mat-form-field class="cellRetta grey center">
+        <input matInput type="number"
+        formControlName="quotaConcordataAnno"
+        (change) = "save()"
+        #inpQuotaC
+        class="right"
+        readonly>
+    </mat-form-field>
+
+    <mat-form-field class="cellRetta grey center">
+        <input matInput type="number"
+        formControlName="totPagamentiAnno"
+        class="right"
+        readonly>
+    </mat-form-field>
+</form>

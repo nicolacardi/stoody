@@ -1,0 +1,103 @@
+    <mat-card appearance="outlined" class="form-card">
+        <mat-card-content>
+            <form *ngIf="(votoInterr$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">            
+
+                <!-- ********************************    BOTTONI     ************************************* -->
+                <!-- METTO ANCHE QUI UN NgIf perchè la [disabled] ="!form.valid" darebbe errore di tipo afterviewinit... -->
+                <div  *ngIf="(votoInterr$ | async) || emptyForm" class="center">
+
+                    <img class="iconaMenuBig" src="./assets/orale_edit_T.svg">
+
+                    <button mat-icon-button aria-label="Chiudi" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                    <button mat-mini-fab aria-label="Ricarica" matTooltip="Ricarica" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="loadData()" >
+                        <mat-icon>restart_alt</mat-icon>
+                    </button>
+
+                    <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="save()" >
+                        <mat-icon>save</mat-icon>
+                    </button>
+
+                    <button mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="delete()" >
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+                <mat-grid-list class="no-overflow mt10 center" [cols]="2" rowHeight="60px">
+
+                    <mat-grid-tile class="mt10" >
+                        
+                        <mat-form-field  >
+                            <mat-label>Lezione</mat-label>
+                            <mat-select required formControlName="lezioneID" #selectLezione (click)="setGiornoCorrente()" (selectionChange)="changeSelection()">
+                                <mat-option *ngFor="let element of (obsLezioni$ | async)" [value]="element.id">
+                                    {{element.dtCalendario| date: "dd/MM/yyyy"}} - {{element.h_Ini}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-grid-tile>
+
+                    <mat-grid-tile class="mt10" >
+                        <mat-form-field  >
+                            <mat-label>Materia</mat-label>
+                            <mat-select required formControlName="materiaID" >
+                                <mat-option *ngFor="let element of (obsMaterie$ | async)" [value]="element.id">
+                                    {{element.descrizione}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+                <mat-grid-list class="no-overflow mt10 center" [cols]="1" rowHeight="60px">
+
+                    <mat-grid-tile class="mt10" >
+                        <mat-form-field  >
+                            <mat-label>Alunno</mat-label>
+                            <mat-select required formControlName="alunnoID" >
+                                <mat-option *ngFor="let element of (obsIscrizioni$ | async)" [value]="element.alunnoID">
+                                    {{element.alunno.persona.nome}} {{element.alunno.persona.cognome}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+                <mat-grid-list class="no-overflow mt10 center" [cols]="2" rowHeight="100px">
+                
+                    <mat-grid-tile colspan="2">
+                        <mat-form-field class="w100 h80px" appearance="outline">
+                            <textarea   matInput  
+                                type="text" 
+                                placeholder="argomento interrogazione" 
+                                formControlName="argomento"
+                                class="_noresize"
+
+                                >
+                            </textarea>
+
+                            <!-- <input matInput required type="text" placeholder="argomento interrogazione"
+                                    formControlName="argomento"> -->
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+                <mat-grid-list class="no-overflow mt10 center" [cols]="2" rowHeight="60px">
+                    <mat-grid-tile class="mt10">
+                        <mat-form-field>
+                            <input matInput type="number" placeholder="voto"
+                                    formControlName="voto">
+                        </mat-form-field>
+                    </mat-grid-tile>
+                    <mat-grid-tile class="mt10">
+                        <mat-form-field>
+                            <input matInput type="text" placeholder="giudizio"
+                                    formControlName="giudizio">
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+            </form>
+        </mat-card-content>
+    </mat-card>

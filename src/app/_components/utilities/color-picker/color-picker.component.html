@@ -1,0 +1,32 @@
+<div class="p5 center _pos-absolute">
+
+  <img class="iconaMenuBig" src="./assets/get_color_T.svg">
+
+  <button
+    mat-icon-button
+    aria-label="Back"
+    matTooltip="Chiudi"
+    class="_btn-toolbar-close _pos-absolute t0 r0 "
+    mat-dialog-close
+  ></button>
+
+  <div class="color-wrapper">
+    <!-- <app-color-palette [hue]="ascHue" (color)="color = $event"></app-color-palette> -->
+    <app-color-palette [ascHue]="ascHue" (color)="colorPaletteEmitted($event)">
+    </app-color-palette>
+
+    <app-color-slider style="margin-left: 16px" (color)="colorSliderEmitted($event)">
+    </app-color-slider>
+  </div>
+
+  <div class="input-wrapper">
+    <span class="text">{{ ascColor }}</span>
+    <div class="color-div" [ngStyle]="{ 'background-color': color || 'white' }"></div>
+  </div>
+
+  <div mat-dialog-actions class="_btn-text-container mat-dialog-buttonsContainer">
+    <button class="_btn-text" mat-button cdkFocusInitial [mat-dialog-close]="ascColor">
+      Seleziona
+    </button>
+  </div>
+</div>

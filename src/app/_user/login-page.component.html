@@ -1,0 +1,17 @@
+<div class="login-background">
+    <mat-card appearance="outlined" class="user-container login-card">
+        <mat-card-header >
+            <img class="logo-login ma" *ngIf="routerPage=='login'" src="./assets/logoscrittacolor.png">
+            <img class="logo-login ma" *ngIf="routerPage=='reset-psw'  || routerPage == 'register'" src="../../assets/logoscrittaazzurro.png">
+        </mat-card-header>
+
+        <mat-card-content class="mt20">
+            <div class="row center">
+                <app-login  *ngIf="routerPage=='login'" (reloadRoutes)="reloadRoutesEmitted($event)"> </app-login>
+                <app-reset-psw *ngIf="routerPage=='reset-psw'" (reloadRoutes)="reloadRoutesEmitted($event)"></app-reset-psw>
+                <app-register *ngIf="routerPage=='register'" (reloadRoutes)="reloadRoutesEmitted($event)" ></app-register>
+            </div>            
+        </mat-card-content>
+    </mat-card>
+</div>
+

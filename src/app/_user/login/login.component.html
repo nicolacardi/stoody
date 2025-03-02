@@ -1,0 +1,29 @@
+
+<form [formGroup]="form" autocomplete="off" (submit)="onSubmit()" style="overflow-y: hidden" >
+    <div>
+        <mat-form-field class="w90">
+            <input  matInput required type="email" placeholder="Nome utente o Email" formControlName="UserName">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field class="w90">
+            <input matInput required type="password" placeholder="Password" formControlName="Password" #psw>
+        </mat-form-field>
+        <mat-icon *ngIf="ckPsw" class="_lightgrey _pos-absolute ml-20 mt15" (click)="toggleShow()">visibility_off</mat-icon>
+        <mat-icon *ngIf="!ckPsw" class="_grey _pos-absolute ml-20 mt15" (click)="toggleShow()">visibility</mat-icon>
+    </div>
+
+    <div>
+        <button type="submit" mat-stroked-button [disabled]="form.invalid">
+        Login
+        </button>
+    </div>
+
+    <div class="mt20">
+        <button mat-flat-button (click)="forgotPassword($event)">Dimenticata la password?</button>
+    </div>
+    <div class="mt20">
+        <button mat-flat-button (click)="register($event)">Registrazione</button>
+    </div>
+</form>
+

@@ -1,0 +1,67 @@
+    <mat-card appearance="outlined" class="form-card">
+        <mat-card-content>
+            <form *ngIf="(lezione$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">            
+
+                <!-- ********************************    BOTTONI     ************************************* -->
+                <!-- METTO ANCHE QUI UN NgIf perchè la [disabled] ="!form.valid" darebbe errore di tipo afterviewinit... -->
+                <div *ngIf="(lezione$ | async) || emptyForm" class="center">
+                    <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" mat-dialog-close>
+                        <mat-icon>arrow_back</mat-icon>
+                    </button> -->
+                    <img class="iconaMenuBig" src="./assets/compito_edit_T.svg">
+
+                    <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                    <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="loadData()" >
+                        <mat-icon>restart_alt</mat-icon>
+                    </button>
+
+                    <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="save()" >
+                        <mat-icon>save</mat-icon>
+                    </button>
+
+                    <button mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="delete()" >
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+                <mat-grid-list class="no-overflow mt10 center" [cols]="breakpoint" rowHeight="60px">
+                    <mat-grid-tile class="mt10" >
+                        <mat-label>Un Compito in classe va associato ad una lezione.<br>                    
+                        Lezioni del Prof. {{prof}} per la classe selezionata</mat-label>
+                    </mat-grid-tile>
+                    <mat-grid-tile class="mt10" >
+                        
+                        <mat-form-field  >
+                            <mat-label>Lezioni</mat-label>
+                            <mat-select formControlName="id" #selectLezione (click)="setGiornoCorrente()" (selectionChange)="changeSelection()">
+                                <mat-option *ngFor="let element of (obsLezioni$ | async)" [value]="element.id">
+                                    {{element.dtCalendario| date: "dd/MM/yyyy"}} - {{element.h_Ini}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                
+                    <!-- <mat-grid-tile>
+                        <mat-form-field>
+                            <input matInput required type="text" placeholder="lezioneID"
+                                    formControlName="id">
+                        </mat-form-field>
+                    </mat-grid-tile> -->
+
+                    <mat-grid-tile class="mt10">
+                        <mat-form-field>
+                            <input matInput required type="text" placeholder="argomentoCompito"
+                                    formControlName="argomentoCompito">
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+
+            </form>
+        </mat-card-content>
+    </mat-card>

@@ -1,0 +1,88 @@
+<mat-card appearance="outlined" class="form-card _oflow-hide">
+    <mat-card-content>
+        <!-- <form  [formGroup] = "form" > -->
+            <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+            
+
+            <h1 class="_titolo-pagina fs14">Distribuzione Quote Concordate</h1>
+
+            <mat-grid-list class="ma w50 _bordered-grey p5" [cols]="12" rowHeight="20px">
+                <mat-grid-tile *ngFor="let mese of mesiArr; let i = index" >
+                    <mat-label>{{placeholderMeseArr[i]}}</mat-label>
+                </mat-grid-tile>
+                <mat-grid-tile *ngFor="let placeholderMese of placeholderMeseArr; let i = index" >
+                    <mat-checkbox color="warn" #QuoteListElement [checked]="!!+QuoteDefault.substring(i,i+1)"></mat-checkbox>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <!-- <div class="center mt10">
+                <mat-form-field appearance="outline">
+                    <mat-label>Importo Annuale</mat-label>
+                    <input matInput type="text" required placeholder="Importo Default Annuale" minlength= "3" formControlName="importo">
+                </mat-form-field>
+
+                <mat-form-field class="ml20" appearance="outline">
+                    <mat-label>Importo 2 Annuale</mat-label>
+                    <input matInput type="text" required placeholder="Importo 2" minlength= "3" formControlName="importo2">
+                </mat-form-field>
+            </div> -->
+        <!-- </form> -->
+        <mat-label class="frameLabel">Elenco classi dell'anno </mat-label>
+        <div class="_pos-relative">
+            
+            <div class="_scrollable-classi-list-container _cell-bordered mt20 ">
+                <app-classi-sezioni-anni-list [dove] = "'retta-calcolo'" #ListClassi></app-classi-sezioni-anni-list>
+            </div>
+        </div>
+        
+        <div mat-dialog-actions class="mat-dialog-buttonsContainer">
+            <button class="_btn-text" mat-button cdkFocusInitial (click)="calcola()">Calcola</button> 
+        </div>
+
+    </mat-card-content>
+</mat-card>
+
+
+
+
+
+
+<!-- <div class="center"> -->
+                <!-- <mat-form-field class="ml20 topZIndex" appearance="outline">
+                    <mat-label>Anno Scolastico</mat-label>
+                    <mat-select formControlName="selectAnnoScolastico">
+                        <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                        {{element.annoscolastico}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+
+                <!-- <mat-form-field class="ml20 topZIndex" appearance="outline">
+                    <mat-label>Classe</mat-label>
+                    <mat-select formControlName="selectClasse">
+                        <mat-option value="0">&#60;Tutte le classi&#62;</mat-option>
+                        <mat-option *ngFor="let element of (obsClassiSezioniAnni$ | async)" [value]="element.id">
+                        {{element.classeSezione.classe.descrizioneBreve}} {{element.classeSezione.sezione}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field> -->
+
+                <!-- <mat-form-field class="ml20 topZIndex" appearance="outline">
+                    <mat-label>Alunno</mat-label>
+                    <input type="text"
+                            placeholder="<seleziona l'alunno>"
+                            matInput
+                            formControlName="nomeCognomeAlunno"
+                            [matAutocomplete]="autoAlunno" #nomeCognomeAlunno 
+                            (keydown.enter) = "enterAlunnoInput()"
+                            (blur) = "blur()" >
+
+                    <mat-autocomplete #autoAlunno="matAutocomplete" (optionSelected)="selected($event)">
+                        <mat-option *ngFor="let element of (obsFilteredAlunni$ | async)"  [value]="element.nome + ' ' + element.cognome" [id]="element.id.toString()" #option>
+                            <small>{{element.nome}} {{element.cognome}}</small>
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field> -->
+            <!-- </div>  -->
+

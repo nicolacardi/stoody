@@ -1,0 +1,133 @@
+
+  <mat-stepper *ngIf="iscrizione" linear="true" #stepper animationDuration="200" labelPosition="bottom" >
+    <ng-template matStepperIcon="edit">
+      <mat-icon>done</mat-icon>
+    </ng-template>
+
+    <mat-step *ngFor="let element of genitoriArr; let i= index"  [stepControl]="appGenitoreForm.form" >
+      <ng-template matStepLabel >Dati del Genitore {{i+1}}</ng-template>
+      <h3>{{element.tipoGenitore!.descrizione}}: {{element.persona.nome}} {{element.persona.cognome}}</h3>
+      <app-persona-form  
+          [personaID]="element.personaID" 
+          [dove]="'procedura-iscrizione'"
+          #appGenitoreForm>
+      </app-persona-form>
+          
+      <app-genitore-form
+          [genitoreID]="element.id"> >
+      </app-genitore-form>
+       <div class="center mt20">
+        <button *ngIf="i!=0" mat-stroked-button matStepperPrevious>Indietro</button>
+        <button mat-stroked-button 
+                class="ml10" 
+                matStepperNext 
+                [disabled]="!appGenitoreForm.form.valid"
+                (click)="salvaPersona('genitore')">
+            Salva e procedi
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step [stepControl]="associazioneSaved">
+      <ng-template matStepLabel>Adesione all'Ente</ng-template>
+      <app-associazione
+        [iscrizione] = "iscrizione"
+        #appAssociazione
+        ></app-associazione>
+
+      <div class="center mt20">
+        <button mat-stroked-button matStepperPrevious>Indietro</button>
+        <button mat-stroked-button 
+                class="ml10" 
+                [disabled]="appAssociazione.nsoci == 0"
+                matStepperNext 
+                (click)="salvaAssociazione()">
+          Salva e procedi
+        </button>
+      </div>    
+    </mat-step>
+
+
+    <mat-step [stepControl]="appAlunnoForm.form">
+      <ng-template matStepLabel>Dati dell'alunno</ng-template>
+      <h3>Alunno: {{iscrizione.alunno.persona.nome}} {{iscrizione.alunno.persona.cognome}}</h3>
+      <app-persona-form  [personaID]="iscrizione.alunno.personaID" 
+                         [dove]="'procedura-iscrizione'"
+                         #appAlunnoForm>
+      </app-persona-form> 
+
+      <app-alunno-form
+          [alunnoID]="iscrizione.alunno.id"> >
+      </app-alunno-form>
+
+      <div class="center mt20">
+        <button mat-stroked-button matStepperPrevious>Indietro</button>
+        <button mat-stroked-button 
+                class="ml10" 
+                matStepperNext 
+                [disabled]="!appAlunnoForm.form.valid"
+                (click)="salvaPersona('alunno')">
+          Salva e procedi
+        </button>
+      </div>    
+    </mat-step>
+
+    <mat-step [stepControl]="formIscrizioneConsensi.formRisposte">
+      <ng-template matStepLabel>Consensi</ng-template>
+      <app-iscrizione-risposte  
+        [iscrizioneID]="iscrizioneID"
+        [contesto]="'Consensi'"
+        #formIscrizioneConsensi>
+      </app-iscrizione-risposte> 
+
+      <div class="center mt20">
+        <button mat-stroked-button matStepperPrevious>Indietro</button>
+        <button mat-stroked-button 
+                class="ml10" 
+                matStepperNext
+                [disabled]="!formIscrizioneConsensi.formRisposte.valid"
+                (click)="salvaRisposte('Consensi')">
+          Salva e procedi
+        </button>
+      </div>
+    </mat-step>
+
+    <mat-step [stepControl]="formIscrizioneDatiEconomici.formRisposte">
+      <ng-template matStepLabel>Dati Economici</ng-template>
+      <app-iscrizione-risposte  
+        [iscrizioneID]="iscrizioneID"
+        [contesto]="'DatiEconomici'"
+        #formIscrizioneDatiEconomici>
+      </app-iscrizione-risposte>
+
+      <div class="center mt20">
+        <button mat-stroked-button matStepperPrevious>Indietro</button>
+        <button mat-stroked-button
+                class="ml10"
+                matStepperNext
+                [disabled]="!formIscrizioneDatiEconomici.formRisposte.valid"
+                (click)="salvaRisposte('DatiEconomici')">
+          Salva e procedi
+        </button>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Fine</ng-template>
+      <div class="center">Grazie, hai completato l'iscrizione!</div>
+      <div class="center mt10">
+        <button mat-stroked-button matStepperPrevious>Indietro</button>
+        <button mat-stroked-button
+                class="ml10"
+                (click)="downloadModuloIscrizione()"
+
+                >Stampa Modulo di iscrizione</button>
+      </div>
+    </mat-step>
+
+    <ng-template matStepperIcon="genitori">
+      <mat-icon>call_end</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="chat">
+      <mat-icon>forum</mat-icon>
+    </ng-template>
+  </mat-stepper>

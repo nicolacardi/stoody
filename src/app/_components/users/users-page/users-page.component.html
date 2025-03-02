@@ -1,0 +1,42 @@
+<button mat-mini-fab aria-label="Strumenti" matTooltip="Strumenti" class="_btn-toolbar _btn-pos-top-1" (click)="toolSidenav.toggle();" >
+    <mat-icon>construction</mat-icon>
+</button>
+<!--
+    <button mat-mini-fab aria-label="Nuova anagrafica" matTooltip="Nuova anagrafica" class="_btn-add" (click)="addRecord()">
+    <mat-icon>add</mat-icon>
+</button>
+-->
+<button mat-mini-fab aria-label="Filtri Avanzati" matTooltip="Filtri Avanzati" class="_btn-add _btn-pos-right-2 _btn-pos-top-1" [ngClass]="{'_btn-add-red': !appusersfilter.formClean}" (click)="filterSidenav.toggle();" >
+    <mat-icon>filter_alt</mat-icon>
+</button>
+
+<button mat-mini-fab aria-label="Nuova anagrafica" matTooltip="Nuova anagrafica" class="_btn-add _btn-pos-right-1 _btn-pos-top-1" (click)="addRecord()">
+    <mat-icon>add</mat-icon>
+</button>
+
+<mat-drawer-container [hasBackdrop]="false" style="min-height: 91%">
+    <mat-drawer position="end" #filterSidenav class="filterSidenav"  [mode]="'side'">
+        <app-users-filter [usersListComponent] = "appuserslist" #appusersfilter></app-users-filter>    
+    </mat-drawer>
+
+    <mat-drawer position="start" #toolSidenav class="toolSidenav"  [mode]="'side'">
+        <app-toolbar [rptTitle]="appuserslist.rptTitle" 
+                     [rptFieldsToKeep]="appuserslist.rptFieldsToKeep" 
+                     [rptColumnsNames]="appuserslist.rptColumnsNames" 
+                     [rptData]="appuserslist.matDataSource.data"
+                     [rptFileName]="appuserslist.rptFileName"
+                     [columnsComponent] = "appuserslist"
+                     [emailsYN] = "true"
+                     [emailAddresses] = "appuserslist.emailAddresses"
+                     > 
+        </app-toolbar>
+    </mat-drawer>
+ 
+    <mat-drawer-content>
+        <app-users-list [usersFilterComponent] = "appusersfilter"
+                        [dove] = "'users-page'" 
+                        (openDrawer) = "openDrawer()" 
+                        #appuserslist >
+        </app-users-list>
+    </mat-drawer-content>
+</mat-drawer-container>

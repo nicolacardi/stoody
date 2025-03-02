@@ -1,0 +1,54 @@
+<div class="center _fixed-header">
+    <h1 class="_titolo-pagina">Cruscotto Segreteria</h1>
+
+    <button *ngIf="classeSezioneAnno" mat-button class="_pos-absolute_i t10 l10  _btn-text" (click)="drawer.toggle()">
+        Classe: <span >{{classeSezioneAnno.classeSezione!.classe!.descrizione2}} {{classeSezioneAnno.classeSezione!.sezione}}</span>
+    </button>
+</div>
+
+<mat-drawer-container style="display: inline">
+    <mat-drawer class=" w330px transparent"  #drawer mode="side" opened="true">
+        <app-classi-sezioni-anni-list 
+            [dove] = "'coordinatore-dashboard'"
+            (annoID)="annoIdEmitted($event)"
+            (classeSezioneAnnoID)="classeSezioneAnnoIDEmitted($event)"
+             >
+             <!-- (docenteId)="docenteIdEmitted($event)" -->
+        </app-classi-sezioni-anni-list>
+    </mat-drawer>
+    
+    <mat-drawer-content class="mat-drawer-classi">
+        <mat-tab-group >
+            <mat-tab  label="Pagelle">
+                <table>
+                    <tr>
+                        <td class="_cell-align-top w30 w330px">
+                            <!-- <button mat-mini-fab aria-label="Pubblica Pagella 1° Quad." matTooltip="Pubblica Pagelle 1° Quad." class="_btn-add _btn-pos-right-2" (click) = "PubblicaPagelle(1)">
+                                <img class="iconaMenu" src="./assets/publish.svg">
+                            </button>
+                            <button mat-mini-fab aria-label="Pubblica Pagella 2° Quad." matTooltip="Pubblica Pagelle 2° Quad." class="_btn-add _btn-pos-right-1 " (click)= "PubblicaPagelle(2)">
+                                <img class="iconaMenu" src="./assets/publish.svg">
+                            </button> -->
+                            <app-iscrizioni-classe-list [dove]="'segr-dashboard-pagelle'"  
+                                [classeSezioneAnnoID]="classeSezioneAnnoID" 
+                                (pubblica) = pubblicaEmitted($event) >
+                            </app-iscrizioni-classe-list>
+                        </td>
+                    </tr>
+                </table>
+            </mat-tab>
+
+           
+            <mat-tab label="Cert.Competenze">
+
+            </mat-tab>
+
+            <mat-tab label="Cons.Orientativo">
+
+            </mat-tab>
+            
+        </mat-tab-group>
+            
+    </mat-drawer-content>
+</mat-drawer-container>
+

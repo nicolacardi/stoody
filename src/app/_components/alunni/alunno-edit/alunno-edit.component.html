@@ -1,0 +1,224 @@
+<!--
+/-alunno-edit 1^tab--------------------------------------------------------\
+|   /-persona-form-----------------------------------------------------\   |
+|   |                                                                  |   |
+|   |            persona-form                                          |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   \------------------------------------------------------------------/   |   
+|   /-alunno-form------------------------------------------------------\   |
+|   |                                                                  |   |
+|   |             alunno-form                                          |   |
+|   |                                                                  |   |
+|   \------------------------------------------------------------------/   |
+|                                                                          |
+\--------------------------------------------------------------------------/
+
+/-alunno-edit 2^tab--------------------------------------------------------\
+|   /-genitori-list----------------------------------------------------\   |
+|   |                                                                  |   |
+|   |            alunno-edit-famiglia                                  |   |
+|   |                                                                  |   |
+|   \------------------------------------------------------------------/   |   
+|   /-genitori-list----------------------------------------------------\   |
+|   |                                                                  |   |
+|   |             alunno-edit                                     |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   |                                                                  |   |
+|   \------------------------------------------------------------------/   |
+|                                                                          |
+\--------------------------------------------------------------------------/
+
+/-alunno-edit 3^tab--------------------------------------------------------\
+|   /-classi-alunni-anni----------\         /-classi-alunni-anni-list-\    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   | classi-alunni-anni-attended |         | classi-alunni-anni-list |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   |                             |         |                         |    |
+|   \-----------------------------/         \-------------------------/    |
+|                                                                          |
+\--------------------------------------------------------------------------/
+-->
+    <mat-card  appearance="outlined"  class="form-card">
+        <mat-card-content>
+        
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/alunno_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+                <span [ngClass]="{'invisible': selectedTab != 0}">
+                    <button *ngIf="alunnoID" mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
+                            (click)="loadData()" >
+                        <mat-icon>restart_alt</mat-icon>
+                    </button>
+
+                    <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                            [disabled] ="!alunnoFormisValid || !personaFormisValid"
+                            (click)="save()" >
+                        <mat-icon>save</mat-icon>
+                    </button>
+
+                    <button *ngIf="alunnoID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                            (click)="delete()" >
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </span>
+            </div>
+            
+            <mat-tab-group mat-align-tabs="center" (selectedTabChange)="selectedTabValue($event)">
+
+<!-- ********************************    MAT TAB ANAGRAFICA *********************************** -->
+                <mat-tab  label="Dati Anagrafici">
+                    <!-- L'*ngIf sia ripara dal caso in cui non ci sia ancora alunno$ sia CREA il form in quanto fa la | async -->
+                    <!-- [tipoPersonaID]="1" -->
+                    <div *ngIf="(alunno$ | async) || emptyForm" class="mt10 ">
+                        <app-persona-form class="mt10" 
+                            [personaID] = "personaID" 
+
+                            [dove]="'alunno-edit'"
+                            (formValid)="formPersonaValidEmitted($event)" 
+                            #apppersonaForm
+                            >   
+                        </app-persona-form>
+                        <div class="_bordered-grey mt5">
+                            <app-alunno-form 
+                                [alunnoID] = "alunnoID"
+                                (formValid)="formAlunnoValidEmitted($event)">
+                            </app-alunno-form>
+                        </div>
+                    </div> 
+                </mat-tab>
+<!-- ********************************    MAT TAB GENITORI ************************************ -->
+                <mat-tab label="Famiglia" class="_pos-relative">    
+                    <button mat-mini-fab aria-label="Nuova anagrafica Genitore" matTooltip="Nuova anagrafica Genitore" class= "_btn-addModal" (click)="addGenitore()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    <br>
+                    <mat-label class="frameLabel t10">I genitori/tutori di {{alunnoNomeCognome}} </mat-label>
+                    <div class="_genitori-container _cell-bordered mt10">
+                        <app-genitori-list [context]="'alunno-edit-famiglia'"[alunnoID]="alunnoID"  (removeFromFamily) = "removeFromFamily($event)" #genitoriFamiglia></app-genitori-list>
+                    </div>
+                    <mat-accordion>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Elenco di tutti i genitori/tutori</mat-panel-title>
+                                <mat-panel-description>(fare click per aprire)</mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <!-- <mat-label class="frameLabel">Elenco dei genitori/tutori </mat-label> -->
+                            <div class="_genitori-list-container _cell-bordered mt10">
+                                <app-genitori-list [context]="'alunno-edit'" (addToFamily) = "addToFamily($event)" #genitoriDisponibili></app-genitori-list>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
+<!-- ********************************    MAT TAB CLASSI    ************************************* -->
+                <mat-tab label="Classi Frequentate" class="_pos-relative">  
+                    <br>  
+                    <mat-label class="frameLabel t10">Le classi frequentate da {{alunnoNomeCognome}} </mat-label>
+                    <div class="_classi-attended-container _cell-bordered mt10">
+                        <app-iscrizioni-alunno-list [alunnoID] = "alunnoID" #iscrizioniAlunno 
+                        (removeFromAttended) = "removeFromAttended($event)" >
+                        </app-iscrizioni-alunno-list>
+                    </div>
+                    <mat-accordion>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Elenco di tutte le classi</mat-panel-title>
+                                <mat-panel-description>(fare click per aprire)</mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <div class="_classi-list-container _cell-bordered mt10">
+                                <app-classi-sezioni-anni-list [dove] = "'alunno-edit'"
+                                (addToAttended) = "addToAttended($event)"
+                                #classiSezioniAnniList>
+                                </app-classi-sezioni-anni-list>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </mat-tab>
+
+                <!-- Nella versione commentata l'accordion è ruotato...difficile da governare come css e fuori standard -->
+                <!-- <mat-tab label="Classi Frequentate" >
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="_classi-attended-container-vertical _cell-bordered mt10">
+                                    <mat-label class="frameLabel t20">Le classi frequentate da {{alunnoNomeCognome}} </mat-label>
+
+                                    <app-iscrizioni-alunno-list [alunnoID] = "alunnoID" #iscrizioniAlunno 
+                                                                (removeFromAttended) = "removeFromAttended($event)" >
+                                    </app-iscrizioni-alunno-list>
+                                </div>
+                            </td>
+                            <td class="_classi-list-td-vertical-accordion _pos-relative">
+                                <mat-label class="frameLabel">Elenco delle classi</mat-label>
+                                <mat-accordion class="_rotated-accordion">
+                                    <mat-expansion-panel hideToggle>
+                                        <mat-expansion-panel-header>
+                                        <mat-panel-title>Tutte le classi</mat-panel-title>
+                                        <mat-panel-description>(fare click per aprire)</mat-panel-description>
+                                        </mat-expansion-panel-header>
+                                        
+                                        <div class="_panel-content _classi-list-container-vertical _cell-bordered mt10">
+                                            <app-classi-sezioni-anni-list [dove] = "'alunno-edit-list'"
+                                                                          (addToAttended) = "addToAttended($event)"
+                                                                          #classiSezioniAnniList>
+                                            </app-classi-sezioni-anni-list>
+                                        </div>
+                                    </mat-expansion-panel>
+                                </mat-accordion>  
+                            </td>
+                        </tr>
+                    </table>
+                </mat-tab> -->
+<!-- ********************************    MAT TAB PAGELLE ************************************** -->
+                <mat-tab label="Documenti">
+                    <br>  
+                    <mat-label class="frameLabel t10">Documenti di {{alunnoNomeCognome}} </mat-label>
+                    <div class="_documenti-container _cell-bordered mt10">
+                        <app-documenti-alunno-list
+                            [alunnoID]="alunnoID">
+                        </app-documenti-alunno-list>
+                    </div>
+                   
+                </mat-tab>
+<!-- ********************************    MAT TAB VOTI    ************************************** -->
+                <!-- <mat-tab label="Voti">
+
+                </mat-tab> -->
+<!-- ********************************    MAT TAB ASSENZE ************************************** -->
+                <mat-tab label="Assenze">
+
+                    <app-presenze-alunno-list
+                        [alunnoID]="alunnoID">
+                    </app-presenze-alunno-list>
+
+                </mat-tab>
+<!-- ********************************    MAT TAB NOTE ************************************** -->
+                <mat-tab label="Note">
+
+                    <app-note-list
+                        [alunnoID] = "alunnoID"
+                        [dove] = "'alunno-edit'">
+                    </app-note-list>
+
+                </mat-tab>
+            </mat-tab-group>    
+            
+        </mat-card-content>
+    </mat-card>

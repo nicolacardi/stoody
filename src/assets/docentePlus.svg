@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.0.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 32 24" style="enable-background:new 0 0 32 24;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+</style>
+<rect x="17.2" y="17.2" class="st0" width="10.9" height="2"/>
+<rect x="21.6" y="12.6" class="st0" width="2" height="10.9"/>
+<circle class="st0" cx="10.2" cy="9.4" r="0.9"/>
+<circle class="st0" cx="3.8" cy="11.9" r="0.6"/>
+<circle class="st0" cx="14.8" cy="9.4" r="0.9"/>
+<g>
+	<path class="st0" d="M12.5,2.5c3.3,0,6.1,2.7,6.1,6.1s-2.7,6.1-6.1,6.1S6.4,12,6.4,8.6S9,2.5,12.5,2.5 M12.5,1
+		C8.2,1,4.8,4.4,4.8,8.6s3.4,7.6,7.6,7.6S20,12.8,20,8.6S16.7,1,12.5,1L12.5,1z"/>
+</g>
+<path class="st0" d="M5.5,9.5c2-0.8,3.2-2.7,2.7-4.9c-0.1-0.4-0.2-0.7-0.5-1C6.2,4.9,5.2,7.1,5.5,9.5z"/>
+<path class="st0" d="M17.1,3.5c-0.2,0.3-0.3,0.7-0.5,1.1c-0.5,2.2,0.8,4.2,2.7,4.9C19.7,7.1,18.7,4.9,17.1,3.5z"/>
+<rect x="5.2" y="1.7" transform="matrix(0.9942 -0.1075 0.1075 0.9942 -0.2812 1.2885)" class="st0" width="13.1" height="3.1"/>
+<rect x="3.2" y="0.9" transform="matrix(0.9942 -0.1075 0.1075 0.9942 -8.163744e-02 1.2705)" class="st0" width="17.2" height="1"/>
+<g>
+	<line class="st0" x1="3.8" y1="2.9" x2="3.8" y2="11.9"/>
+	<rect x="3.6" y="2.9" class="st0" width="0.4" height="9"/>
+</g>
+<polygon class="st0" points="3.8,11.3 2.9,14.3 4.7,14.3 "/>
+</svg>

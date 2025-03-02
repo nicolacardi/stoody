@@ -1,0 +1,43 @@
+ 
+
+:host ::ng-deep .mat-mdc-list-item__primary-text { 
+  letter-spacing: 0 !important; 
+}
+
+
+:host ::ng-deep .mdc-list-item { 
+  padding-right: 0px!important; 
+  padding-left: 10px!important; 
+}
+
+:host ::ng-deep .mat-toolbar-row, .mat-toolbar-single-row {
+  padding-left: 8px;
+}
+
+.mat-expansion-panel-header {
+  padding-left: 10px !important;
+}
+
+/* ._pinIconContainer {
+  position: absolute;
+  top: 0px;
+  left: 180px;
+  width: 40px !important; 
+} */
+
+._pinIcon{
+  width: 20px;
+  z-index: 10000;
+}
+
+
+.hidden-header{
+  display: none !important;
+  /* visibility: hidden !important; */
+}
+
+
+
+
+
+

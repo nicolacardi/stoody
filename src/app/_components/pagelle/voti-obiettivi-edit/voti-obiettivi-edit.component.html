@@ -1,0 +1,42 @@
+<!-- {{data |json}} -->
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <h1 class="_titolo-pagina">Voti Obiettivi</h1>
+        <!-- ********************************    BOTTONI     ************************************* -->
+        <div class="center">
+            <img class="iconaMenuBig" src="./assets/obiettivo_edit.svg">
+            <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+        </div>
+
+        <!-- **************************   MAT-TABLE   ******************* -->
+        <table mat-table class="_table-row-low transparent w100" [dataSource]="matDataSource">
+
+            <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+            <ng-container matColumnDef="descrizione">
+                <th mat-header-cell *matHeaderCellDef  class="w300px">Obiettivo</th>
+                <td mat-cell class="mw300px" *matCellDef="let element" matTooltip="{{element.obiettivo.descrizione}}">{{element.obiettivo.descrizione}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="livello">
+                <th mat-header-cell *matHeaderCellDef  class="w125px">Livello</th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-select  [disabled]="data.chiusa" [value]="element.livelloObiettivoID? element.livelloObiettivoID : 1" placeholder="livello" (selectionChange)="changeSelectObiettivo(element, selectLivelloObiettivo.value)"  #selectLivelloObiettivo> 
+                        <mat-option *ngFor="let tipoLivelloObiettivo of (obsTipiLivelloObiettivo$ | async)"  [value]="tipoLivelloObiettivo.id">
+                            {{tipoLivelloObiettivo.descrizione}}
+                        </mat-option>
+                    </mat-select>
+                </td>
+            </ng-container>
+
+            <!-- **************************   MAT-HEADER-ROW   ******************* -->
+            <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>  
+
+            <!-- **************************   MAT-ROW   ******************* -->
+            <tr mat-row *matRowDef="let element;columns: displayedColumns"
+                class="element-row">
+            </tr>
+
+        </table>
+    </mat-card-content>
+</mat-card>
+    

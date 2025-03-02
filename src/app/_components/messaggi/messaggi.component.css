@@ -1,0 +1,4 @@
+/*ATTENZIONE: overriding element standard su ../Styles.css  */
+  .mat-mdc-cell {
+    white-space: normal;
+  }

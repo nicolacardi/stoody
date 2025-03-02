@@ -1,0 +1,90 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(user$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">            
+
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center">
+                <img class="iconaMenuBig" src="./assets/utente_edit_T.svg">
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="idUser" mat-mini-fab matTooltip="Ricarica" class="btn ml10"
+                        (click)="loadData()" >
+                        <!-- [disabled]= "!form.valid"  -->
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid"
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <button *ngIf="idUser" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        (click)="delete()" >
+                        <!-- [disabled]= "!form.valid"  -->
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+            <mat-grid-list class="no-overflowx mt10" [cols]="2" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput required type="text" placeholder="userName" formControlName="userName">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="password" placeholder="password" formControlName="password">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+            </mat-grid-list>
+            <mat-grid-list class="no-overflowx mt10" [cols]="1" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput required type="text" placeholder="email" formControlName="email">
+                    </mat-form-field>
+                </mat-grid-tile>
+                
+            </mat-grid-list>
+            <span class="center"><mat-divider class="mb10"></mat-divider></span>
+            <span class="center mt10">
+                selezionare una persona esistente<br>
+                oppure creare una nuova anagrafica<br>
+                e poi selezionarla per associarla a questo utente
+            </span>
+
+            <mat-grid-list [cols]="1" rowHeight="60px">
+                
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input type="text"
+                                placeholder="persona"
+                                matInput
+                                formControlName="nomeCognomePersona"
+                                [matAutocomplete]="autoPersona"  >
+                        <!-- #nomeCognomePersona -->
+                        <!-- (keydown.enter) = "enterPersonaInput()" dovrebbe essere superata da autoActiveFirstOption-->
+                        <mat-autocomplete autoActiveFirstOption #autoPersona="matAutocomplete" (optionSelected)="selected($event)">
+                            <!-- <mat-spinner *ngIf="nomeAlunnoIsLoading" class="is-loading" diameter="40"></mat-spinner> -->
+                            <mat-option *ngFor="let element of filteredPersone$ | async"  [value]="element.nome + ' ' + element.cognome" [id]="element.id.toString()" #option>
+                                <small>{{element.nome}} {{element.cognome}}</small>
+                            </mat-option>
+                        </mat-autocomplete>
+
+                        <mat-error *ngIf="form.controls['nomeCognomePersona'].hasError('unmatched')">
+                            Selezionare un valore dalla lista
+                        </mat-error>
+                    </mat-form-field>
+
+                    <button mat-mini-fab aria-label="Nuova anagrafica" matTooltip="Nuova anagrafica" class="_btn-add _btn-pos-right-2 " (click)="addPersona()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </form>
+
+    </mat-card-content>
+
+</mat-card>

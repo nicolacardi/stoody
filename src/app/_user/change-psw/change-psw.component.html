@@ -1,0 +1,41 @@
+
+<form [formGroup]="form" class="mt50">
+
+    <div class="center">
+
+
+        <mat-form-field>
+            <input matInput type="password" placeholder="Password Attuale" formControlName="password" #psw0>
+
+        </mat-form-field>
+        <mat-icon *ngIf="ckPsw[0]" class="_lightgrey _pos-absolute ml-20 mt15" (click)="toggleShow(0)">visibility_off</mat-icon>
+        <mat-icon *ngIf="!ckPsw[0]" class="_grey _pos-absolute ml-20 mt15" (click)="toggleShow(0)">visibility</mat-icon>
+    </div>
+
+    <div class="center">
+        <mat-form-field>
+            <input matInput type="password" placeholder="Nuova Password" formControlName="newPassword" #psw1>
+            <mat-error *ngIf="form.controls['newPassword'].dirty && (form.controls['newPassword'].hasError('minlength') || form.controls['newPassword'].hasError('maxlength'))">Password tra 4 a 19 caratteri</mat-error>
+            <mat-error *ngIf="form.controls['newPassword'].dirty && form.controls['newPassword'].hasError('not_changed')">Nuova password uguale alla precedente</mat-error>
+
+        </mat-form-field>
+        <mat-icon *ngIf="ckPsw[1]" class="_lightgrey _pos-absolute ml-20 mt15" (click)="toggleShow(1)">visibility_off</mat-icon>
+        <mat-icon *ngIf="!ckPsw[1]" class="_grey _pos-absolute ml-20 mt15" (click)="toggleShow(1)">visibility</mat-icon>
+
+    </div>
+    <div class="center">
+        <mat-form-field>
+            <input matInput type="password" placeholder="Ripeti Password" formControlName="confirmPassword" #psw2>
+            <mat-error *ngIf="form.controls['confirmPassword'].dirty && form.controls['confirmPassword'].hasError('not_the_same')">Le due password non corrispondono</mat-error>
+        </mat-form-field>
+        <mat-icon *ngIf="ckPsw[2]" class="_lightgrey _pos-absolute ml-20 mt15" (click)="toggleShow(2)">visibility_off</mat-icon>
+        <mat-icon *ngIf="!ckPsw[2]" class="_grey _pos-absolute ml-20 mt15" (click)="toggleShow(2)">visibility</mat-icon>
+
+    </div>
+</form>
+
+<div class="center mt10">
+    <button type="button" mat-button matSuffix class="w180px ma mt10" mat-stroked-button
+        [disabled]="!form.valid"
+        (click)="save()">Salva</button>
+</div>

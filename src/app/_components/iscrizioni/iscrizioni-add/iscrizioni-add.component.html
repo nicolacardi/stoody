@@ -1,0 +1,45 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form class="data-form flex-form" [formGroup] = "form">
+            <div class="center mt20 _pos-relative">
+                <img class="iconaMenuBig" src="./assets/alunnoPlus_black.svg">
+
+                <button mat-icon-button matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+    
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10" (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+            </div>
+            <br>
+            <mat-form-field class="h120px" >
+                <!-- <mat-label >Nome e Cognome Alunno</mat-label> -->
+                <mat-chip-grid #chipList aria-label="Selezione Alunni">
+                    <!-- [selectable]="selectable" -->
+                    <mat-chip-row *ngFor="let alunnoSelezionato of alunniSelezionati"
+                            [removable]="removable"
+                            (removed)="remove(alunnoSelezionato)">
+                        {{alunnoSelezionato}}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip-row>
+                </mat-chip-grid>
+
+                <input  placeholder = "digita qui nome o cognome alunno e seleziona"
+                        matInput
+                        cdkFocusInitial
+                        [matChipInputFor]="chipList"
+                        formControlName="nomeCognomeAlunno"
+                        [matAutocomplete]="auto" #nomeCognomeAlunno
+                        >
+
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                    <mat-progress-bar class="is-loading" *ngIf="alunniIsLoading" mode="indeterminate"></mat-progress-bar>
+                    <mat-option *ngFor="let element of (filteredAlunni$ | async)" [value]="element.persona.nome + ' ' + element.persona.cognome" [id]="element.id.toString()" #option>
+                        <small>{{element.persona.nome}} {{element.persona.cognome}}</small>
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+

@@ -1,0 +1,77 @@
+    <mat-card appearance="outlined" class="form-card">
+        <mat-card-content>
+            <form *ngIf="(classeSezioneAnno$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">            
+
+                <!-- ********************************    BOTTONI     ************************************* -->
+                <div class="center">
+                    <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" mat-dialog-close>
+                        <mat-icon>arrow_back</mat-icon>
+                    </button> -->
+                    <img class="iconaMenuBig" src="./assets/classe_edit_T.svg">
+
+                    <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                    <button *ngIf="classeSezioneAnnoID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="loadData()" >
+                        <mat-icon>restart_alt</mat-icon>
+                    </button>
+
+                    <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="save()" >
+                        <mat-icon>save</mat-icon>
+                    </button>
+
+                    <button *ngIf="classeSezioneAnnoID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                            [disabled]= "!form.valid" 
+                            (click)="delete()" >
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+                <mat-grid-list class="no-overflowx mt30" [cols]="breakpoint" rowHeight="60px">
+                    <mat-grid-tile>
+                        <mat-form-field  >
+                            <mat-label>Anno Scolastico</mat-label>
+                            <mat-select formControlName="annoID" (selectionChange)="updateAnnoSucc(selectAnno.value)" #selectAnno>
+                                <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                                    {{element.annoscolastico}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="form.controls['annoID'].errors?.['required']"> Campo obbligatorio</mat-error>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                
+                    <mat-grid-tile>
+                        <mat-form-field >
+                            <mat-label>Descrizione Classe</mat-label>
+                            <mat-select matNativeControl formControlName="classeID">
+                                <mat-option *ngFor="let element of (obsClassi$ | async)" [value]="element.id">
+                                    {{element.descrizione2}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-grid-tile>
+             
+                    <mat-grid-tile>
+                        <mat-form-field>
+                            <mat-label>Sezione</mat-label>
+                            <input matInput required type="text" placeholder="sezione" maxlength= "1" 
+                                    formControlName="sezione" #sezione>
+                        </mat-form-field>
+                    </mat-grid-tile>
+
+                    <mat-grid-tile>
+                        <mat-form-field >
+                            <mat-label>Classe Successiva</mat-label>
+                            <mat-select matNativeControl formControlName="classeSezioneAnnoSuccID">
+                                <mat-option *ngFor="let element of (obsClassiSezioniAnniSucc$ | async)" [value]="element.id">
+                                    {{element.descrizioneBreve}} {{element.sezione}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-grid-tile>
+                </mat-grid-list>
+            </form>
+        </mat-card-content>
+    </mat-card>

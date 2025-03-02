@@ -1,0 +1,44 @@
+
+<form [formGroup]="form">
+
+    <!-- <div class="mt20 image-cropper _bordered"> -->
+    <div class="w100px h100px ma-lr mt20 br200 shadowed" >
+        <img #myImg *ngIf="imgFile" class="w100px  br200 _bordered " [src]="imgFile">
+    </div>
+    <!-- </div> -->
+
+    <div class="flex-container form-group mt20 ">
+        <div class="form-group">
+            <input type="file" class="form-control" id="file" accept=".gif,.jpg,.jpeg,.png" formControlName="file" (change)="onImageChange($event)"hidden #selectFile>
+            <button type="button" mat-button matSuffix class="w180px ma" mat-stroked-button (click)="selectFile.click()" >Seleziona Immagine</button>
+            <!-- <div *ngIf="uf.file.touched && uf.file.invalid" class="alert alert-danger">
+                <div *ngIf="uf.file.errors.required">Image file is required.</div>
+            </div> -->
+        </div>
+    </div>
+
+    <div class="center mt10">
+        <mat-form-field>
+            <mat-label>Nome Utente</mat-label>
+            <input matInput type="text" placeholder="Nome Utente" formControlName="username" >
+        </mat-form-field>
+    </div>
+    <!-- <div class="center">
+        <mat-form-field>
+            <input matInput type="text" placeholder="Nome e Cognome" formControlName="fullname">
+        </mat-form-field>
+    </div>
+    <div class="center">
+        <mat-form-field>
+            <input matInput type="text" placeholder="e-mail" formControlName="email">
+        </mat-form-field>
+    </div> -->
+
+    <app-persona-form 
+        [personaID] = "currUser.personaID" >
+    </app-persona-form>
+</form>
+
+<div class="center mt10">
+    <button type="button" mat-button matSuffix class="w180px ma mt10" mat-stroked-button (click)="save()">Salva</button>
+</div>

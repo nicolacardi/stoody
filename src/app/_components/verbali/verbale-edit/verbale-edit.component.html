@@ -1,0 +1,118 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(obsVerbale$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/verbale_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button  mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+            <mat-grid-list [cols]="1" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field >
+                        <input matInput formControlName = "nomeCognome" [disabled] = "true" placeholder="Creato da:"  >
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list class="no-overflowx" [cols]="3" rowHeight="80px">
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Tipo Verbale</mat-label>
+                        <mat-select required formControlName="tipoVerbaleID">
+                            <mat-option *ngFor="let element of (obsTipiVerbale$ | async)" [value]="element.id">
+                            {{element.descrizione}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field >
+                        <input matInput required formControlName = "dtVerbale" placeholder="Data del Verbale" [matDatepicker]= "dpDtVerbale"  #date >
+                        <mat-datepicker-toggle matSuffix [for]="dpDtVerbale" ></mat-datepicker-toggle>
+                        <mat-datepicker #dpDtVerbale  ></mat-datepicker>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field >
+                        <input matInput required formControlName = "titolo" placeholder="titolo"  >
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-grid-list class="no-overflowx" [cols]="3" rowHeight="80px">
+                
+                <mat-grid-tile >
+                    <mat-form-field>
+                        <mat-label>Per la Scuola presenti</mat-label>
+                        <mat-select required formControlName="personale" multiple>
+                            <mat-option *ngFor="let element of (obsPersonaleScuola$ | async)" [value]="element.id">
+                            {{element.nome}} {{element.cognome}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile [ngClass]="{'invisible': !mostraClassiEGenitori}">
+                    <mat-form-field>
+                        <mat-label>Classe</mat-label>
+                        <mat-select formControlName="classeSezioneAnnoID">
+                            <mat-option *ngFor="let element of (obsClassiSezioniAnni$ | async)" [value]="element.id">
+                            {{element.classeSezione.classe!.descrizioneBreve}} {{element.classeSezione.sezione}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile [ngClass]="{'invisible': !mostraClassiEGenitori}">
+                    <mat-form-field>
+                        <mat-label>Genitori presenti</mat-label>
+                        <mat-select formControlName="genitori" multiple>
+                            <mat-option *ngFor="let element of (obsGenitoriClasse$ | async)" [value]="element.id">
+                            {{element.nome}} {{element.cognome}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+            </mat-grid-list>
+
+
+            <mat-grid-list class="no-overflowx" [cols]="1" rowHeight="80px">
+                <mat-grid-tile>
+                    <mat-form-field class="w400px">
+                        <textarea   matInput 
+                                    required 
+                                    type="text" 
+                                    placeholder="Contenuti" 
+                                    formControlName="contenuti"
+                                    class="resize-vertical-only max-height">
+                        </textarea>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </form>
+    </mat-card-content>

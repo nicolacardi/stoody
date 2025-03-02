@@ -1,0 +1,59 @@
+let tagDocument : RPT_TagDocument[] = [{
+      templateName: "RegistroClasseGiorno",
+      tagFields:
+      [
+        { tagName: "pageBreak",      tagValue: "false"},
+
+      ],
+      tagTables: [
+          {
+            tagTableTitle: "TabellaGiornoOrario",
+            tagTableRows:
+            [
+              {
+                tagFields:
+                [
+                  { tagName: "Dalle", tagValue: "9:00"},
+                  { tagName: "Alle", tagValue: "10:00"},
+                ]
+              },
+
+            ]
+          }
+         ]
+    },
+    {
+      templateName: "RegistroClasseGiorno",
+      tagFields:
+      [
+        { tagName: "pageBreak",      tagValue: "true"},
+
+      ],
+      tagTables: [
+          {
+            tagTableTitle: "TabellaGiornoOrario",
+            tagTableRows:
+            [
+              {
+                tagFields:
+                [
+                  { tagName: "Dalle", tagValue: "11:30"},
+                  { tagName: "Alle", tagValue: "12:35"},
+                  { tagName: "Materia", tagValue: "Storia"},
+                  { tagName: "Docente", tagValue: "Carlo Gazzola"},
+                  { tagName: "ArgomentoECompiti", tagValue: "Studiare i Romani da Cesare alla fine dell'Impero"}
+                ]
+              },
+              {
+                tagFields:
+                [
+                  { tagName: "Dalle", tagValue: "13:30"},
+                  { tagName: "Alle", tagValue: "15:35"},
+                ]
+              },
+              
+
+            ]
+          }
+         ]
+    }]

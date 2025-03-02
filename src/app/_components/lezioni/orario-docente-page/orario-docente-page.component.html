@@ -1,0 +1,20 @@
+<h1 class="_titolo-pagina _pos-absolute " style="margin-left: 45%">Orario Docente</h1>
+<form [formGroup] = "form">
+    <mat-form-field class="ml20 topZIndex mt20"  >
+
+        <mat-label>Docente</mat-label>
+        <mat-select formControlName="selectDocente" #selectDocente>
+        <!-- [compareWith]="compareObjects"  compareWith sembra la soluzione per impostare il valore correttamente -->
+        <mat-option *ngFor="let element of (obsDocenti$ | async)" [value]="element.id">
+            {{element.persona!.cognome + ' '+ element.persona!.nome }}
+        </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+<app-lezioni-calendario 
+    [docenteID] = "selectDocente.value" 
+    [dove]="'orarioDocente'" #orarioDocenteDOM>
+</app-lezioni-calendario>
+
+</form>

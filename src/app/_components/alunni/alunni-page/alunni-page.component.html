@@ -1,0 +1,43 @@
+<button mat-mini-fab aria-label="Strumenti" matTooltip="Strumenti" class="_btn-toolbar _btn-pos-top-1" (click)="toolSidenav.toggle();" >
+    <mat-icon>construction</mat-icon>
+</button>
+
+<button mat-mini-fab aria-label="Nuova anagrafica" matTooltip="Nuova anagrafica" class="_btn-add _btn-pos-right-1 _btn-pos-top-1" (click)="addRecord()">
+    <mat-icon>add</mat-icon>
+</button>
+
+<button mat-mini-fab aria-label="Filtri Avanzati" matTooltip="Filtri Avanzati" class="_btn-add _btn-pos-right-2 _btn-pos-top-1" [ngClass]="{'_btn-add-red': !appalunnifilter.formClean}"   (click)="filterSidenav.toggle();" >
+    <mat-icon >filter_alt</mat-icon>
+</button>
+<!-- era mat-drawer-container style="min-height: 90%"   -->
+
+<mat-drawer-container [hasBackdrop]="false" style="display: inline;" >
+    
+    <mat-drawer position="end" #filterSidenav class="filterSidenav"  [mode]="'side'">
+        <!-- app alunni filter deve dialogare con il suo "sibling" app alunni list, allora metto un riferimento (#appalunnilist) e passo una variabile in input a app-alunni-filter -->
+        <app-alunni-filter [alunniListComponent] = "appalunnilist" #appalunnifilter></app-alunni-filter>    
+    </mat-drawer>
+
+    <mat-drawer position="start" #toolSidenav class="toolSidenav"  [mode]="'side'">
+        <app-toolbar [rptTitle]="appalunnilist.rptTitle" 
+                     [rptFieldsToKeep]="appalunnilist.rptFieldsToKeep" 
+                     [rptColumnsNames]="appalunnilist.rptColumnsNames" 
+                     [rptData]="appalunnilist.matDataSource.data"
+                     [rptFileName]="appalunnilist.rptFileName"
+                     [columnsComponent] = "appalunnilist"
+                     [tableName] = "'AlunniList'"
+                     (refreshColumns)="refreshChildCols()"
+                     [emailsYN] = "true"
+                     [emailAddresses] = "appalunnilist.emailAddresses"
+                     >
+        </app-toolbar>
+    </mat-drawer>
+
+    <mat-drawer-content class="no-overflow">
+        <app-alunni-list [alunniFilterComponent] = "appalunnifilter"
+                         [context] = "'alunni-page'"
+                         (openDrawer) = "openDrawer()"
+                         #appalunnilist >
+        </app-alunni-list>
+    </mat-drawer-content>
+</mat-drawer-container>

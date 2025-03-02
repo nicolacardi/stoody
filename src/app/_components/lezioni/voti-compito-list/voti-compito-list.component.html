@@ -1,0 +1,45 @@
+
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table mat-table class="_table-row-low transparent w100" [dataSource]="matDataSource"  matSort>
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+
+        <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Nome</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome"></td>
+        </ng-container>
+        
+        <ng-container matColumnDef="cognome">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Cognome</th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.cognome"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="voto">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Voto</th>
+            <td mat-cell *matCellDef="let element">
+                <input matInput type="number" placeholder="voto" [value]="element.voto" 
+                      (change)="changeVoto(element, voto.value)" 
+                      maxlength="2" #voto>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="giudizio">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Giudizio</th>
+            <td mat-cell *matCellDef="let element">
+                <input matInput type="text" placeholder="giudizio" 
+                      [value]="element.giudizio" 
+                      (change)="changeGiudizio(element, giudizio.value)" 
+                      #giudizio>
+            </td>
+        </ng-container>
+        
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>  
+
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns"
+            class="element-row">
+        </tr>
+
+    </table>

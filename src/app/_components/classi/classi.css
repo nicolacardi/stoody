@@ -1,0 +1,16 @@
+
+  /* Bordo inferiore nelle checkbox */
+  th.mat-mdc-header-cell._no-bottom-border, td.mat-mdc-cell._no-bottom-border {
+    border-bottom-width: 0px !important;
+  }
+
+  ._highlightStato{
+    color: red;
+    font-weight: bold;
+  }
+  
+
+:host ::ng-deep .headerColored .mat-mdc-header-row {
+  background-color: #f9f9f9;
+}
+

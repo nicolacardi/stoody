@@ -1,0 +1,62 @@
+    <h1 *ngIf="showPageTitle" class="_titolo-pagina">Note Disciplinari</h1>
+
+    <!-- **************************   FILTER   ******************* -->
+    <mat-form-field *ngIf="showTableRibbon" class="ml20 topZIndex">
+        <mat-label>Filtro</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="" #filterInput>
+    </mat-form-field>    
+    
+    <!-- **************************   PAGINATOR   ******************* -->
+    <!-- <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator> -->
+
+    <!-- **************************   MAT-TABLE   ******************* -->
+    <table mat-table matSort class="_table-row-low transparent w100" 
+        [dataSource]="matDataSource"
+        cdkDropList
+        cdkDropListOrientation="horizontal"
+        (cdkDropListDropped)="drop($event)">
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="actionsColumn">
+            <th mat-header-cell *matHeaderCellDef cdkDrag></th>
+            <td mat-cell  *matCellDef="let element;  let j = index;"> 
+                <img (click)="openDetail(element)" class="iconaMenu pointer" src="./assets/nota_edit.svg">
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="docente">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Docente<mat-icon class="iconaFilter" *ngIf="filterValues.docente">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.persona.nome + ' ' + element.persona.cognome) | highlight:filterValue"></td>
+        </ng-container>
+        
+
+        <ng-container matColumnDef="personaAlunno">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Alunno<mat-icon class="iconaFilter" *ngIf="filterValues.alunno">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="(element.personaAlunno.nome+ ' '+ element.personaAlunno.cognome | highlight:filterValue)"></td>
+            <!-- <td mat-cell *matCellDef="let element" [innerHTML]="'ciao'"></td> -->
+
+        </ng-container>
+
+        <ng-container matColumnDef="dtNota">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Data Nota<mat-icon class="iconaFilter" *ngIf="filterValues.dtNota">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.dtNota | highlightDate:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="periodo">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Quadrimestre<mat-icon class="iconaFilter" *ngIf="filterValues.periodo">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.periodo | highlight:filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="nota">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header class="ellipsisColumn">Nota<mat-icon class="iconaFilter" *ngIf="filterValues.nota">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.nota | highlight:filterValue"></td>
+        </ng-container>
+
+
+        
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>
+        
+        <tr mat-row *matRowDef="let element;columns: displayedColumns" class="element-row" ></tr>
+    </table>
+
+

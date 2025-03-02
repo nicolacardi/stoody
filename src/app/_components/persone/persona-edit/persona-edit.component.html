@@ -1,0 +1,99 @@
+    <mat-card appearance="outlined" class="form-card">
+        <mat-card-content *ngIf="(persona$ | async) || emptyForm">
+
+<!-- ********************************    BOTTONI     ************************************* -->
+            <div  class="center">
+
+                <img class="iconaMenuBig" src="./assets/persona_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" [mat-dialog-close]="persona$|async"></button>
+
+                <button *ngIf="personaID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10" (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"  
+                        [disabled] = "disabledSave"
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+<!-- 
+                [disabled]="!apppersonaform.form.valid
+                || ((showAlunnoForm && appalunnoform) ? !appalunnoform.form.valid : false)
+                || ((showGenitoreForm) ?  !appgenitoreform?.form?.valid: false) "
+
+                [disabled]="!apppersonaform.form.valid || 
+                (showAlunnoForm && appalunnoform)  ?   !appalunnoform?.form?.valid : false || 
+                (showGenitoreForm && appgenitoreform) ?    !appgenitoreform?.form?.valid: false"  
+ 
+                [disabled]="!apppersonaform.form.valid || 
+                (apppersonaform.showAlunnoForm && appalunnoform && !appalunnoform?.form?.valid) ||
+                (apppersonaform.showGenitoreForm && appgenitoreform && !appgenitoreform?.form?.valid)" 
+-->
+
+                <button *ngIf="personaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10" (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+                
+            </div>
+            
+            <!-- ********************************       ANAGRAFICA      *********************************** -->
+
+            <!-- <div class="mt20"> -->
+            <form [formGroup] = "form">
+                <div>
+                    <mat-grid-list [cols]="1" class="_low-list-row no-overflowx mt20" rowHeight="60px">
+                        <mat-grid-tile>
+                            <mat-form-field >
+                                <mat-label>Ruoli</mat-label>
+                                <mat-select matNativeControl formControlName="_lstRoles" multiple #selectroles >
+                                    <mat-option (onSelectionChange)="changeOptionRoles($event)" *ngFor="let element of (obsTipiPersona$ | async)" 
+                                        [value]="element.id" 
+                                        [disabled] ="currUser.personaID == personaID  || !currUser.persona!._LstRoles!.includes('ITManager') ">
+                                        {{element.descrizione}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </div>
+            </form>
+
+            <app-persona-form #apppersonaform
+                [personaID] = "personaID"
+                (formChanged) = "refreshSaveDisable()">  
+            </app-persona-form>
+            <!-- (formValid)="formPersonaValidEmitted($event)" -->
+
+            <div class="_bordered-grey mt5" *ngIf="showGenitoreForm" >
+                <app-genitore-form #appgenitoreform
+                    (deletedRole) ="deletedRole($event)"
+                    (formChanged) = "refreshSaveDisable()" >
+                </app-genitore-form>
+                <!-- (formValid)="formGenitoreValidEmitted($event)" -->
+            </div>
+            <div class="_bordered-grey mt5" *ngIf="showAlunnoForm" >
+                <app-alunno-form #appalunnoform
+                    (deletedRole) ="deletedRole($event)"
+                    (formChanged) = "refreshSaveDisable()">
+                </app-alunno-form>
+                <!-- (formValid)="formAlunnoValidEmitted($event)" -->
+            </div>
+
+            <div class="_bordered-grey mt5" *ngIf="showDocenteForm" >
+                <app-docente-form #appdocenteform
+                    (deletedRole) ="deletedRole($event)"
+                    (formChanged) = "refreshSaveDisable()">
+                </app-docente-form>
+            </div>
+
+        <!--
+            <div class="_bordered-grey mt5" *ngIf="showDocenteForm" >
+                <app-docente-form #appdoccenteform
+                    (deletedRole) ="deletedRole($event)"
+                    (formChanged) = "refreshSaveDisable()">
+                </app-docente-form>
+            </div>
+        -->
+        </mat-card-content>
+    </mat-card>

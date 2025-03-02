@@ -1,0 +1,123 @@
+/* ALUNNO-EDIT */
+
+
+
+
+  /* genitori dell'alunno selezionato */
+  ._genitori-container{
+    height: 150px;
+    overflow: auto;
+  }
+
+  /* elenco tutti i genitori da cui attingere */
+  ._genitori-list-container {
+    height: 240px;
+    overflow: auto;
+  }
+
+    /* genitori dell'alunno selezionato */
+    ._classi-attended-container{
+      height: 150px;
+      overflow: auto;
+    }
+  
+    ._documenti-container{
+      height: 450px;
+      overflow: auto;
+    }
+
+    /* elenco tutti i genitori da cui attingere */
+    ._classi-list-container {
+      height: 240px;
+      overflow: auto;
+    }
+    
+  /* elenco classi frequentate */
+  ._classi-attended-container-vertical {
+    height: 500px;
+    width: 480px;
+    overflow: auto;
+  }
+
+  /* elenco tutte le classi */
+  ._classi-list-container-vertical {
+    height: 450px;
+    width: 280px;
+    overflow: auto;
+  }
+
+  /*ACCORDION VERTICALE MOLTO COMPLICATO: l'accordion è verticale e deve aprirsi verso destra*/
+  /* td accordion verticale elenco classi */
+  ._classi-list-td-vertical-accordion {
+    vertical-align: top;
+    padding-top: 12px;                          /*questo è il padding superiore...*/
+    max-width: 300px !important;                /*larghezza max dell'accordion: va limitata altrimenti compare l'overflow x */
+  }
+
+  /* accordion verticale elenco classi */
+  /*questo accordion è verticale e non come standard orizzontale: viene prima girato a -90 e traslato a -450*/
+  /*poi viene ri-ruotato a 90: è un espediente per farlo funzionare in qs modo*/
+  ._rotated-accordion {
+    display: block;
+    transform-origin: top left;
+    transform: rotate(-90deg) translateX(-400px); /* rotate and position it; translateX value corresponds to panel height */
+    width: 400px;                                 /* this will be the height of the accordion (inversed due to rotation) */
+  }
+
+  ._panel-content {
+    transform-origin: top left;
+    transform: rotate(90deg); /* rotate back Questo è un espediente per avere l'accordion verticale e il panel prizzontale*/
+    margin-left: 100%;        /* position it */
+    height: 398px;            /* real height of the content */
+    width: 280px;             /* real width of the content */
+  }
+
+  :host ::ng-deep  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+  
+  .mat-expansion-panel {
+    max-height: 360px;        /* this will be the width of the panel (inversed due to rotation) */
+  }
+
+  /* voglio togliere la box-shadow dal mat-expansion-panel*/
+  .mat-expansion-panel:not([class*=mat-elevation-z]) {
+    box-shadow: none;
+  }
+
+  /* larghezza delle tab in alunno edit */
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  :host ::ng-deep .mat-tab-label, :host ::ng-deep.mat-tab-label-active{
+    min-width: 15%!important;
+    padding: 3px!important;
+  }
+
+  .mat-mdc-card {
+    padding-bottom: 0px;
+  }
+
+
+
+
+    /* low-list-row è una classe creata per  ridurre l'altezza dei form:
+    /* attenzione però: toglie il mat-hint sottostante !!!*/
+
+    :host ::ng-deep ._low-list-row .mat-mdc-text-field-wrapper {
+      height: 50px;
+    }
+
+    :host ::ng-deep ._low-list-row .mat-grid-tile {
+        height: 55px !important;
+    }
+
+    :host ::ng-deep ._low-list-row {
+        height: 55px !important;
+    }
+
+
+    :host ::ng-deep .headerColored .mat-mdc-header-row {
+      background-color: #f9f9f9;
+    }
+
+

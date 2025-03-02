@@ -1,0 +1,49 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form class="data-form flex-form" [formGroup] = "form">
+            <div class="center mt20 _pos-relative">
+                <img class="iconaMenuBig" src="./assets/docentePlus_black.svg">
+
+                <button mat-icon-button matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+    
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                    (click)="save()" [disabled]="materiaSelectedID == undefined || docenteSelectedID == undefined">
+                        <mat-icon>save</mat-icon>
+                </button>
+            </div>
+            <br>
+            <mat-label class="center">AGGIUNTA DOCENZA PER LA CLASSE:</mat-label>
+            <mat-label class="center" *ngIf="classeSezioneAnno">{{classeSezioneAnno.classeSezione.classe!.descrizione2}} {{classeSezioneAnno.classeSezione.sezione}}</mat-label>
+            <!-- <mat-label class="center fs12">(sono disponibili solo le materie per le quali <br>è stato definito il tipo di voto nelle impostazioni)</mat-label> SE SOLO MATERIE CON TIPO VOTO-->
+            <mat-form-field  class="ml20 mt20 topZIndex">
+                <mat-label>Materia</mat-label>
+                <mat-select formControlName="selectMateria">
+                    <!-- <mat-option *ngFor="let element of (obsClassiAnniMaterie$ | async)" [value]="element.materiaID"> SE SOLO MATERIE CON TIPO VOTO-->
+                    <mat-option *ngFor="let element of (obsMaterie$ | async)" [value]="element.id">
+                        {{element.descrizione}}
+                        <!-- {{element.materia!.descrizione}} SE SOLO MATERIE CON TIPO VOTO-->
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            
+
+            <mat-form-field >
+                <mat-label >Nome e Cognome Docente</mat-label>
+                <input  placeholder = "digita e seleziona"
+                        matInput
+                        cdkFocusInitial
+                        formControlName="nomeCognomeDocente"
+                        [matAutocomplete]="auto" #nomeCognomeDocente>
+
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="docenteSelected($event)">
+                    <mat-progress-bar class="is-loading" *ngIf="docentiIsLoading" mode="indeterminate"></mat-progress-bar>
+                    <mat-option *ngFor="let element of (obsFilteredDocenti$ | async)" [value]="element.persona.nome + ' ' + element.persona.cognome" [id]="element.id.toString()" #option>
+                        <small>{{element.persona!.nome}} {{element.persona!.cognome}}</small>
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+    </mat-card-content>
+</mat-card>
+
+

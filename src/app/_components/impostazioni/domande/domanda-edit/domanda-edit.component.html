@@ -1,0 +1,211 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(domanda$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+            <div class="center">
+
+                <img class="iconaMenuBig" src="./assets/domanda_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="data.domandaID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <button *ngIf="data.domandaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+
+            <mat-grid-list class="mt10" [cols]="3" rowHeight="100px" >
+                <!-- <mat-grid-tile>
+                    <quill-editor
+
+                        placeholder="Inserire il proprio testo..."
+                        formControlName="testo"
+                        [customOptions]="customOptions"
+                        [modules] = "modules"
+                        #QuillEditor>
+                        
+                        <div quill-editor-toolbar>
+                            <span class="ql-formats">
+                                <select class="ql-font" [title]="'Carattere'">
+                                </select>
+                            </span>
+
+                            <span class="ql-formats">
+                            <button class="ql-bold" [title]="'Grassetto'"></button>
+                            <button class="ql-italic" [title]="'Corsivo'"></button>
+                            <button class="ql-underline" [title]="'Sottolineato'"></button>
+                            <button class="ql-strike" [title]="'Barrato'"></button>
+                            </span>
+                        
+                            <span class="ql-formats">
+                                <button class="ql-list ordered" value="ordered" [title]="'Elenco Numerato'"></button>
+                                <button class="ql-list bullet" value="bullet" [title]="'Elenco Puntato'"></button>
+
+                            </span>
+                            <span class="ql-formats">
+                            <select class="ql-size" [title]="'Dimensione Font'" formControlName="fontSize" (change)="changeFontSize()">
+                                <option value="10px"></option>
+                                <option value="12px"></option>
+                                <option value="14px"></option>
+                                <option value="16px"></option>
+                                <option value="18px"></option>
+                                <option value="20px"></option>
+                                <option value="22px"></option>
+                                <option value="24px"></option>
+                            </select>
+                            </span>
+                        
+                            <span class="ql-formats">                      
+                                <select class="ql-align" [title]="'Allineamento'" formControlName="alignment" (change)="changeAlignment()">
+                                </select>
+                            </span>
+
+                            <span class="ql-formats">
+                                <button class="ql-clean" [title]="'Pulizia Formato'"></button>
+                            </span>
+
+                        </div>
+
+                    </quill-editor>
+                </mat-grid-tile> -->
+                <mat-grid-tile>
+                    <mat-form-field  >
+                        <mat-label>Contesto</mat-label>
+                        <mat-select matTooltip="Contesto nel quale verrà visualizzata la domanda" formControlName="contesto">
+                            <mat-option value="Consensi">Consensi</mat-option>
+                            <mat-option value="DatiEconomici">Dati Economici</mat-option>
+                            <mat-option value="ConsiglioOrientativo">Cons. Orientativo</mat-option>
+                            <mat-option value="CertificazioneCompetenze">Cert. Competenze</mat-option>
+
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field  >
+                        <mat-label>Tipo</mat-label>
+                        <mat-select matTooltip="Tipo di risposta attesa" formControlName="tipo">
+                            <mat-option value="Scelta Singola" >Scelta Singola</mat-option>
+                            <mat-option value="Scelta Multipla" >Scelta Multipla</mat-option>
+                            <mat-option value="Risposta Libera" >Risposta Libera</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+
+                <mat-grid-tile >
+                    <mat-form-field>
+                        <mat-label>Codice Report</mat-label>
+                        <input matInput type="text" placeholder="Codice Report" matTooltip="Codice da utilizzare nel report" formControlName="titolo">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+
+                <mat-grid-tile colspan = "3">
+                    <mat-form-field class="w100 h100px pl5 pt5" appearance="outline">
+                        <mat-label>Domanda</mat-label>
+                        <textarea required class="w300px  _noresize" placeholder="Domanda" matInput formControlName="domanda"></textarea>
+                    </mat-form-field>
+                </mat-grid-tile>
+
+            </mat-grid-list>
+            <mat-grid-list class="mt10" [cols]="3" rowHeight="60px" *ngIf="form.controls['tipo'].value !='Risposta Libera'">
+
+                <mat-grid-tile colspan="3" class="center">
+                    Indicare di seguito le Opzioni disponibili (da 0 a 9)<br>
+                    Per un consenso obbligatorio inserire 1 opzione<br>
+                    Per un consenso non obbligatorio inserire 2 opzioni (ad es. Si/No)
+                </mat-grid-tile>
+                <!-- <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="number" required placeholder="Numero di Opzioni (1-5)" formControlName="numOpzioni" #nome>
+                    </mat-form-field>
+                </mat-grid-tile> -->
+
+
+
+                <mat-grid-tile >
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 1" formControlName="testo1">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 2" formControlName="testo2">
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 3" formControlName="testo3">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 4" formControlName="testo4">
+                    </mat-form-field>
+                </mat-grid-tile>
+                
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 5" formControlName="testo5">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 6" formControlName="testo6">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 7" formControlName="testo7">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 8" formControlName="testo8">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <input matInput type="text" placeholder="opzione 9" formControlName="testo9">
+                    </mat-form-field>
+                </mat-grid-tile>
+
+            </mat-grid-list>
+
+
+            <mat-grid-list class="mt10" [cols]="3" rowHeight="60px" >
+                <mat-grid-tile colspan="3" >
+                    <mat-form-field  >
+                        <mat-label>File Allegato</mat-label>
+                        <mat-select formControlName="risorsaID">
+                            <mat-option>-</mat-option>
+                            <mat-option *ngFor="let element of (obsRisorse$ | async)" [value]="element.id">
+                                {{element.nomeFile}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+        </form>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,142 @@
+ <!-- **************************   MAT-TABLE   ******************* -->
+    
+    <table mat-table class="_table-row-low transparent"   [dataSource]="matDataSource"  >
+
+        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+        <ng-container matColumnDef="materia">
+            <th mat-header-cell *matHeaderCellDef class="w125px">Materia</th>
+            <td  mat-cell *matCellDef="let element">{{element.materia.descrizione}}</td>
+        </ng-container>
+
+<!--A seconda del tipo di voto (1,2,3) compare la input, la mat select oppure l'icona del (+) che apre la finestra di dialogo degli obiettivi-->
+        <ng-container matColumnDef="multiVoto">
+            <th mat-header-cell *matHeaderCellDef class="w125px" class="_border-left-lightgrey">Voto</th>
+            <td mat-cell *matCellDef="let element" class="_border-left-lightgrey">    
+                
+                <input *ngIf="element.tipoVotoID == 1 && iscrizioneID>0" 
+                        matInput type="number" placeholder="voto" 
+                        [value]="element.voto" 
+                        [disabled]="chiusa"
+                        (change)="changeVoto(element, voto.value)" 
+                        maxlength="2" #voto>
+
+                <mat-select class="fs12"   
+                    *ngIf="element.tipoVotoID == 2 && iscrizioneID>0"  
+                    [value]="element.tipoGiudizioID? element.tipoGiudizioID : 1" 
+                    placeholder="giudizio"  
+                    [disabled]="chiusa"
+                    (selectionChange)="changeSelectGiudizio(element, selectGiudizio.value)" #selectGiudizio> 
+                    <mat-option *ngFor="let giudizio of (obsTipiGiudizio$ | async)"  [value]="giudizio.id">
+                        {{giudizio.descrizione}}
+                    </mat-option>
+                </mat-select>
+
+                <mat-icon *ngIf="element.tipoVotoID == 3 && iscrizioneID>0" class="pointer" (click) = "openObiettivi(element)">add_circle_outline</mat-icon>
+                <mat-label class="fs10" *ngIf="element.tipoVotoID == 3 && iscrizioneID>0" [ngClass]="{'_col-red': element.countVotiObiettivi<element.countTotObiettivi}">{{element.countVotiObiettivi}}/{{element.countTotObiettivi}} </mat-label> 
+            
+                <mat-label class="_warning" *ngIf="element.tipoVotoID == null">Indicazione<br>tipo voto<br> mancante</mat-label>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="note">
+            <th mat-header-cell *matHeaderCellDef >Commento</th>
+            <td mat-cell  class="h60px _td-note1" *matCellDef="let element">
+                <textarea *ngIf="iscrizioneID>0" 
+                    class="h50px _noresize _text-area-note1" 
+                    style="min-width: 200px;"
+                    matInput 
+                    [disabled]="chiusa"
+                    (change)="changeNote(element, note.value)" #note>{{element.note}}</textarea>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="header-row-blank">
+            <th mat-header-cell *matHeaderCellDef 
+                [attr.colspan]="1"> 
+            </th>
+        </ng-container>
+
+        <ng-container matColumnDef="header-row-Quad">
+            <th mat-header-cell *matHeaderCellDef 
+                [attr.colspan]="2"
+
+                class="_border-left-lightgrey"
+                > 
+                <div  style="display: flex;justify-content: space-between;">
+                    <div>
+                        {{periodo}}° QUADRIMESTRE
+
+                        <div class="fs12">
+                            <!-- <mat-form-field class="fs12 center w125px" appearance="outline"> -->
+                                <!-- <mat-label>Data</mat-label> -->
+                                <!-- <input matInput placeholder="data Pagella" >
+                            </mat-form-field> -->
+
+
+                            <form  [formGroup] = "form">
+                                <mat-form-field class="w70">
+                                    <!-- <mat-label>Data Pagella</mat-label> -->
+                                    <input matInput #dtNascita
+                                        formControlName="dtDocumento"  
+                                        [matDatepicker]= "dpDtDocumento"
+                                        (dateChange) = "changeData($event)"
+                                                                         
+                                        >
+                                    <mat-datepicker-toggle matSuffix [for]="dpDtDocumento" ></mat-datepicker-toggle>
+                                    <mat-datepicker #dpDtDocumento  ></mat-datepicker>
+                                </mat-form-field>
+                                <br>
+                                <mat-label>Giudizio Complessivo Quadrimestre</mat-label>
+                                <br>
+                                <textarea class="h50px w100 _noresize _text-area-note1" formControlName="giudizioQuad"
+                                
+                                (change)="changeGiudizioQuad($event)"
+                                ></textarea>
+                            </form>
+                            
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: row; align-items: flex-start; text-align: right;">
+                        <button mat-mini-fab aria-label="Scarica Anteprima" matTooltip="Scarica Anteprima" class="_btn-blu" (click)="downloadPreviewPagella()">
+                            <mat-icon>file_download</mat-icon>
+                        </button>
+
+                        <div class="ml5">
+                            <ng-container *ngIf="!chiusa">
+                                <button mat-mini-fab aria-label="Chiudi Pagella" matTooltip="Chiudi Pagella" class="_btn-blu" (click)="chiudiDocumento()">
+                                    <img class="iconaMini pointer" src="./assets/unlocked.svg">
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="chiusa">
+                                <button mat-mini-fab aria-label="Apri Pagella" matTooltip="Apri Pagella" class="_btn-red" (click)="apriDocumento()">
+                                    <img class="iconaMini pointer" src="./assets/lock.svg">
+                                </button>
+                            </ng-container>
+                        </div>
+
+
+                    </div>
+                </div>
+                <!-- <mat-slide-toggle color="primary" (change)="chiudiPagella($event)"><span class="fs12">Pagella chiusa</span></mat-slide-toggle> -->
+                
+
+            </th>
+        </ng-container>
+
+        <!-- **************************   MAT-HEADER-ROW   ******************* -->
+        <tr  mat-header-row *matHeaderRowDef="headerRows"></tr>
+        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>  
+
+        <!-- **************************   MAT-ROW   ******************* -->
+        <tr mat-row *matRowDef="let element;columns: displayedColumns"
+            class="element-row">
+        </tr>
+
+    </table>
+
+    
+<!-- <mat-form-field *ngIf="dtIns" class="fs14 center w125px _pos-absolute _btn-pos-right-4" appearance="outline">
+    <mat-label>Data Pagella</mat-label>
+    <input matInput placeholder="data Pagella" [value]="dtIns|date:'dd/MM/yyyy'" (change)="aggiornaData()">
+</mat-form-field> -->
