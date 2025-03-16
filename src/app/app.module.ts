@@ -225,8 +225,6 @@ import { IscrizioneRisposteComponent }          from './_components/procedura-is
 import { RisorsePageComponent }                 from './_components/impostazioni/risorse/risorse-page/risorse-page.component';
 import { RisorseListComponent }                 from './_components/impostazioni/risorse/risorse-list/risorse-list.component';
 import { RisorsaEditComponent }                 from './_components/impostazioni/risorse/risorsa-edit/risorsa-edit.component';
-
-
 import { AssociazioneComponent }                from './_components/procedura-iscrizione/associazione/associazione.component';
 import { SociListComponent }                    from './_components/soci/soci-list/soci-list.component';
 import { SocioEditComponent }                   from './_components/soci/socio-edit/socio-edit.component';
@@ -237,10 +235,7 @@ import { ParametriPageComponent }               from './_components/impostazioni
 import { ParametriListComponent }               from './_components/impostazioni/parametri/parametri-list/parametri-list.component';
 import { ParametriFilterComponent }             from './_components/impostazioni/parametri/parametri-filter/parametri-filter.component';
 import { ParametroEditComponent }               from './_components/impostazioni/parametri/parametro-edit/parametro-edit.component';
-
 import { RisorsaCSAEditComponent }              from './_components/impostazioni/risorse-csa/risorsa-csa-edit/risorsa-csa-edit.component';
-
-
 import { AnnoScolasticoPageComponent }          from './_components/anni-scolastici/annoscolastico-page/annoscolastico-page.component';
 import { AnniScolasticiListComponent }          from './_components/anni-scolastici/anniscolastici-list/anniscolastici-list.component';
 import { AnnoscolasticoEditComponent }          from './_components/anni-scolastici/annoscolastico-edit/annoscolastico-edit.component';
