@@ -4,7 +4,7 @@ import { AppComponent } from './app/app.component';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
 
-
+//AS
 //il metodo che segue presume tutti i component standalone: true e NON usa app.module
 // bootstrapApplication(AppComponent, appConfig)
 //   .catch((err) => console.error(err));  
