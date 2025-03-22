@@ -69,6 +69,7 @@
             <div class="_bordered-grey mt5" *ngIf="showGenitoreForm" >
                 <app-genitore-form #appgenitoreform
                     [genitoreID] = "genitoreID"
+                    [personaID] = "personaID"
                     (deletedRole) ="deletedRole($event)"
                     (formChanged) = "refreshSaveDisable()" >
                 </app-genitore-form>

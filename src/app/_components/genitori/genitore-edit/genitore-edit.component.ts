@@ -136,10 +136,11 @@ export class GenitoreEditComponent implements OnInit {
           if (this.genitoreFormComponent.form.controls['personaID'].value == null)
               this.genitoreFormComponent.form.controls['personaID'].setValue(persona.id);
         }),
-        concatMap( () => this.genitoreFormComponent.save())
+        //concatMap( () => this.genitoreFormComponent.save())
       )
       .subscribe({
         next: res=> {
+          this.genitoreFormComponent.save();
           this._dialogRef.close();
           this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
         },

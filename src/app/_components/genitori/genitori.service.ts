@@ -55,6 +55,8 @@ export class GenitoriService {
     return this.http.put( environment.apiBaseUrl  + 'ALU_Genitori/' + formData.id , formData);    
   }
 
+
+
   post(formData: any): Observable <any>{
     formData.id = 0;
 

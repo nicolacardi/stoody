@@ -134,16 +134,19 @@ export class ProceduraIscrizioneComponent implements OnInit {
 
     if (tipo == 'genitore') {
       this.PersonaFormComponent.toArray()[this.stepper.selectedIndex-1].save()
-      .pipe(
-        concatMap (()=> this.GenitoreFormComponent.toArray()[this.stepper.selectedIndex-1].save()) //salva il genitoreForm n-esimo                    
-      )
+      // .pipe(
+      //   concatMap (()=> this.GenitoreFormComponent.toArray()[this.stepper.selectedIndex-1].save()) //salva il genitoreForm n-esimo                    
+      // )
       .subscribe({
+        next: res=> {this.GenitoreFormComponent.toArray()[this.stepper.selectedIndex-1].save()},
         error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
       })
     }
 
     if (tipo == 'alunno') {
       //this.PersonaFormComponent.toArray()[this.stepper.selectedIndex-1].save()
+
+      //MERDA SECCA
       this.AlunnoFormComponent.save()
       .pipe(
         concatMap (()=> this.AlunnoFormComponent.save())                  

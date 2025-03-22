@@ -37,6 +37,8 @@ export class GenitoreFormComponent implements OnInit {
 
 //#region ----- ViewChild Input Output -------
   @Input() genitoreID!:                         number;
+  @Input() personaID!:                         number;
+
   @Output('formValid') formValid = new EventEmitter<boolean>();
   @Output('formChanged') formChanged = new EventEmitter();
   @Output('deletedRole') deletedRole = new EventEmitter<string>();
@@ -80,6 +82,11 @@ export class GenitoreFormComponent implements OnInit {
     )
   }
 
+  ngOnChanges () {
+    console.log("genitore-form - ngOnChanges - arrivato genitoreID", this.genitoreID);
+    this.loadData();
+  }
+
   loadData(){
 
     if (this.genitoreID && this.genitoreID + '' != "0") {
@@ -97,13 +104,18 @@ export class GenitoreFormComponent implements OnInit {
       this.emptyForm = true
   }
 
-  save() :Observable<any>{
+  save() {
     
+    this.form.controls['personaID'].setValue(this.personaID);
+
     if (this.genitoreID == null || this.genitoreID == 0) {
-      return this.svcGenitori.post(this.form.value)
+      console.log ("genitore-form - save - post form", this.form.value);
+      //return this.svcGenitori.post(this.form.value)
+      this.svcGenitori.post(this.form.value).subscribe();
     }
     else {
-      return this.svcGenitori.put(this.form.value)
+      console.log ("genitore-form - save - put form", this.form.value);
+      this.svcGenitori.put(this.form.value).subscribe();
     }
   }
 

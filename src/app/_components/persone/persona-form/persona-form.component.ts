@@ -176,6 +176,11 @@ export class PersonaFormComponent implements OnInit {
             persona => {
               console.log ("persona-form - loadData - persona", persona);
               this.form.patchValue(persona);
+              this.svcUser.getByPersonaID(persona.id).subscribe( {
+                next: user=> {if (user) this.form.controls['ckRegistrato'].setValue(true);},
+                error: err=> {console.log ("non ho trovato user")}
+                })
+              
               
               // this._lstRoles = persona._LstRoles!; //questi i ruoli arrivati
               // console.log("persona-form arrivati:", persona._LstRoles)
@@ -193,7 +198,12 @@ export class PersonaFormComponent implements OnInit {
               // if (persona._LstRoles!.includes('Genitore')) {this.showGenitoreForm = true} //devo anche valorizzare genitoreID e passarlo a genitore form
             }
           ),
-          tap( persona => this.svcUser.getByPersonaID(persona.id).subscribe(user=> {if (user.id) this.form.controls['ckRegistrato'].setValue(true         )}))
+          // tap( persona => this.svcUser.getByPersonaID(persona.id).subscribe(user=> {
+          //   console.log ("persona-form -loadData - user.id", user.id);
+          //   if (user.id) this.form.controls['ckRegistrato'].setValue(true)
+            
+            
+          //   }))
       );
     }
     else 
