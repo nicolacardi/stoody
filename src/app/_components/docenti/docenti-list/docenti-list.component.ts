@@ -139,6 +139,7 @@ export class DocentiListComponent  implements OnInit {
       tap(colonne=> {
         if (colonne.length != 0) this.displayedColumns = colonne.map(a => a.tableCol!.colName)
         else this.svcTableCols.listByTable(this.tableName).subscribe( colonne => {
+          console.log ("colonne estratte", colonne);
           this.displayedColumns = colonne.filter(colonna=> colonna.defaultShown == true).map(a => a.colName)
         })    
       })

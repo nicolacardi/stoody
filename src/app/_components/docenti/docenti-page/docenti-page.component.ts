@@ -6,6 +6,7 @@ import { MatDrawer } from '@angular/material/sidenav';
 //components
 import { DocentiFilterComponent } from '../docenti-filter/docenti-filter.component';
 import { DocentiListComponent } from '../docenti-list/docenti-list.component';
+import { NavigationService } from '../../utilities/navigation/navigation.service';
 
 //#endregion
 
@@ -23,10 +24,12 @@ export class DocentiPageComponent implements OnInit {
   @ViewChild('sidenav', { static: true }) drawerFiltriAvanzati!: MatDrawer;
 //#endregion
 
-constructor() { }
+constructor(private _navigationService:  NavigationService) { }
 
 //#region ----- LifeCycle Hooks e simili--------
   ngOnInit(): void {
+    this._navigationService.passPage("docentiPage");
+
   }
 
 //#region ----- Add Edit Drop ------------------

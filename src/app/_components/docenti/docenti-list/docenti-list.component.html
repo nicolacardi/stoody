@@ -49,44 +49,6 @@
             <td mat-cell *matCellDef="let element" [innerHTML]="element.personaID | highlight: filterValue"></td>
         </ng-container>
 
-        <ng-container matColumnDef="tipoSocio">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Tipo Socio<mat-icon class="iconaFilter" *ngIf="filterValues.tipoSocioID">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.tipoSocio.descrizione | highlight: filterValue"></td>
-        </ng-container>
-
-        <ng-container matColumnDef="dtRichiesta">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Data Richiesta<mat-icon class="iconaFilter" *ngIf="filterValues.dataRichiestaDal||filterValues.dataRichiestaAl">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.dtRichiesta | highlightDate: filterValue"></td>
-        </ng-container>
-
-        <ng-container matColumnDef="dtAccettazione">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Data Accettazione<mat-icon class="iconaFilter" *ngIf="filterValues.dataAccettazioneDal||filterValues.dataAccettazioneAl">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.dtAccettazione | highlightDate: filterValue"></td>
-        </ng-container>
-
-        <ng-container matColumnDef="dtDisiscrizione">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Data Disiscrizione</th>
-            <td mat-cell class="_backlightgrey" *matCellDef="let element" [innerHTML]="element.dtDisiscrizione | highlightDate: filterValue"></td>
-        </ng-container>
-
-        <ng-container matColumnDef="quota">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Quota</th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.quota | highlight: filterValue"></td>
-        </ng-container>
-
-        <ng-container matColumnDef="dtRestQuota">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Data Rest. Quota</th>
-            <td mat-cell class="_backlightgrey" *matCellDef="let element" [innerHTML]="element.dtRestQuota | highlightDate: filterValue"></td>
-        </ng-container>
-
-        <ng-container matColumnDef="ckRinunciaQuota">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Rinuncia Quota</th>
-            <!-- <td mat-cell *matCellDef="let element" [innerHTML]="element.ckRinunciaQuota | highlight: filterValue"></td> -->
-            <td mat-cell class="center _backlightgrey" *matCellDef="let element">
-                <mat-checkbox class="h30px" [checked]="element.ckRinunciaQuota" color="primary" disabled></mat-checkbox>
-            </td>
-        </ng-container>
-
 
         <!-- **************************   MAT-HEADER-ROW   ******************* -->
         <tr mat-header-row class="_table-title-low"  *matHeaderRowDef="displayedColumns;"></tr>
