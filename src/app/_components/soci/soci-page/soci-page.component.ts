@@ -8,6 +8,7 @@ import { SociFilterComponent } from '../soci-filter/soci-filter.component';
 import { SociListComponent } from '../soci-list/soci-list.component';
 
 //#endregion
+
 @Component({
   selector: 'app-soci-page',
   templateUrl: './soci-page.component.html',

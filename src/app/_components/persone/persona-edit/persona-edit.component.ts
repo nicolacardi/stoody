@@ -203,7 +203,6 @@ export class PersonaEditComponent implements OnInit {
     }
   }
 
-
   saveRoles() {
     //parallelamente alla save (put o post che sia) della persona bisogna occuparsi di inserire i diversi ruoli
     //ALU_Alunno
@@ -219,45 +218,50 @@ export class PersonaEditComponent implements OnInit {
       const selectedRolesDescrizioni = selectedRolesIds.map((tipo:any) => {const tipoPersona = this.lstTipiPersona.find(tp => tp.id === tipo);
       return tipoPersona ? tipoPersona.descrizione : ''; // Restituisce la descrizione se trovata, altrimenti una stringa vuota
     });
+
+    /*
     console.log("this._lstRoles - quello che attualmente c'è in db",this._lstRoles);
     console.log ("this.form.controls['_lstRoles'].value.length - quanti ruoli l'utente ha selezionato", this.form.controls['_lstRoles'].value.length);
     console.log("this.form.controls['_lstRoles'].value - quello che l'utente ha selezionato",this.form.controls['_lstRoles'].value);
     console.log("elenco dei valori selezionati dall'utente",selectedRolesDescrizioni);
+    */
 
-    // if (this._lstRoles) { //se ci sono ruoli già assegnati in db per questa persona vado a cancellare i lstRoles attualmente presenti se non sono più selezionati
-    //   this._lstRoles.forEach(async roleinput=> {
-    //     {
-    //       if (!selectedRolesDescrizioni.includes(roleinput)) {
-    //         switch (roleinput) {
-    //           case "Alunno":
-    //             this.svcAlunni.deleteByPersona(this.personaID).subscribe();
-    //           break;
-    //           case "Genitore":
-    //             this.svcGenitori.deleteByPersona(this.personaID).subscribe();
-    //           break;
-    //           case "Docente":
-    //             this.svcDocenti.deleteByPersona(this.personaID).subscribe();
-    //           break;
-    //           case "DocenteCoord":
-    //             let docente!: PER_Docente;
-    //             await firstValueFrom(this.svcDocenti.getByPersona(this.personaID).pipe(tap(docenteEstratto => 
-    //               {docente = docenteEstratto})));
-    //             this.svcDocentiCoord.deleteByDocente(docente.id);
-    //             break;
-    //           case "NonDocente":
-    //             this.svcNonDocenti.deleteByPersona(this.personaID).subscribe();
-    //           break;
-    //           case "Dirigente":
-    //             this.svcDirigenti.deleteByPersona(this.personaID).subscribe();
-    //           break;
-    //           case "ITManager":
-    //             this.svcITManagers.deleteByPersona(this.personaID).subscribe();
-    //           break;
-    //         }
-    //       }
-    //     }
-    //   });
-    // }
+    /*
+    if (this._lstRoles) { //se ci sono ruoli già assegnati in db per questa persona vado a cancellare i lstRoles attualmente presenti se non sono più selezionati
+      this._lstRoles.forEach(async roleinput=> {
+        {
+          if (!selectedRolesDescrizioni.includes(roleinput)) {
+            switch (roleinput) {
+              case "Alunno":
+                this.svcAlunni.deleteByPersona(this.personaID).subscribe();
+              break;
+              case "Genitore":
+                this.svcGenitori.deleteByPersona(this.personaID).subscribe();
+              break;
+              case "Docente":
+                this.svcDocenti.deleteByPersona(this.personaID).subscribe();
+              break;
+              case "DocenteCoord":
+                let docente!: PER_Docente;
+                await firstValueFrom(this.svcDocenti.getByPersona(this.personaID).pipe(tap(docenteEstratto => 
+                  {docente = docenteEstratto})));
+                this.svcDocentiCoord.deleteByDocente(docente.id);
+                break;
+              case "NonDocente":
+                this.svcNonDocenti.deleteByPersona(this.personaID).subscribe();
+              break;
+              case "Dirigente":
+                this.svcDirigenti.deleteByPersona(this.personaID).subscribe();
+              break;
+              case "ITManager":
+                this.svcITManagers.deleteByPersona(this.personaID).subscribe();
+              break;
+            }
+          }
+        }
+      });
+    }
+      */
 
     //ora vado a vedere se ne sono stati aggiunti quindi faccio il check inverso, però attenzione manca la put in questo modo c'è solo la post di un nuovo ruolo!
     //ma se uno modifica senza cambiare i ruoli? manca un pezzo
@@ -275,15 +279,17 @@ export class PersonaEditComponent implements OnInit {
           console.log ("adesso faccio post o put del formData per ", roleselected, formData);
           switch (roleselected) {
             case "Alunno":
-              this._lstRoles.includes(roleselected)? this.svcAlunni.put(formData).subscribe() : this.svcAlunni.post(formData).subscribe();
-            break;
+              //this._lstRoles.includes(roleselected)? this.svcAlunni.put(formData).subscribe() : this.svcAlunni.post(formData).subscribe();
+              this.appalunnoform.save();
+              break;
             case "Genitore":
               //this._lstRoles.includes(roleselected)? this.svcGenitori.put(formData).subscribe() : this.svcGenitori.post(formData).subscribe();
               this.appgenitoreform.save();
               break;
             case "Docente":
-              this._lstRoles.includes(roleselected)? this.svcDocenti.put(formData).subscribe() : this.svcDocenti.post(formData).subscribe();
-            break;
+              //this._lstRoles.includes(roleselected)? this.svcDocenti.put(formData).subscribe() : this.svcDocenti.post(formData).subscribe();  
+              this.appdocenteform.save();  
+              break;
             case "DocenteCoord":
               let formDataDocenteCoord = {};
               await firstValueFrom(this.svcDocenti.getByPersona(this.personaID).pipe(tap(docenteEstratto => 
@@ -294,16 +300,16 @@ export class PersonaEditComponent implements OnInit {
                 })));
               this.svcDocentiCoord.post(formDataDocenteCoord).subscribe();
 
-            break;
+              break;
             case "NonDocente":
               this._lstRoles.includes(roleselected)? this.svcNonDocenti.put(formData).subscribe() : this.svcNonDocenti.post(formData).subscribe();
-            break;
+              break;
             case "Dirigente":
               this._lstRoles.includes(roleselected)? this.svcDirigenti.put(formData).subscribe() : this.svcDirigenti.post(formData).subscribe();
-            break;
+              break;
             case "ITManager":
               this._lstRoles.includes(roleselected)? this.svcITManagers.put(formData).subscribe() : this.svcITManagers.post(formData).subscribe();
-            break;
+              break;
           }
         
       }

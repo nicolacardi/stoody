@@ -1,7 +1,7 @@
 //#region ----- IMPORTS ------------------------
 
 import { AfterViewInit, Component, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup }               from '@angular/forms';
+import { UntypedFormBuilder }               from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
 import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
@@ -47,7 +47,6 @@ export class GenitoreEditComponent implements OnInit {
 
   public personaID!:                            number;
   genitoreNomeCognome :                         string = "";
-  // form! :                                       UntypedFormGroup;
 
   personaFormisValid!:                          boolean;
   genitoreFormisValid!:                         boolean;
@@ -96,12 +95,9 @@ export class GenitoreEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
-
   }
 
   loadData(){
-
-
     this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
     
     if (this.genitoreID && this.genitoreID + '' != "0") {
@@ -119,8 +115,6 @@ export class GenitoreEditComponent implements OnInit {
       );
     } 
     else this.emptyForm = true
-
-
   }  
 
 //#endregion
@@ -146,7 +140,6 @@ export class GenitoreEditComponent implements OnInit {
         },
         error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
       });
-    
   }
 
   delete()

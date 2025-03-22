@@ -32,6 +32,7 @@ import { OrarioPageComponent }                  from './_components/lezioni/orar
 import { ProceduraIscrizioneComponent }         from './_components/procedura-iscrizione/procedura-iscrizione.component';
 import { ChangePswExtComponent }                from './_user/change-psw-ext/change-psw-ext.component';
 import { SegreteriaDashboardComponent }         from './_components/segreteria/segreteria-dashboard/segreteria-dashboard.component';
+import { DocentiPageComponent } from './_components/docenti/docenti-page/docenti-page.component';
 
 const routes: Routes = [
 
@@ -60,6 +61,8 @@ const routes: Routes = [
   { path: "alunni",                             component: AlunniPageComponent, canActivate:[AuthGuard]},
 
   { path: "genitori",                           component: GenitoriPageComponent, canActivate:[AuthGuard]},
+
+  { path: "docenti",                            component: DocentiPageComponent, canActivate:[AuthGuard]},
 
   { path: "soci",                               component: SociPageComponent,canActivate:[AuthGuard] },
 

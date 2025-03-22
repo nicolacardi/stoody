@@ -1,3 +1,4 @@
+   
     <mat-card appearance="outlined" class="form-card">
         <mat-card-content *ngIf="(persona$ | async) || emptyForm">
 
@@ -17,19 +18,6 @@
                         (click)="save()" >
                     <mat-icon>save</mat-icon>
                 </button>
-<!-- 
-                [disabled]="!apppersonaform.form.valid
-                || ((showAlunnoForm && appalunnoform) ? !appalunnoform.form.valid : false)
-                || ((showGenitoreForm) ?  !appgenitoreform?.form?.valid: false) "
-
-                [disabled]="!apppersonaform.form.valid || 
-                (showAlunnoForm && appalunnoform)  ?   !appalunnoform?.form?.valid : false || 
-                (showGenitoreForm && appgenitoreform) ?    !appgenitoreform?.form?.valid: false"  
- 
-                [disabled]="!apppersonaform.form.valid || 
-                (apppersonaform.showAlunnoForm && appalunnoform && !appalunnoform?.form?.valid) ||
-                (apppersonaform.showGenitoreForm && appgenitoreform && !appgenitoreform?.form?.valid)" 
--->
 
                 <button *ngIf="personaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10" (click)="delete()" >
                     <mat-icon>delete</mat-icon>
@@ -37,12 +25,19 @@
                 
             </div>
             
-            <!-- ********************************       ANAGRAFICA      *********************************** -->
+<!-- ********************************       COMPONENT PERSONA-FORM      *********************************** -->
 
+            <app-persona-form #apppersonaform
+                [personaID] = "personaID"
+                (formChanged) = "refreshSaveDisable()">  
+            </app-persona-form>
+            <!-- (formValid)="formPersonaValidEmitted($event)" -->
+
+ <!-- ********************************       RUOLI      *********************************** -->           
             <!-- <div class="mt20"> -->
-            <form [formGroup] = "form">
+            <form [formGroup] = "form"> 
                 <div>
-                    <mat-grid-list [cols]="1" class="_low-list-row no-overflowx mt20" rowHeight="60px">
+                    <mat-grid-list [cols]="3" class="_low-list-row no-overflowx mt20" rowHeight="60px">
                         <mat-grid-tile>
                             <mat-form-field >
                                 <mat-label>Ruoli</mat-label>
@@ -58,14 +53,8 @@
                         </mat-grid-tile>
                     </mat-grid-list>
                 </div>
-            </form>
-
-            <app-persona-form #apppersonaform
-                [personaID] = "personaID"
-                (formChanged) = "refreshSaveDisable()">  
-            </app-persona-form>
-            <!-- (formValid)="formPersonaValidEmitted($event)" -->
-
+            </form> 
+ 
             <div class="_bordered-grey mt5" *ngIf="showGenitoreForm" >
                 <app-genitore-form #appgenitoreform
                     [genitoreID] = "genitoreID"

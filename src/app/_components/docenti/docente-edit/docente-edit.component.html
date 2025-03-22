@@ -1,0 +1,37 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+
+<!-- ********************************    BOTTONI     ************************************* -->
+        <div class="center">
+            <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" mat-dialog-close>
+                <mat-icon>arrow_back</mat-icon>
+            </button> -->
+            <img class="iconaMenuBig" src="./assets/socio_edit_T.svg">
+
+            <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" [mat-dialog-close]="docente$|async"></button>
+
+            <button *ngIf="docenteID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10" (click)="loadData()" >
+                <mat-icon>restart_alt</mat-icon>
+            </button>
+
+            <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"  [disabled] ="!isValid" (click)="save()" >
+                <mat-icon>save</mat-icon>
+            </button>
+
+            <button *ngIf="docenteID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10" (click)="delete()" >
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+        
+        <!-- ********************************       ANAGRAFICA      *********************************** -->
+
+        <form *ngIf="(docente$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+            <div class="mt20"></div>
+
+            <app-socio-form [socioID] = "docenteID"
+                              (formValid)="formValidEmitted($event)">   
+            </app-socio-form>
+
+        </form>
+    </mat-card-content>
+</mat-card>

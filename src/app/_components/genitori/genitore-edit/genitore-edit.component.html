@@ -1,16 +1,13 @@
     <mat-card appearance="outlined" class="form-card">
         <mat-card-content>
-<!-- ********************************    BOTTONI     ************************************* -->
 
+<!-- ********************************    BOTTONI     ************************************* -->
             <div class="center">
 
-                <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" 
-                mat-dialog-close>
-                    <mat-icon>arrow_back</mat-icon>
-                </button> -->
                 <img class="iconaMenuBig" src="./assets/genitore_edit_T.svg">
 
                 <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+               
                 <span [ngClass]="{'invisible': selectedTab != 0}">
                     <button *ngIf="genitoreID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"    (click)="loadData()" >
                         <mat-icon>restart_alt</mat-icon>

@@ -32,6 +32,7 @@ import { User }                                 from 'src/app/_user/Users';
   templateUrl: './soci-list.component.html',
   styleUrls: ['../soci.css']
 })
+
 export class SociListComponent implements OnInit {
 
 //#region ----- Variabili ----------------------

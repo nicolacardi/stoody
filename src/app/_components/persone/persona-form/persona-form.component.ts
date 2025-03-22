@@ -3,15 +3,14 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild }            from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators }                     from '@angular/forms';
 import { MatDialog }                                                            from '@angular/material/dialog';
-import { EMPTY, Observable, firstValueFrom, from, of }                                 from 'rxjs';
-import { concatMap, mergeMap, tap }                                             from 'rxjs/operators';
-import { MatSelectChange, MatSelectTrigger }                                    from '@angular/material/select';
+import { Observable, firstValueFrom, from, of }                                 from 'rxjs';
+import { mergeMap, tap }                                                        from 'rxjs/operators';
+import { MatSelectTrigger }                                                     from '@angular/material/select';
 
 //components
 import { FormatoData, Utility }                 from '../../utilities/utility.component';
 import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
 import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-
 
 //services
 import { ComuniService }                        from 'src/app/_services/comuni.service';
@@ -19,19 +18,9 @@ import { LoadingService }                       from '../../utilities/loading/lo
 import { PersoneService }                       from '../persone.service';
 import { UserService }                          from 'src/app/_user/user.service';
 
-// import { TipiPersonaService }                   from '../tipi-persona.service';
-// import { AlunniService }                        from '../../alunni/alunni.service';
-// import { GenitoriService }                      from '../../genitori/genitori.service';
-// import { DocentiService }                       from '../../docenti/docenti.service';
-// import { NonDocentiService }                    from '../nondocenti.service';
-// import { ITManagersService }                    from '../ITmanagers.service';
-// import { DirigentiService }                     from '../dirigenti.service';
-// import { DocentiCoordService }                  from '../docenticoord.service';
-
 //models
 import { PER_Persona, PER_TipoPersona }         from 'src/app/_models/PER_Persone';
 import { _UT_Comuni }                           from 'src/app/_models/_UT_Comuni';
-//import { PER_Docente }                          from 'src/app/_models/PER_Docente';
 import { User }                                 from 'src/app/_user/Users';
 
 //#endregion
@@ -98,16 +87,6 @@ export class PersonaFormComponent implements OnInit {
               private svcPersone:               PersoneService,
               private svcUser:                  UserService,
               private svcComuni:                ComuniService,
-
-              // private svcAlunni:                AlunniService,
-              // private svcGenitori:              GenitoriService,
-              // private svcDocenti:               DocentiService,
-              // private svcDocentiCoord:          DocentiCoordService,
-              // private svcNonDocenti:            NonDocentiService,
-              // private svcITManagers:            ITManagersService,
-              // private svcDirigenti:             DirigentiService,
-              // private svcTipiPersona:           TipiPersonaService,
-              
               public _dialog:                   MatDialog,
               private _loadingService :         LoadingService  ) { 
 
@@ -174,7 +153,7 @@ export class PersonaFormComponent implements OnInit {
         .pipe( 
           tap(
             persona => {
-              console.log ("persona-form - loadData - persona", persona);
+
               this.form.patchValue(persona);
               this.svcUser.getByPersonaID(persona.id).subscribe( {
                 next: user=> {if (user) this.form.controls['ckRegistrato'].setValue(true);},
@@ -272,9 +251,6 @@ export class PersonaFormComponent implements OnInit {
     //   });
     //   return EMPTY;
     // }
-
-
-
 
     //verifica (e attende l'esito) se ci sono già persone con lo stesso nome-cognome, cf, email. 
     return from(this.checkExists()).pipe(

@@ -76,6 +76,7 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
   ngOnChanges () {
     this.loadData();
   }
+  
   loadData(){
 
     if (this.alunnoID && this.alunnoID + '' != "0") {

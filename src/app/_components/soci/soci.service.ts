@@ -1,12 +1,14 @@
 import { HttpClient }                           from '@angular/common/http';
 import { Injectable }                           from '@angular/core';
 import { Observable }                           from 'rxjs';
-import { PER_Socio }                            from 'src/app/_models/PER_Soci';
 import { environment }                          from 'src/environments/environment';
+
+import { PER_Socio }                            from 'src/app/_models/PER_Soci';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class SociService {
 
   constructor(private http: HttpClient) { }

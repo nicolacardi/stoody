@@ -1,0 +1,105 @@
+<div class="pt60">
+
+    <!-- <div style="text-align: center; margin-bottom: 10px;">
+        Filtri Avanzati
+    </div> -->
+
+    <div class="ml12 mt10">
+        <button mat-button matSuffix class="w180px ml15" mat-stroked-button aria-label="Clear" (click)="resetAllInputsAndClearFilters()" >
+            Pulisci Filtri
+        </button>
+    </div>
+    
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field class="ml12">
+                <mat-label>Nome</mat-label>
+                <input matInput [formControl]="nomeFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field class="ml12">
+                <mat-label>Cognome</mat-label>
+                <input matInput [formControl]="cognomeFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field  class="ml12">
+                <mat-label>Tipo Socio</mat-label>
+                <mat-select [formControl]="tipoSocioFilter" #tipoSocio>
+                    <mat-option [value]="null">
+                        
+                    </mat-option>
+                    <!-- <mat-option *ngFor="let element of (obsTipiSocio$ | async)" [value]="element.id">
+                        {{element.descrizione}}
+                    </mat-option> -->
+                </mat-select>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class=" no-overflowx" [cols]="1" rowHeight="30px">
+        <mat-grid-tile>
+            <mat-checkbox color="primary" [formControl]="ckAttivo">
+                Soci Attivi
+            </mat-checkbox>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class=" no-overflowx" [cols]="1" rowHeight="30px">
+        <mat-grid-tile>
+            Data Richiesta
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field >
+                <mat-label>dal</mat-label>
+                <input matInput [matDatepicker]="dpRichiestaDal" [formControl]="dataRichiestaDal">
+                <mat-datepicker-toggle matSuffix [for]="dpRichiestaDal" ></mat-datepicker-toggle>
+                <mat-datepicker #dpRichiestaDal  ></mat-datepicker>
+            </mat-form-field>
+       </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+       <mat-grid-tile>
+            <mat-form-field >
+                <mat-label>al</mat-label>
+                <input matInput [matDatepicker]="dpRichiestaAl" [formControl]="dataRichiestaAl">
+                <mat-datepicker-toggle matSuffix [for]="dpRichiestaAl" ></mat-datepicker-toggle>
+                <mat-datepicker #dpRichiestaAl  ></mat-datepicker>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class=" no-overflowx" [cols]="1" rowHeight="30px">
+        <mat-grid-tile>
+            Data Accettazione
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field >
+                <mat-label>dal</mat-label>
+                <input matInput [matDatepicker]="dpAccettazioneDal" [formControl]="dataAccettazioneDal">
+                <mat-datepicker-toggle matSuffix [for]="dpAccettazioneDal" ></mat-datepicker-toggle>
+                <mat-datepicker #dpAccettazioneDal  ></mat-datepicker>
+            </mat-form-field>
+       </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+       <mat-grid-tile>
+            <mat-form-field >
+                <mat-label>al</mat-label>
+                <input matInput [matDatepicker]="dpAccettazioneAl" [formControl]="dataAccettazioneAl">
+                <mat-datepicker-toggle matSuffix [for]="dpAccettazioneAl" ></mat-datepicker-toggle>
+                <mat-datepicker #dpAccettazioneAl  ></mat-datepicker>
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+
+
+</div>
+
+

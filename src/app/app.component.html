@@ -82,6 +82,11 @@
                 <span *ngIf="isExpanded">Genitori</span>
             </a>  
 
+            <a mat-list-item class="h35px" routerLink="docenti" (click)="clickMenuItem()">
+                <img class="iconaMenuSidenav" src="./assets/mainMenuWhite/persona.svg">
+                <span *ngIf="isExpanded">Docenti</span>
+            </a>
+
             <a mat-list-item class="h35px" routerLink="persone" (click)="clickMenuItem()">
                 <img class="iconaMenuSidenav" src="./assets/mainMenuWhite/persona.svg">
                 <span *ngIf="isExpanded">Personale</span>

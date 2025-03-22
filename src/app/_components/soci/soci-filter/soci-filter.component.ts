@@ -14,6 +14,7 @@ import { TipiSocioService }                     from '../tipi-socio.service';
 import { PER_TipoSocio }                      from 'src/app/_models/PER_Soci';
 
 //#endregion
+
 @Component({
   selector: 'app-soci-filter',
   templateUrl: './soci-filter.component.html',
