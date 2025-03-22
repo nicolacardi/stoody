@@ -1,5 +1,5 @@
 //#region ----- IMPORTS ------------------------
-import { Component, EventEmitter, Input, OnInit, Output }                     from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output }                     from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog }                            from '@angular/material/dialog';
 import { Observable, of, tap }                  from 'rxjs';
@@ -21,7 +21,7 @@ import { ALU_Alunno }                           from 'src/app/_models/ALU_Alunno
   styleUrls:    ['./../alunni.css']
 })
 
-export class AlunnoFormComponent implements OnInit {
+export class AlunnoFormComponent implements OnInit, OnChanges {
 
 //#region ----- Variabili ----------------------
   alunno$!:                                     Observable<ALU_Alunno>;
@@ -73,9 +73,13 @@ export class AlunnoFormComponent implements OnInit {
     )
   }
 
+  ngOnChanges () {
+    this.loadData();
+  }
   loadData(){
 
     if (this.alunnoID && this.alunnoID + '' != "0") {
+      
       const obsAlunno$: Observable<ALU_Alunno> = this.svcAlunni.get(this.alunnoID);
       const loadAlunno$ = this._loadingService.showLoaderUntilCompleted(obsAlunno$);
 

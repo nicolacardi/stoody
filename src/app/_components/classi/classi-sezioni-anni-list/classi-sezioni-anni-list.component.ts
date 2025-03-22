@@ -353,7 +353,7 @@ export class ClassiSezioniAnniListComponent implements OnInit {
 
     let docenteID: number;
     docenteID = this.form.controls["selectDocente"].value;
-
+    console.log("docente ID", docenteID);
     if(this.dove !="docenti-dashboard" || docenteID>0){  //qualora ci sia la selectDocente (docenti-dashboard) deve essere valorizzata
       let obsClassi$: Observable<CLS_ClasseSezioneAnnoGroup[]>;
       obsClassi$= this.svcClassiSezioniAnni.listByAnnoDocenteGroupByClasse(annoID, docenteID);

@@ -47,6 +47,10 @@ export class AlunniService {
   }
 
 
+  getByPersona(personaID: any): Observable<ALU_Alunno>{  //TODO: WS da fare
+    return this.http.get<ALU_Alunno>(environment.apiBaseUrl+'ALU_Alunni/getByPersona/'+personaID);
+    //http://213.215.231.4/swappX/api/ALU_Alunni/getByPersona/30
+  }
 
   put(formData: any): Observable <any>{
     return this.http.put( environment.apiBaseUrl  + 'ALU_Alunni/' + formData.id , formData);    

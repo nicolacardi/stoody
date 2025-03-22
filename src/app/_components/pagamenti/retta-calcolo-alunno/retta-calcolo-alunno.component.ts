@@ -137,7 +137,7 @@ form! :                             UntypedFormGroup;
     //aggiorno lo status inserendo il codice 20
     let formData = {
       id: this.iscrizione.id,
-      codiceStato: 20
+      codiceStato: 30
     }
     this.svcIscrizioni.updateStato(formData).subscribe();
 

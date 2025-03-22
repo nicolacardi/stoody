@@ -162,7 +162,7 @@ export class RettaCalcoloComponent implements OnInit {
 
             let formData = {
               id: iscrizione.id,
-              codiceStato: 20
+              codiceStato: 30
             }
             this.svcIscrizioni.updateStato(formData).subscribe(
                 () => this.viewListClassi.loadData()

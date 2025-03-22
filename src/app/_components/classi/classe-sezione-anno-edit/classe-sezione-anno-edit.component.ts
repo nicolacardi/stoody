@@ -38,7 +38,7 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
   classeSezioneAnno$!:                          Observable<CLS_ClasseSezioneAnno>;
   obsAnni$!:                                    Observable<ASC_AnnoScolastico[]>;
   obsClassi$!:                                  Observable<CLS_Classe[]>;
-  obsClassiSezioniAnniSucc$!:                   Observable<CLS_ClasseSezioneAnnoGroup[]>;
+  obsClassiSezioniAnniSucc$!:                   Observable<CLS_ClasseSezioneAnno[]>;
   obsClasseSezione$!:                           Observable<CLS_ClasseSezione>;
 
   obs!:                                         Subscription;
@@ -93,7 +93,7 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
 
     //********************* POPOLAMENTO FORM *******************
     if (this.classeSezioneAnnoID && this.classeSezioneAnnoID + '' != "0") {
-
+      console.log ("classesezioneanno - loadData - classeSezioneAnnoID", this.classeSezioneAnnoID);
       const obsClasseSezioneAnno$: Observable<CLS_ClasseSezioneAnno> = this.svcClasseSezioneAnno.getWithClasseSezioneAnno(this.classeSezioneAnnoID);
       const loadClasseSezioneAnno$ = this._loadingService.showLoaderUntilCompleted(obsClasseSezioneAnno$);
       
@@ -108,10 +108,14 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
 
             let annoIDsucc=0;
             this.svcAnni.getAnnoSucc(classe.anno.id).pipe (
-              tap ( val   =>  annoIDsucc= val.id),
-              concatMap(() => this.obsClassiSezioniAnniSucc$ = this.svcClasseSezioneAnno.listByAnnoGroupByClasse(annoIDsucc))
+              tap (val   =>  {
+                
+                annoIDsucc= val.id
+                //console.log ("classesezioneanno - loadData - anno succ", val);
+              }),
+              concatMap(() => this.obsClassiSezioniAnniSucc$ = this.svcClasseSezioneAnno.listByAnno(annoIDsucc))
             ).subscribe({
-              next: res=> { },
+              next: res=> { console.log ("classesezioneanno - loadData - res", res)},
               error: err=> this.obs.unsubscribe()  ///NC ??? serve nel caso di errore, ma qui dentro cosa accade se c'è un errore?
             });
             this.form.controls['classeSezioneAnnoSuccID'].setValue(classe.ClasseSezioneAnnoSucc?.id); 
@@ -187,14 +191,14 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
 
   updateAnnoSucc(selectedAnno: number) {
 
-    //su modifica della combo dell'anno deve cambiare l'eleco delle classi successive disponibili...e che si fa del valore eventualmente già selezionato? lo si pone a null?
+    //su modifica della combo dell'anno deve cambiare l'elenco delle classi successive disponibili...e che si fa del valore eventualmente già selezionato? lo si pone a null?
     //comunque? anche se è un valore che sarebbe valido lo perdiamo in caso di modifica dell'anno selezionato?
     //this.obsClassiSezioniAnniSucc$= this.svcClasseSezioneAnno.loadClassiByAnnoScolastico(selectedAnno + 1); 
     let annoIDsucc=0;
   
     this.obs=  this.svcAnni.getAnnoSucc(selectedAnno).pipe (
         tap ( val   =>  annoIDsucc= val.id),
-        concatMap(() => this.obsClassiSezioniAnniSucc$= this.svcClasseSezioneAnno.listByAnnoGroupByClasse(annoIDsucc))
+        concatMap(() => this.obsClassiSezioniAnniSucc$= this.svcClasseSezioneAnno.listByAnno(annoIDsucc))
       ).subscribe({
         next: ()=> { },
         error: ()=> this.obs.unsubscribe()
