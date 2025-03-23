@@ -83,7 +83,7 @@ export class GenitoreFormComponent implements OnInit {
   }
 
   ngOnChanges () {
-    console.log("genitore-form - ngOnChanges - arrivato genitoreID", this.genitoreID);
+    // console.log("genitore-form - ngOnChanges - arrivato genitoreID", this.genitoreID);
     this.loadData();
   }
 
@@ -106,7 +106,7 @@ export class GenitoreFormComponent implements OnInit {
 
   save() {
     
-    this.form.controls['personaID'].setValue(this.personaID);
+    //this.form.controls['personaID'].setValue(this.personaID);
 
     if (this.genitoreID == null || this.genitoreID == 0) {
       console.log ("genitore-form - save - post form", this.form.value);

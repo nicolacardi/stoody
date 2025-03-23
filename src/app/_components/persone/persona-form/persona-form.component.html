@@ -17,6 +17,12 @@
                 <input matInput required type="text" formControlName="cognome">
             </mat-form-field>
         </mat-grid-tile>
+
+        <mat-grid-tile *ngIf="dove!= 'procedura-iscrizione'">
+            <mat-checkbox color="primary" formControlName="ckAttivo">
+                Anagrafica Attiva
+            </mat-checkbox>
+        </mat-grid-tile>
         
     </mat-grid-list>
 
@@ -129,20 +135,21 @@
             </mat-form-field>
         </mat-grid-tile>
 
-        <mat-grid-tile *ngIf="dove!= 'procedura-iscrizione'">
+        <!-- <mat-grid-tile *ngIf="dove!= 'procedura-iscrizione'">
             <mat-checkbox color="primary" formControlName="ckRegistrato">
                 Utente Registrato
             </mat-checkbox>
-        </mat-grid-tile>
-    </mat-grid-list>
-
-    <mat-grid-list class="_low-list-row no-overflowx" [cols]="3" rowHeight="60px">
+        </mat-grid-tile> -->
         <mat-grid-tile>
             <mat-form-field>
                 <mat-label>Telefono</mat-label>
                 <input matInput type="text" formControlName="telefono">
             </mat-form-field>
         </mat-grid-tile>
+    </mat-grid-list>
+
+    <!-- <mat-grid-list class="_low-list-row no-overflowx" [cols]="3" rowHeight="60px">
+
 
         <mat-grid-tile>
             <mat-form-field>
@@ -152,11 +159,7 @@
             </mat-form-field>
         </mat-grid-tile>
 
-        <mat-grid-tile *ngIf="dove!= 'procedura-iscrizione'">
-            <mat-checkbox color="primary" formControlName="ckAttivo">
-                Anagrafica Attiva
-            </mat-checkbox>
-        </mat-grid-tile>
 
-    </mat-grid-list>
+
+    </mat-grid-list> -->
 </form>

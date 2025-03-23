@@ -112,10 +112,15 @@ export class GenitoreEditComponent implements OnInit {
           tap(
             genitore => {
               this.personaID = genitore.personaID;
-              console.log("genitore-edit - loadData - this.personaID", this.personaID);
+              // console.log("genitore-edit - loadData - this.personaID", this.personaID);
               this.svcUser.getByPersonaID(this.personaID).subscribe(user=> {
-                console.log (user);
-                this.userID = user.id;
+                //l'utente potrebbe non esserci (nuovo record ma anche utente senza user)
+                if (user) {
+                  // console.log ("genitore-edit - loadData - user",user);
+                  this.userID = user.id;
+                } else {
+                  this.userID = '';
+                }
               });
               this.genitoreNomeCognome = genitore.persona.nome + " "+ genitore.persona.cognome;
               // this.form.patchValue(genitore);
@@ -132,18 +137,28 @@ export class GenitoreEditComponent implements OnInit {
 
   save() {
       this.personaFormComponent.save()
-      .pipe(
-        tap(persona => {
-          //this.genitoreFormComponent.form.controls['tipoGenitoreID'].setValue(this.form.controls['tipoGenitoreID'].value);
-          console.log ("ho salvato la persona, questo è il persona che arriva a genitore-edit", persona)
-          if (this.genitoreFormComponent.form.controls['personaID'].value == null)
-              this.genitoreFormComponent.form.controls['personaID'].setValue(persona.id);
-        }),
+      //.pipe(
+        //tap(persona => {
+          //console.log ("genitore-edit save() - questo è persona dopo save di personaForm", persona)
+          //if (this.genitoreFormComponent.form.controls['personaID'].value == null) this.genitoreFormComponent.form.controls['personaID'].setValue(persona.id);
+          //if (this.userFormComponent.form.controls['personaID'].value == null) this.userFormComponent.form.controls['personaID'].setValue(persona.id);
+        //}),
         //concatMap( () => this.genitoreFormComponent.save())
-      )
+      //)
       .subscribe({
         next: res=> {
+          console.log ("genitore-edit save() - subscribe...prima di genitoreFormComponent.save() ");
+          console.log ("genitoreFormComponent.form.value", this.genitoreFormComponent.form.value);
+
+          // if (this.genitoreFormComponent.form.controls['personaID'].value == null) this.genitoreFormComponent.form.controls['personaID'].setValue(this.personaID);
+          // if (this.userFormComponent.form.controls['personaID'].value == null) this.userFormComponent.form.controls['personaID'].setValue(this.personaID);
+
+
           this.genitoreFormComponent.save();
+
+          console.log ("userFormComponent.form.value", this.userFormComponent.form.value);
+
+          this.userFormComponent.save();
           this._dialogRef.close();
           this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
         },

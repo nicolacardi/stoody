@@ -102,7 +102,7 @@ export class UserService {
 
   get(userID: string): Observable<User>{
     return this.http.get<User>(environment.apiBaseUrl+'ApplicationUser/' + userID);
-    //http://213.215.231.4/swappX/api/ApplicationUser/b19efc9f-5502-4396-b076-45e6c3d9ef21
+    //http://213.215.231.4/swappX/api/ApplicationUser/7d914bc7-e4e3-458b-81f8-dc03d59d43e0
   }
 
   getByUsernameAndTmpPassword(userName: string, tmpPassword: string): Observable<User>{
@@ -128,6 +128,7 @@ export class UserService {
   put(formData: any): Observable <any>{
     return this.http.put(environment.apiBaseUrl +'ApplicationUser/'+ formData.userID, formData );
   }
+
 
   post(formData: any): Observable <any>{
     return  this.http.post(environment.apiBaseUrl +'ApplicationUser/Register', formData );

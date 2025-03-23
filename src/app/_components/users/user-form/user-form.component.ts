@@ -50,10 +50,11 @@ export class UserFormComponent implements OnInit, OnChanges {
 
     this.form = this.fb.group(
     {
-      id:                                       [null],
+      userID:                                   [null],
       personaID:                                [null],
       email:                                    ['', [Validators.email, Validators.required]],
-      password:                                 [null]
+      password:                                 [null],
+      userName:                                 [null]
     });
 
   }
@@ -75,7 +76,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges () {
-    console.log("user-form - ngOnChanges - arrivato userID", this.userID);
+    //console.log("user-form - ngOnChanges - arrivato userID", this.userID);
     this.loadData();
   }
 
@@ -87,8 +88,11 @@ export class UserFormComponent implements OnInit, OnChanges {
 
       this.user$ = loadUser$
       .pipe( 
-          tap(
-            user => this.form.patchValue(user)
+          tap(user=>{
+            // console.log ("user-form - loadData use estratto user", user);
+            this.form.patchValue(user)
+            this.form.controls["userID"].setValue(user.id);
+          }
           )
       );
     }
@@ -97,17 +101,17 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   save() {
-    
-    this.form.controls['personaID'].setValue(this.personaID);
-
-    if (this.userID == null || this.userID == '') {
-      console.log ("user-form - save - post form", this.form.value);
-      //return this.svcGenitori.post(this.form.value)
-      this.svcUser.post(this.form.value).subscribe();
-    }
-    else {
-      console.log ("user-form - save - put form", this.form.value);
-      this.svcUser.put(this.form.value).subscribe();
+    //this.form.controls['personaID'].setValue(this.personaID);
+    if (this.form.controls['email'].value) {
+      if (this.userID == null || this.userID == '') {
+        console.log ("user-form - save - post form", this.form.value);
+        //return this.svcGenitori.post(this.form.value)
+        this.svcUser.post(this.form.value).subscribe();
+      }
+      else {
+        console.log ("user-form - save - put form", this.form.value);
+        this.svcUser.put(this.form.value).subscribe();
+      }
     }
   }
 

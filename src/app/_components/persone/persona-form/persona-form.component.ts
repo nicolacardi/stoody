@@ -365,13 +365,13 @@ export class PersonaFormComponent implements OnInit {
 
     //se 'Utente Registrato' è flaggato deve esistere la mail altrimenti va bloccato il salvataggio (la mail è necessaria.)
     //si pone altro tema  " e se qualcuno modifica la mail dopo che è stato registrato?" forse andrebbe resa non modificabile quando accade? Oppure andrebbe cambiata anche la mail di login?
-    if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
-      this._dialog.open(DialogOkComponent, {
-        width: '320px',
-        data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è nesessario indicare l'indirizzo mail" }
-      });
-      return of();
-    }
+    // if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
+    //   this._dialog.open(DialogOkComponent, {
+    //     width: '320px',
+    //     data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è necessario indicare l'indirizzo mail" }
+    //   });
+    //   return of();
+    // }
 
     //verifica (e attende l'esito) se ci sono già persone con lo stesso nome-cognome, cf, email. 
     return from(this.checkExists()).pipe(
@@ -382,13 +382,12 @@ export class PersonaFormComponent implements OnInit {
           const blockMessages = msg
             .filter(item => item.grav === "Block")
             .map(item => item.msg);
-  
+          // la presenza di persone con stessa email e/o cf genera uno stop (gravità Block)
           if (blockMessages && blockMessages.length > 0) {
             this._dialog.open(DialogOkComponent, {
               width: '320px',
               data: { titolo: "ATTENZIONE!", sottoTitolo: blockMessages.join(', ') + '<br>Impossibile Salvare' }
             });
-            // la presenza di persone con stessa email e/o cf genera uno stop (gravità Block)
             return of();
           } 
           else {
@@ -397,80 +396,110 @@ export class PersonaFormComponent implements OnInit {
               .map(item => item.msg);
               // la presenza di persone con stesso nome e cognome genera una richiesta all'utente (gravità nonBlock)
               //se procedere o meno
-
             const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
               width: '320px',
               data: { titolo: "ATTENZIONE!", sottoTitolo: UnblockMessages.join(', ') + '<br>Vuoi salvare un omonimo?' }
             });
           
-
-  
             return dialogYesNo.afterClosed().pipe(
-              mergeMap(result => {
-                if (result) {
-                  //se l'utente dice di procedere allora si valuta se post o put
-                  //***********************QUESTO BLOCCO SI RIPETE ANCHE IN CASO NON VENGA TROVATO ALCUN MSG ************/
-                  if (this.personaID == null || this.personaID == 0) {
-                    //POST
-                    return this.svcPersone.post(this.form.value).pipe(
-                      // tap(() => this.saveRoles()),
-                      tap(persona => {
-                        let formData = { 
-                          UserName: this.form.controls['email'].value,
-                          Email: this.form.controls['email'].value,
-                          PersonaID: persona.id,
-                          Password: "1234"
-                        };
-                        //console.log("sto creando l'utente", formData);
-                        this.svcUser.post(formData).subscribe();
-                      })
-                    );
-                  } else {
-                    //PUT
-                    this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
-                    // this.saveRoles(); 
-                    return this.svcPersone.put(this.form.value);
-                  }
-                  //*****************************FINO A QUI ***********************************************************/
-                } else {
-                  //se l'utente dice di non procedere tutto si ferma
-                  return of();
-                }
-              })
+              mergeMap(result => result ? this.salvaPersona() : of())
             );
           }
         } else {
-          // In caso di nessun messaggio, si procede con POST o PUT
-          //***********************QUESTO BLOCCO E' PURTROPPO UGUALE A QUELLO SOPRA ************/
-          if (this.personaID == null || this.personaID == 0) {
-            //POST
-            return this.svcPersone.post(this.form.value).pipe(
-              // tap(() => this.saveRoles()),
-              tap(persona => {
-                let formData = { 
-                  UserName: this.form.controls['email'].value,
-                  Email: this.form.controls['email'].value,
-                  PersonaID: persona.id,
-                  Password: "1234"
-                };
-                console.log("sto creando l'utente", formData);
-                this.svcUser.post(formData).subscribe();
-              })
-            );
-          } 
-          else {
-            //PUT
-            //console.log ("persona-form - save - siamo in 'put' perchè i controlli precedenti sono stati superati - this.form.value:", this.form.value);
-            this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
-            // this.saveRoles(); 
-            return this.svcPersone.put(this.form.value);
-          }
-          //*****************************FINO A QUI ***********************************************************/
-
+          return this.salvaPersona();
         }
       })
     );
   };
+
+
+  private salvaPersona(): Observable<any> {
+    if (this.personaID == null || this.personaID == 0) {
+        // POST
+        console.log("persona-form - save - POST del form", this.form.value);
+        return this.svcPersone.post(this.form.value).pipe(
+            tap(persona => {
+                let formData = {
+                    UserName: this.form.controls['email'].value,
+                    Email: this.form.controls['email'].value,
+                    PersonaID: persona.id,
+                    Password: "1234"
+                };
+                console.log("sto creando l'utente", formData);
+                this.svcUser.post(formData).subscribe();
+            })
+        );
+    } else {
+        // PUT
+        console.log("persona-form - save - PUT del form", this.form.value);
+        this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
+        return this.svcPersone.put(this.form.value);
+    }
+}
+
+
+           //mergeMap(result => {
+                //if (result) {
+                  // //se l'utente dice di procedere allora si valuta se post o put
+                  // //***********************QUESTO BLOCCO SI RIPETE ANCHE IN CASO NON VENGA TROVATO ALCUN MSG ************/
+                  // if (this.personaID == null || this.personaID == 0) {
+                  //   //POST
+                  //   return this.svcPersone.post(this.form.value).pipe(
+                  //     // tap(() => this.saveRoles()),
+                  //     tap(persona => {
+                  //       let formData = { 
+                  //         UserName: this.form.controls['email'].value,
+                  //         Email: this.form.controls['email'].value,
+                  //         PersonaID: persona.id,
+                  //         Password: "1234"
+                  //       };
+                  //       //console.log("sto creando l'utente", formData);
+                  //       this.svcUser.post(formData).subscribe();
+                  //     })
+                  //   );
+                  // } else {
+                  //   //PUT
+                  //   this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
+                  //   // this.saveRoles(); 
+                  //   return this.svcPersone.put(this.form.value);
+                  // }
+                  //*****************************FINO A QUI ***********************************************************/
+                //} else {
+                  //se l'utente dice di non procedere tutto si ferma
+                  //return of();
+                //}
+              //})
+
+
+              // // In caso di nessun messaggio, si procede con POST o PUT
+          // //***********************QUESTO BLOCCO E' PURTROPPO UGUALE A QUELLO SOPRA ************/
+          // if (this.personaID == null || this.personaID == 0) {
+          //   //POST
+          //   console.log ("persona-form - save - POST del form", this.form.value);
+
+          //   return this.svcPersone.post(this.form.value).pipe(
+          //     // tap(() => this.saveRoles()),
+          //     tap(persona => {
+          //       let formData = { 
+          //         UserName: this.form.controls['email'].value,
+          //         Email: this.form.controls['email'].value,
+          //         PersonaID: persona.id,
+          //         Password: "1234"
+          //       };
+          //       console.log("sto creando l'utente", formData);
+          //       this.svcUser.post(formData).subscribe();
+          //     })
+          //   );
+          // } 
+          // else {
+          //   //PUT
+          //   console.log ("persona-form - save - PUT del form", this.form.value);
+          //   this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
+          //   // this.saveRoles(); 
+          //   return this.svcPersone.put(this.form.value);
+          // }
+          // //*****************************FINO A QUI ***********************************************************/
+
 
   delete() :Observable<any>{
 
