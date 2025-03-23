@@ -1,31 +1,33 @@
 //#region ----- IMPORTS ------------------------
 
-import { AfterViewInit, Component, EventEmitter, Inject, OnInit, Output, ViewChild } from '@angular/core';
-import { UntypedFormBuilder }               from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { iif, Observable, of }                  from 'rxjs';
-import { concatMap, tap }                       from 'rxjs/operators';
+import { AfterViewInit, Component, EventEmitter, Inject, OnInit, Output, ViewChild }      from '@angular/core';
+import { UntypedFormBuilder }                                                             from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA }                      from '@angular/material/dialog';
+import { MatSnackBar }                                                                    from '@angular/material/snack-bar';
+import { SnackbarComponent }                                                              from '../../utilities/snackbar/snackbar.component';
+import { iif, Observable, of }                                                            from 'rxjs';
+import { concatMap, tap }                                                                 from 'rxjs/operators';
 
 //components
-import { AlunniListComponent }                  from '../../alunni/alunni-list/alunni-list.component';
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-import { PersonaFormComponent }                 from '../../persone/persona-form/persona-form.component';
-import { AlunnoEditComponent }                  from '../../alunni/alunno-edit/alunno-edit.component';
-
+import { AlunniListComponent }                                                            from '../../alunni/alunni-list/alunni-list.component';
+import { DialogYesNoComponent }                                                           from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { PersonaFormComponent }                                                           from '../../persone/persona-form/persona-form.component';
+import { AlunnoEditComponent }                                                            from '../../alunni/alunno-edit/alunno-edit.component';
+import { GenitoreFormComponent }                                                          from '../genitore-form/genitore-form.component';
+import { UserFormComponent }                                                              from '../../users/user-form/user-form.component';
 //services
-import { GenitoriService }                      from 'src/app/_components/genitori/genitori.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { AlunniService }                        from '../../alunni/alunni.service';
-import { TipiGenitoreService }                  from '../tipi-genitore.service';
+import { GenitoriService }                                                                from 'src/app/_components/genitori/genitori.service';
+import { LoadingService }                                                                 from '../../utilities/loading/loading.service';
+import { AlunniService }                                                                  from '../../alunni/alunni.service';
+import { TipiGenitoreService }                                                            from '../tipi-genitore.service';
 
 //models
-import { ALU_Genitore }                         from 'src/app/_models/ALU_Genitore';
-import { _UT_Comuni }                           from 'src/app/_models/_UT_Comuni';
-import { ALU_Alunno }                           from 'src/app/_models/ALU_Alunno';
-import { ALU_TipoGenitore }                     from 'src/app/_models/ALU_Tipogenitore';
-import { GenitoreFormComponent } from '../genitore-form/genitore-form.component';
+import { ALU_Genitore }                                                                   from 'src/app/_models/ALU_Genitore';
+import { _UT_Comuni }                                                                     from 'src/app/_models/_UT_Comuni';
+import { ALU_Alunno }                                                                     from 'src/app/_models/ALU_Alunno';
+import { ALU_TipoGenitore }                                                               from 'src/app/_models/ALU_Tipogenitore';
+import { UserService } from 'src/app/_user/user.service';
+
 
 //#endregion
 
@@ -40,30 +42,32 @@ export class GenitoreEditComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
 
-  genitore$!:                                   Observable<ALU_Genitore>;
-  obsTipiGenitore$!:                            Observable<ALU_TipoGenitore[]>;
-  filteredComuni$!:                             Observable<_UT_Comuni[]>;
-  filteredComuniNascita$!:                      Observable<_UT_Comuni[]>;
+  genitore$!               : Observable<ALU_Genitore>;
+  obsTipiGenitore$!        : Observable<ALU_TipoGenitore[]>;
+  filteredComuni$!         : Observable<_UT_Comuni[]>;
+  filteredComuniNascita$!  : Observable<_UT_Comuni[]>;
 
-  public personaID!:                            number;
-  genitoreNomeCognome :                         string = "";
+  public personaID!        : number;
+  public userID!           : string;
+  genitoreNomeCognome      : string = "";
 
-  personaFormisValid!:                          boolean;
-  genitoreFormisValid!:                         boolean;
+  personaFormisValid!      : boolean;
+  genitoreFormisValid!     : boolean;
 
-  emptyForm :                                   boolean = false;
-  loading:                                      boolean = true;
+  emptyForm                : boolean = false;
+  loading                  : boolean = true;
 
-  comuniIsLoading:                              boolean = false;
-  comuniNascitaIsLoading:                       boolean = false;
-  breakpoint!:                                  number;
-  selectedTab:                                  number = 0;
+  comuniIsLoading          : boolean = false;
+  comuniNascitaIsLoading   : boolean = false;
+  breakpoint!              : number;
+  selectedTab              : number = 0;
 
 //#endregion
 
 //#region ----- ViewChild Input Output ---------
   @ViewChild('alunniFamiglia') alunniFamigliaComponent!: AlunniListComponent; 
   @ViewChild(PersonaFormComponent) personaFormComponent!: PersonaFormComponent; 
+  @ViewChild(UserFormComponent) userFormComponent!: UserFormComponent; 
   @ViewChild(GenitoreFormComponent) genitoreFormComponent!: GenitoreFormComponent; 
 
 //#endregion
@@ -73,7 +77,7 @@ export class GenitoreEditComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public genitoreID: number,
               private fb:                                 UntypedFormBuilder, 
               private svcGenitori:                        GenitoriService,
-              //private svcTipiGenitore:                    TipiGenitoreService,
+              private svcUser:                            UserService,
               private svcAlunni:                          AlunniService, //serve perchè è in questa che si trovano le addToFamily e RemoveFromFamily"
               public _dialog:                             MatDialog,
               private _snackBar:                          MatSnackBar,
@@ -108,6 +112,11 @@ export class GenitoreEditComponent implements OnInit {
           tap(
             genitore => {
               this.personaID = genitore.personaID;
+              console.log("genitore-edit - loadData - this.personaID", this.personaID);
+              this.svcUser.getByPersonaID(this.personaID).subscribe(user=> {
+                console.log (user);
+                this.userID = user.id;
+              });
               this.genitoreNomeCognome = genitore.persona.nome + " "+ genitore.persona.cognome;
               // this.form.patchValue(genitore);
             }
@@ -227,5 +236,10 @@ export class GenitoreEditComponent implements OnInit {
   formGenitoreValidEmitted(isValid: boolean) {
     this.genitoreFormisValid = isValid;
   }
+
+  formUserValidEmitted(isValid: boolean) {
+    this.genitoreFormisValid = isValid;
+  }
+
 //#endregion
 }

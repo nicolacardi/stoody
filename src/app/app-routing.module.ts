@@ -5,7 +5,7 @@ import { AuthGuard }                            from './_user/auth/auth.guard';
 import { LoginPageComponent }                   from './_user/login-page.component';
 import { LoginComponent }                       from './_user/login/login.component';
 
-import { ProfiloComponent }                     from './_user/profilo/profilo.component';
+import { ProfiloComponent }                     from './_components/users/profilo/profilo.component';
 import { ChangePswComponent }                   from './_user/change-psw/change-psw.component';
 import { ImpostazioniComponent }                from './_components/impostazioni/impostazioni.component';
 

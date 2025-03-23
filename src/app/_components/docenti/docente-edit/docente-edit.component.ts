@@ -5,7 +5,7 @@ import { FormGroup, UntypedFormBuilder, UntypedFormGroup, Validators } from '@an
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
 import { Observable }                           from 'rxjs';
-import { tap }                                  from 'rxjs/operators';
+import { concatMap, tap }                                  from 'rxjs/operators';
 
 //components
 import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
@@ -117,18 +117,38 @@ export class DocenteEditComponent implements OnInit {
   save()
   {
 
-    this.docenteFormComponent.save();
-    this.personaFormComponent.save()
-    .subscribe({
-      next: (persona:PER_Persona) => {
-        console.log (persona);
-        //this.docenteFormComponent.form.controls['personaID'].setValue(persona.id);
-        //this.docenteFormComponent.save();
-        this._dialogRef.close();
-        this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
-      },
-      error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
-    });
+    // this.docenteFormComponent.save();
+    // // this.personaFormComponent.save();
+    // this.personaFormComponent.save()
+    // .subscribe({
+    //   next: (persona:PER_Persona) => {
+    //     console.log (persona);
+    //     //this.docenteFormComponent.form.controls['personaID'].setValue(persona.id);
+    //     //this.docenteFormComponent.save();
+    //     this._dialogRef.close();
+    //     this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
+    //   },
+    //   error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
+    // });
+
+
+        this.personaFormComponent.save()
+        .pipe(
+          tap(persona => {
+            if (this.docenteFormComponent.form.controls['personaID'].value == null)
+                this.docenteFormComponent.form.controls['personaID'].setValue(persona.id);
+            //this.personaID = persona.id; //questa non fa a tempo ad arrivare a alunnoFormComponent per fare anche la post di formAlunno con il giusto personaID
+          }),
+        //concatMap( () => this.docenteFormComponent.save())
+        ).subscribe({
+          next: res=> {
+            this.docenteFormComponent.save();
+            this._dialogRef.close();
+            this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
+          },
+          error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
+        });
+
 
   }
 

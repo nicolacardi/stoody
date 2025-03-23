@@ -4,16 +4,16 @@ import { MatDialog }                            from '@angular/material/dialog';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
 
 //components
-import { DialogOkComponent }                    from '../../_components/utilities/dialog-ok/dialog-ok.component';
-import { PhotocropComponent }                   from '../../_components/utilities/photocrop/photocrop.component';
-import { SnackbarComponent }                    from '../../_components/utilities/snackbar/snackbar.component';
-import { Utility }                              from '../../_components/utilities/utility.component';
-import { PersonaFormComponent }                 from '../../_components/persone/persona-form/persona-form.component';
+import { DialogOkComponent }                    from '../../../_components/utilities/dialog-ok/dialog-ok.component';
+import { PhotocropComponent }                   from '../../../_components/utilities/photocrop/photocrop.component';
+import { SnackbarComponent }                    from '../../../_components/utilities/snackbar/snackbar.component';
+import { Utility }                              from '../../../_components/utilities/utility.component';
+import { PersonaFormComponent }                 from '../../../_components/persone/persona-form/persona-form.component';
 
 //services
 import { EventEmitterService }                  from 'src/app/_services/event-emitter.service';
 import { UserService }                          from 'src/app/_user/user.service';
-import { PersoneService }                       from '../../_components/persone/persone.service';
+import { PersoneService }                       from '../../../_components/persone/persone.service';
 
 //models
 import { _UT_UserFoto }                         from 'src/app/_models/_UT_UserFoto';
@@ -22,7 +22,7 @@ import { User }                                 from 'src/app/_user/Users';
 @Component({
   selector: 'app-profilo',
   templateUrl: './profilo.component.html',
-  styleUrls: ['../user.css']
+  styleUrls: ['../users.css']
 })
 
 export class ProfiloComponent implements OnInit {

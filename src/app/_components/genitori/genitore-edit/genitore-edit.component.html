@@ -39,6 +39,13 @@
                         </app-persona-form>
 
                         <div class="_bordered-grey mt5">
+                            <app-user-form                           
+                                [userID] = "userID"
+                                (formValid)="formUserValidEmitted($event)">
+                            </app-user-form>
+                        </div>
+
+                        <div class="_bordered-grey mt5">
                             <app-genitore-form                           
                                 [genitoreID] = "genitoreID"
                                 (formValid)="formGenitoreValidEmitted($event)">

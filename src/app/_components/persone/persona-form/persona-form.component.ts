@@ -217,6 +217,123 @@ export class PersonaFormComponent implements OnInit {
     )
   }
 
+//#region ----- TENTATIVO DI RENDERE SINCRONA LA SAVE ------------
+
+  //ma viene usata in maniera asincrona da procedura-iscrizione, alunno-edit, docente-edit e genitore-edit
+
+  // async checkExists(){
+
+  //   let result = [];
+  //   let objTrovatoNC: PER_Persona | null = null;
+  //   let objTrovatoCF: PER_Persona | null = null;
+  //   let objTrovatoEM: PER_Persona | null = null;
+
+  //   objTrovatoNC = await firstValueFrom(this.svcPersone.getByNomeCognome(this.form.controls['nome'].value, this.form.controls['cognome'].value, this.personaID? this.personaID : 0));
+  //   if (this.form.controls['cf'].value) objTrovatoCF = await firstValueFrom(this.svcPersone.getByCF(this.form.controls['cf'].value, this.personaID? this.personaID : 0));
+  //   objTrovatoEM = await firstValueFrom(this.svcPersone.getByEmail(this.form.controls['email'].value, this.personaID? this.personaID : 0));
+
+  //   //console.log ("objTrovatoNC", objTrovatoNC);
+  //   //console.log ("objTrovatoCF", objTrovatoCF);    
+  //   //console.log ("objTrovatoEM", objTrovatoEM);    
+
+  //   if (objTrovatoNC) result.push({msg: "Combinazione Nome e Cognome <br>già presente", grav: "nonBlock"} );
+  //   if (objTrovatoCF) result.push({msg: "CF già presente", grav: "Block"} );
+  //   if (objTrovatoEM) result.push({msg: "Email già presente", grav: "Block"} );
+    
+  //   return result;
+  // }
+
+
+
+  // async save(): Promise<void> {
+
+  //   let procedi = false;
+
+  //   //se 'Utente Registrato' è flaggato deve esistere la mail altrimenti va bloccato il salvataggio (la mail è necessaria.)
+  //   //si pone altro tema  " e se qualcuno modifica la mail dopo che è stato registrato?" forse andrebbe resa non modificabile quando accade? Oppure andrebbe cambiata anche la mail di login?
+  //   if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
+  //     this._dialog.open(DialogOkComponent, {
+  //       width: '320px',
+  //       data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è nesessario indicare l'indirizzo mail" }
+  //     });
+  //     return Promise.resolve(); // Assicura che venga restituito qualcosa
+  //   }
+
+
+  //   //verifica (e attende l'esito) se ci sono già persone con lo stesso nome-cognome, cf, email. 
+  //   const msg = await this.checkExists();
+
+  //   if (msg && msg.length > 0) {
+  //     //console.log("persona-form - save - this.checkexists ha trovato qualcosa già esistente");
+  //     //blockMessages conterrà l'array dei messaggi bloccanti
+  //     const blockMessages = msg
+  //       .filter(item => item.grav === "Block")
+  //       .map(item => item.msg);
+
+  //     if (blockMessages && blockMessages.length > 0) {
+  //       this._dialog.open(DialogOkComponent, {
+  //         width: '320px',
+  //         data: { titolo: "ATTENZIONE!", sottoTitolo: blockMessages.join(', ') + '<br>Impossibile Salvare' }
+  //       });
+  //       // la presenza di persone con stessa email e/o cf genera uno stop (gravità Block)
+  //       return Promise.resolve(); // Assicura che venga restituito qualcosa
+  //     } 
+  //     else {
+  //       const UnblockMessages = msg
+  //         .filter(item => item.grav === "nonBlock")
+  //         .map(item => item.msg);
+  //         // la presenza di persone con stesso nome e cognome genera una richiesta all'utente (gravità nonBlock)
+  //         //se procedere o meno
+
+  //       const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+  //         width: '320px',
+  //         data: { titolo: "ATTENZIONE!", sottoTitolo: UnblockMessages.join(', ') + '<br>Vuoi salvare un omonimo?' }
+  //       });
+
+  //       dialogYesNo.afterClosed().subscribe(result => {
+  //         if (result) {
+  //           procedi = true;
+  //           // se l'utente dice di procedere allora si valuta se post o put
+  //         } else {
+  //           procedi = false;
+  //           // se l'utente dice di non procedere tutto si ferma
+  //         }
+  //       });
+
+  //     }
+  //   } else {
+  //     procedi = true;
+  //   }
+
+  //   if (procedi == true) {
+  //     if (this.personaID == null || this.personaID == 0) {
+  //       //POST
+  //       this.svcPersone.post(this.form.value).pipe(
+  //         // tap(() => this.saveRoles()),
+  //         tap(persona => {
+  //           let formData = { 
+  //             UserName: this.form.controls['email'].value,
+  //             Email: this.form.controls['email'].value,
+  //             PersonaID: persona.id,
+  //             Password: "1234"
+  //           };
+  //           console.log("sto creando l'utente", formData);
+  //           this.svcUser.post(formData).subscribe();
+  //         })
+  //       ).subscribe();
+  //     } 
+  //     else {
+  //       //PUT
+  //       //console.log ("persona-form - save - siamo in 'put' perchè i controlli precedenti sono stati superati - this.form.value:", this.form.value);
+  //       this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
+  //       // this.saveRoles(); 
+  //       this.svcPersone.put(this.form.value).subscribe();
+  //     }
+  //   }
+  // };
+//#endregion ----- TENTATIVO ----------------------
+
+
   async checkExists(): Promise<any[] | null> {
 
     let result = [];
@@ -226,8 +343,12 @@ export class PersonaFormComponent implements OnInit {
 
     objTrovatoNC = await firstValueFrom(this.svcPersone.getByNomeCognome(this.form.controls['nome'].value, this.form.controls['cognome'].value, this.personaID? this.personaID : 0));
     if (this.form.controls['cf'].value && this.form.controls['cf'].value!= '') objTrovatoCF = await firstValueFrom(this.svcPersone.getByCF(this.form.controls['cf'].value, this.personaID? this.personaID : 0));
-    objTrovatoEM = await firstValueFrom(this.svcPersone.getByEmail(this.form.controls['email'].value, this.personaID? this.personaID : 0));
-
+    if (this.form.controls['email'].value) {
+      objTrovatoEM = await firstValueFrom(this.svcPersone.getByEmail(this.form.controls['email'].value, this.personaID? this.personaID : 0));
+    } else {
+      objTrovatoEM = null;
+    }
+    
     //console.log ("objTrovatoNC", objTrovatoNC);
     //console.log ("objTrovatoCF", objTrovatoCF);    
     //console.log ("objTrovatoEM", objTrovatoEM);    
@@ -242,9 +363,9 @@ export class PersonaFormComponent implements OnInit {
 
   save() :Observable<any>{
 
-    //se Utente Registrato è flaggato deve esistere la mail
+    //se 'Utente Registrato' è flaggato deve esistere la mail altrimenti va bloccato il salvataggio (la mail è necessaria.)
+    //si pone altro tema  " e se qualcuno modifica la mail dopo che è stato registrato?" forse andrebbe resa non modificabile quando accade? Oppure andrebbe cambiata anche la mail di login?
     if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
-
       this._dialog.open(DialogOkComponent, {
         width: '320px',
         data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è nesessario indicare l'indirizzo mail" }
@@ -256,7 +377,8 @@ export class PersonaFormComponent implements OnInit {
     return from(this.checkExists()).pipe(
       mergeMap((msg) => {
         if (msg && msg.length > 0) {
-          console.log("persona-form - save - this.checkexists ha trovato qualcosa già esistente");
+          //console.log("persona-form - save - this.checkexists ha trovato qualcosa già esistente");
+          //blockMessages conterrà l'array dei messaggi bloccanti
           const blockMessages = msg
             .filter(item => item.grav === "Block")
             .map(item => item.msg);
@@ -266,7 +388,7 @@ export class PersonaFormComponent implements OnInit {
               width: '320px',
               data: { titolo: "ATTENZIONE!", sottoTitolo: blockMessages.join(', ') + '<br>Impossibile Salvare' }
             });
-            // la presenza di persone con stessa email o cf genera uno stop (gravità Block)
+            // la presenza di persone con stessa email e/o cf genera uno stop (gravità Block)
             return of();
           } 
           else {
@@ -280,6 +402,8 @@ export class PersonaFormComponent implements OnInit {
               width: '320px',
               data: { titolo: "ATTENZIONE!", sottoTitolo: UnblockMessages.join(', ') + '<br>Vuoi salvare un omonimo?' }
             });
+          
+
   
             return dialogYesNo.afterClosed().pipe(
               mergeMap(result => {
@@ -347,7 +471,6 @@ export class PersonaFormComponent implements OnInit {
       })
     );
   };
-
 
   delete() :Observable<any>{
 
