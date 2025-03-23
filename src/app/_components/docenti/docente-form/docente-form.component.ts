@@ -50,8 +50,7 @@ export class DocenteFormComponent implements OnInit {
     {
       id:                                       [null],
       personaID:                                [null],
-      scuolaProvenienza:                        ['', Validators.maxLength(255)],
-      indirizzoScuolaProvenienza:               ['', Validators.maxLength(255)]
+      abilitazione:                             ['', Validators.maxLength(255)],
     });
   }
 
@@ -87,12 +86,11 @@ export class DocenteFormComponent implements OnInit {
       this.emptyForm = true
   }
 
-  save() :Observable<any>{
-
+  save() {
     if (this.docenteID == null || this.docenteID == 0) 
-      return this.svcDocenti.post(this.form.value)
+      this.svcDocenti.post(this.form.value).subscribe();
     else 
-      return this.svcDocenti.put(this.form.value)
+      this.svcDocenti.put(this.form.value).subscribe();
   }
 
   delete() :Observable<any>{

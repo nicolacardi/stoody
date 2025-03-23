@@ -4,6 +4,7 @@ export interface PER_Docente {
         id:                     number;
         
         personaID:              number;
+        abilitazione:           string;
         ckAttivo:               boolean;
 
         note:                   string;

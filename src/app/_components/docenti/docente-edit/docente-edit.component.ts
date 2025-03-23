@@ -19,6 +19,8 @@ import { DocentiService }                       from '../docenti.service';
 //models
 import { PER_Docente }                          from 'src/app/_models/PER_Docente';
 import { User }                                 from 'src/app/_user/Users';
+import { PersonaFormComponent } from '../../persone/persona-form/persona-form.component';
+import { PER_Persona } from 'src/app/_models/PER_Persone';
 
 //#endregion
 
@@ -33,7 +35,12 @@ export class DocenteEditComponent implements OnInit {
   docente$!:                                      Observable<PER_Docente>;
   currdocente!:                                   User;
 
-  form! :                                       UntypedFormGroup;
+  public personaID!:                            number;
+
+  // form! :                                       UntypedFormGroup;
+
+  personaFormisValid!:                          boolean;
+  docenteFormisValid!:                           boolean;
 
   isValid!:                                     boolean;
   emptyForm :                                   boolean = false;
@@ -45,7 +52,8 @@ export class DocenteEditComponent implements OnInit {
 
 //#region ----- ViewChild Input Output ---------
 
-  @ViewChild(DocenteFormComponent) docenteFormComponent!: DocenteEditComponent; 
+  @ViewChild(PersonaFormComponent) personaFormComponent!       : PersonaFormComponent;
+  @ViewChild(DocenteFormComponent) docenteFormComponent!       : DocenteFormComponent;
 
 //#endregion
 
@@ -63,11 +71,11 @@ export class DocenteEditComponent implements OnInit {
     
     //let regCF = "^[a-zA-Z]{6}[0-9]{2}[abcdehlmprstABCDEHLMPRST]{1}[0-9]{2}([a-zA-Z]{1}[0-9]{3})[a-zA-Z]{1}$";
 
-    this.form = this.fb.group({
-      id:                         [null],
-      tipodocenteID:              ['', Validators.required],
-      ckAttivo:                   [true]
-    });  
+    // this.form = this.fb.group({
+    //   id:                         [null],
+    //   tipodocenteID:              ['', Validators.required],
+    //   ckAttivo:                   [true]
+    // });  
   }
 
 //#endregion
@@ -91,8 +99,10 @@ export class DocenteEditComponent implements OnInit {
       this.docente$ = loaddocente$
       .pipe( 
           tap(
-            docente => this.docenteID = docente.id
-            //this.form.patchValue(docente)
+            docente => {
+              this.personaID = docente.personaID;
+              this.docenteID = docente.id
+            }
           )
       );
     }
@@ -106,16 +116,20 @@ export class DocenteEditComponent implements OnInit {
 
   save()
   {
+
     this.docenteFormComponent.save();
-    /*
+    this.personaFormComponent.save()
     .subscribe({
-      next: ()=> {
+      next: (persona:PER_Persona) => {
+        console.log (persona);
+        //this.docenteFormComponent.form.controls['personaID'].setValue(persona.id);
+        //this.docenteFormComponent.save();
         this._dialogRef.close();
         this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
       },
       error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
-    })
-      */
+    });
+
   }
 
   delete()
@@ -147,6 +161,10 @@ export class DocenteEditComponent implements OnInit {
   onResize(event: any) {
     this.breakpoint = (event.target.innerWidth <= 800) ? 1 : 4;
     this.breakpoint2 = (event.target.innerWidth <= 800) ? 2 : 4;
+  }
+
+  formPersonaValidEmitted(isValid: boolean) {
+    this.personaFormisValid = isValid;
   }
 
   formValidEmitted(isValid: boolean) {

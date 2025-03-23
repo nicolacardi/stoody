@@ -139,7 +139,6 @@ export class DocentiListComponent  implements OnInit {
       tap(colonne=> {
         if (colonne.length != 0) this.displayedColumns = colonne.map(a => a.tableCol!.colName)
         else this.svcTableCols.listByTable(this.tableName).subscribe( colonne => {
-          console.log ("colonne estratte", colonne);
           this.displayedColumns = colonne.filter(colonna=> colonna.defaultShown == true).map(a => a.colName)
         })    
       })
@@ -226,8 +225,8 @@ export class DocentiListComponent  implements OnInit {
   addRecord(){
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
-      width: '700px',
-      height: '500px',
+      width: '900px',
+      height: '700px',
       data: 0
     };
 
@@ -238,10 +237,12 @@ export class DocentiListComponent  implements OnInit {
   openDetail(id:any){
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
-      width: '700px',
-      height: '500px',
+      width: '900px',
+      height: '550px',
       data: id
     };
+
+    
 
     const dialogRef = this._dialog.open(DocenteEditComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(() => this.loadData());

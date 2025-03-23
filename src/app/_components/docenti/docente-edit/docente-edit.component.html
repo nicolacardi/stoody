@@ -6,7 +6,7 @@
             <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" mat-dialog-close>
                 <mat-icon>arrow_back</mat-icon>
             </button> -->
-            <img class="iconaMenuBig" src="./assets/socio_edit_T.svg">
+            <img class="iconaMenuBig" src="./assets/docente_edit_T.svg">
 
             <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" [mat-dialog-close]="docente$|async"></button>
 
@@ -25,13 +25,23 @@
         
         <!-- ********************************       ANAGRAFICA      *********************************** -->
 
-        <form *ngIf="(docente$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+
             <div class="mt20"></div>
+            <div *ngIf="(docente$ | async) || emptyForm" class="mt10 ">
 
-            <app-socio-form [socioID] = "docenteID"
-                              (formValid)="formValidEmitted($event)">   
-            </app-socio-form>
+                <app-persona-form class="mt10" 
+                    [personaID] = "personaID" 
 
-        </form>
+                    [dove]="'docente-edit'"
+                    (formValid)="formPersonaValidEmitted($event)" 
+                    #apppersonaForm
+                    >   
+                </app-persona-form>
+
+                <app-docente-form [docenteID] = "docenteID"
+                                (formValid)="formValidEmitted($event)">   
+                </app-docente-form>
+            </div>
+
     </mat-card-content>
 </mat-card>

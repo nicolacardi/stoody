@@ -243,14 +243,14 @@ export class PersonaFormComponent implements OnInit {
   save() :Observable<any>{
 
     //se Utente Registrato è flaggato deve esistere la mail
-    // if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
+    if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
 
-    //   this._dialog.open(DialogOkComponent, {
-    //     width: '320px',
-    //     data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è nesessario indicare l'indirizzo mail" }
-    //   });
-    //   return EMPTY;
-    // }
+      this._dialog.open(DialogOkComponent, {
+        width: '320px',
+        data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è nesessario indicare l'indirizzo mail" }
+      });
+      return of();
+    }
 
     //verifica (e attende l'esito) se ci sono già persone con lo stesso nome-cognome, cf, email. 
     return from(this.checkExists()).pipe(
@@ -336,7 +336,7 @@ export class PersonaFormComponent implements OnInit {
           } 
           else {
             //PUT
-            console.log ("persona-form - save - siamo in 'put' perchè i controlli precedenti sono stati superati - this.form.value:", this.form.value);
+            //console.log ("persona-form - save - siamo in 'put' perchè i controlli precedenti sono stati superati - this.form.value:", this.form.value);
             this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
             // this.saveRoles(); 
             return this.svcPersone.put(this.form.value);

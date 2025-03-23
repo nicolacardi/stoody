@@ -62,6 +62,7 @@
                 <img class="iconaMenuBig" src="./assets/alunno_edit_T.svg">
 
                 <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+                
                 <span [ngClass]="{'invisible': selectedTab != 0}">
                     <button *ngIf="alunnoID" mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
                             (click)="loadData()" >
