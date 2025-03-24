@@ -147,13 +147,7 @@ export class ProceduraIscrizioneComponent implements OnInit {
       //this.PersonaFormComponent.toArray()[this.stepper.selectedIndex-1].save()
 
       //MERDA SECCA
-      this.AlunnoFormComponent.save()
-      .pipe(
-        concatMap (()=> this.AlunnoFormComponent.save())                  
-      )
-      .subscribe({
-        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
-      })
+      this.AlunnoFormComponent.save();
     }
 
   }

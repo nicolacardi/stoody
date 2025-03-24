@@ -1,6 +1,6 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild }            from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild }            from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators }                     from '@angular/forms';
 import { MatDialog }                                                            from '@angular/material/dialog';
 import { Observable, firstValueFrom, from, of }                                 from 'rxjs';
@@ -31,7 +31,7 @@ import { User }                                 from 'src/app/_user/Users';
   styleUrls: ['../persone.css'],
   standalone: false
 })
-export class PersonaFormComponent implements OnInit {
+export class PersonaFormComponent implements OnInit, OnChanges {
 
 //#region ----- Variabili ----------------------
 
@@ -130,13 +130,27 @@ export class PersonaFormComponent implements OnInit {
     this.loadData();
     this.svcComuni.list().subscribe( res => this.comuniArr = res);
     this.form.valueChanges.subscribe(  () => {
-        //console.log("form changed");
+        // console.log("persona-form loadData - form changed - this.form.valid", this.form.valid);
+        // console.log("Form Errors:", this.form.errors);
+        // // Controlla ogni campo del form e logga gli errori
+        // Object.keys(this.form.controls).forEach(field => {
+        //   const control = this.form.get(field);
+        //   if (control && control.invalid) {
+        //     console.log(`Campo "${field}" non valido:`, control.errors);
+        //   }
+        // });
+
+
         this.formChanged.emit();
         this.formValid.emit(this.form.valid)
       }
     )
   }
 
+  ngOnChanges () {
+    this.loadData();
+
+  }
   loadData(){
 
     // this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;

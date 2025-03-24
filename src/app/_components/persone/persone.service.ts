@@ -85,6 +85,7 @@ export class PersoneService {
   getByNomeCognome(nome: string, cognome: string, personaID: number): Observable<PER_Persona> {
     //restituisce PER_Persona in base a nome e cognome ma con PersonaID != dal parametro passato
     return this.http.get<PER_Persona>(environment.apiBaseUrl+'PER_Persone/GetByNomeCognome/' + nome+ '/'+cognome+ '/' +personaID)
+    //http://213.215.231.4/swappX/api/PER_Persone/GetByNomeCognome/test/olina/1
   }
 
   getByCF(cf: string, personaID: number): Observable<PER_Persona> {

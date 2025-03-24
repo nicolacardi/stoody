@@ -1,17 +1,21 @@
 //#region ----- IMPORTS ------------------------
-import { Component, EventEmitter, Input, OnInit, Output }                     from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog }                            from '@angular/material/dialog';
-import { Observable, of, tap }                  from 'rxjs';
+import { Component, EventEmitter, Input, OnInit, Output }      from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators }    from '@angular/forms';
+import { MatDialog }                                           from '@angular/material/dialog';
+import { Observable, of, tap }                                 from 'rxjs';
+import { MatSnackBar }                                         from '@angular/material/snack-bar';
 
 //components
+import { SnackbarComponent }                                   from '../../utilities/snackbar/snackbar.component';
+
 
 //services
-import { DocentiService }                       from '../docenti.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
+import { DocentiService }                                      from '../docenti.service';
+import { LoadingService }                                      from '../../utilities/loading/loading.service';
 
 //models
-import { PER_Docente }                          from 'src/app/_models/PER_Docente';
+import { PER_Docente }                                         from 'src/app/_models/PER_Docente';
+
 
 //#endregion
 
@@ -41,10 +45,14 @@ export class DocenteFormComponent implements OnInit {
   
 //#region ----- Constructor --------------------
 
-  constructor(public _dialog:                   MatDialog,
-              private fb:                       UntypedFormBuilder, 
-              private svcDocenti:               DocentiService,
-              private _loadingService :         LoadingService ) {
+  constructor(
+    public _dialog               : MatDialog,
+    private fb                   : UntypedFormBuilder,
+    private svcDocenti           : DocentiService,
+    private _loadingService      : LoadingService,
+    private _snackBar            : MatSnackBar,
+              
+  ) {
 
     this.form = this.fb.group(
     {
@@ -93,12 +101,18 @@ export class DocenteFormComponent implements OnInit {
       this.svcDocenti.put(this.form.value).subscribe();
   }
 
-  delete() :Observable<any>{
+
+  
+  delete(){
     if (this.docenteID != null) 
-      return this.svcDocenti.delete(this.docenteID) 
-    else 
-      return of();
-  }
+      this.svcDocenti.delete(this.docenteID)
+      .subscribe({
+        next: res=>{
+          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
+        },
+        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+      });
+}
 
 
   deleteRole() {

@@ -344,8 +344,8 @@ export class GenitoriListComponent implements OnInit {
   addRecord(){
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
-      width: '850px',
-      height: '650px',
+      width: '900px',
+      height: '700px',
       data: 0
     };
 
@@ -359,7 +359,7 @@ export class GenitoriListComponent implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '900px',
-      height: '650px',
+      height: '700px',
       data: id
     };
 

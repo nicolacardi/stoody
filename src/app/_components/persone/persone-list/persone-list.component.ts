@@ -173,7 +173,7 @@ export class PersoneListComponent implements OnInit {
         //map(val=> val.filter( val => (!val._LstRoles!.includes('Alunno') && !val._LstRoles!.includes('Genitore')))) //vogliamo vedere tutti meno genitori e alunni...
 
     ).subscribe( val => {
-      //console.log ("persone-list", val);
+      console.log ("persone-list", val);
         this.matDataSource.data = val;
         this.matDataSource.paginator = this.paginator;
         this.matDataSource.sort = this.sort; 

@@ -2,7 +2,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output }      from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators }    from '@angular/forms';
 import { MatDialog }                                           from '@angular/material/dialog';
-import { Observable, of, tap }                                 from 'rxjs';
+import { firstValueFrom, Observable, of, tap }                                 from 'rxjs';
 
 //components
 
@@ -12,6 +12,9 @@ import { UserService }                                         from 'src/app/_us
 
 //models
 import { User }                                                from 'src/app/_user/Users';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from '../../utilities/snackbar/snackbar.component';
+import { DialogOkComponent } from '../../utilities/dialog-ok/dialog-ok.component';
 
 
 //#endregion
@@ -26,6 +29,7 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   //#region ----- Variabili ----------------------
   user$!:                                       Observable<User>;
+  user!:                                         User;
   form! :                                       UntypedFormGroup;
   emptyForm :                                   boolean = false;
   loading:                                      boolean = true;
@@ -43,16 +47,20 @@ export class UserFormComponent implements OnInit, OnChanges {
 
 //#region ----- Constructor --------------------
 
-  constructor(public _dialog:                   MatDialog,
-              private fb:                       UntypedFormBuilder, 
-              private svcUser:                  UserService,
-              private _loadingService :         LoadingService ) {
+  constructor(
+    public _dialog               : MatDialog,
+    private fb                   : UntypedFormBuilder,
+    private svcUser              : UserService,
+             
+    private _snackBar            : MatSnackBar,
+    private _loadingService      : LoadingService
+  ) {
 
     this.form = this.fb.group(
     {
       userID:                                   [null],
       personaID:                                [null],
-      email:                                    ['', [Validators.email, Validators.required]],
+      email:                                    ['', [Validators.email]],
       password:                                 [null],
       userName:                                 [null]
     });
@@ -101,6 +109,8 @@ export class UserFormComponent implements OnInit, OnChanges {
   }
 
   save() {
+
+
     //this.form.controls['personaID'].setValue(this.personaID);
     if (this.form.controls['email'].value) {
       if (this.userID == null || this.userID == '') {
@@ -121,4 +131,48 @@ export class UserFormComponent implements OnInit, OnChanges {
     else return of();
   }
 
+  async cambioPassword() {
+
+    console.log ("user-form - cambiopassword - userID",this.userID);
+    await firstValueFrom(this.svcUser.get(this.userID)
+        .pipe(
+          tap(res => { this.user = res;}
+        )
+      ));
+  
+
+      //console.log ("ok le credenziali corrispondono");
+      //console.log ("imposto", this.routedUsername, this.form.controls['newPassword'].value);
+      
+      //tutto corrisponde - imposto quella nuova tramite ResetPassword
+  
+      let userNoTmpPassword = {
+        userID:       this.user.id,               //necessario x la put
+        userName:     this.userID,                //necessario x la put
+        personaID:    this.user.personaID,        //necessario x la put
+        tmpPassword:  '',                         //psw temporanea azzerata
+        email:        this.user.email,            //se non lo metto viene cancellato
+        normalizedEmail:  this.user.normalizedEmail,   //se non lo metto viene cancellato
+        fullName:     ''                          
+      };
+  
+      // console.log ("userNoTmpPassword", userNoTmpPassword);
+  
+      this.svcUser.ResetPassword(this.userID, this.form.controls['password'].value).subscribe({
+        next: res =>  {
+            //ora vado a cancellare la password temporanea tmpPassword in modo che non si possa più utilizzare
+            this.svcUser.put(userNoTmpPassword).subscribe();
+  
+            const dialogRef = this._dialog.open(DialogOkComponent, {
+              width: '320px',
+              data: {titolo: "CAMBIO PASSWORD", sottoTitolo: "La password è stata modificata<br>con successo.<br>"}
+            });
+        },
+        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore nel salvataggio della password', panelClass: ['red-snackbar']})
+      });
+  
+  }
+
+
 }
+

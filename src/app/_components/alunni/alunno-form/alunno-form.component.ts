@@ -95,13 +95,22 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
       this.emptyForm = true
   }
 
-  save() :Observable<any>{
 
-    if (this.alunnoID == null || this.alunnoID == 0) 
-      return this.svcAlunni.post(this.form.value)
-    else 
-      return this.svcAlunni.put(this.form.value)
+  save() {
+    
+    //this.form.controls['personaID'].setValue(this.personaID);
+
+    if (this.alunnoID == null || this.alunnoID == 0) {
+      console.log ("alunno-form - save - post form", this.form.value);
+      //return this.svcGenitori.post(this.form.value)
+      this.svcAlunni.post(this.form.value).subscribe();
+    }
+    else {
+      console.log ("alunno-form - save - put form", this.form.value);
+      this.svcAlunni.put(this.form.value).subscribe();
+    }
   }
+
 
   delete() :Observable<any>{
     if (this.alunnoID != null) 

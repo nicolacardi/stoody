@@ -226,7 +226,7 @@ export class DocentiListComponent  implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '900px',
-      height: '700px',
+      height: '650px',
       data: 0
     };
 
@@ -238,7 +238,7 @@ export class DocentiListComponent  implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '900px',
-      height: '550px',
+      height: '580px',
       data: id
     };
 

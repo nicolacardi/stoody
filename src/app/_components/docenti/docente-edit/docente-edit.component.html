@@ -28,7 +28,27 @@
 
             <div class="mt20"></div>
             <div *ngIf="(docente$ | async) || emptyForm" class="mt10 ">
+                <form [formGroup] = "form">            
+                    <mat-form-field *ngIf="emptyForm">
+                        <input type="text"
+                                placeholder="persona"
+                                matInput
+                                formControlName="nomeCognomePersona"
+                                [matAutocomplete]="autoPersona"  >
+                        <!-- #nomeCognomePersona -->
+                        <!-- (keydown.enter) = "enterPersonaInput()" dovrebbe essere superata da autoActiveFirstOption-->
+                        <mat-autocomplete autoActiveFirstOption #autoPersona="matAutocomplete" (optionSelected)="selectedNomeCognome($event)">
+                            <!-- <mat-spinner *ngIf="nomeAlunnoIsLoading" class="is-loading" diameter="40"></mat-spinner> -->
+                            <mat-option *ngFor="let element of filteredPersone$ | async"  [value]="element.nome + ' ' + element.cognome" [id]="element.id.toString()" #option>
+                                <small>{{element.nome}} {{element.cognome}}</small>
+                            </mat-option>
+                        </mat-autocomplete>
 
+                        <mat-error *ngIf="form.controls['nomeCognomePersona'].hasError('unmatched')">
+                            Selezionare un valore dalla lista
+                        </mat-error>
+                    </mat-form-field>
+                </form>
                 <app-persona-form class="mt10" 
                     [personaID] = "personaID" 
 
@@ -38,9 +58,18 @@
                     >   
                 </app-persona-form>
 
-                <app-docente-form [docenteID] = "docenteID"
-                                (formValid)="formValidEmitted($event)">   
-                </app-docente-form>
+                <div class="_bordered-grey mt5">
+                    <app-user-form                           
+                        [userID] = "userID"
+                        (formValid)="formUserValidEmitted($event)">
+                    </app-user-form>
+                </div>
+
+                <div class="_bordered-grey mt5">
+                    <app-docente-form [docenteID] = "docenteID"
+                                    (formValid)="formValidEmitted($event)">   
+                    </app-docente-form>
+                </div>
             </div>
 
     </mat-card-content>

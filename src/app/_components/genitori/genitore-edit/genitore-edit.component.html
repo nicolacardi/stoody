@@ -33,8 +33,7 @@
                     <!-- <form *ngIf="(genitore$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form"> -->
                     <div *ngIf="(genitore$ | async) || emptyForm" class="mt10 ma">
                         <form [formGroup] = "form">            
-
-                            <mat-form-field>
+                            <mat-form-field *ngIf="emptyForm">
                                 <input type="text"
                                         placeholder="persona"
                                         matInput
@@ -42,7 +41,7 @@
                                         [matAutocomplete]="autoPersona"  >
                                 <!-- #nomeCognomePersona -->
                                 <!-- (keydown.enter) = "enterPersonaInput()" dovrebbe essere superata da autoActiveFirstOption-->
-                                <mat-autocomplete autoActiveFirstOption #autoPersona="matAutocomplete" (optionSelected)="selected($event)">
+                                <mat-autocomplete autoActiveFirstOption #autoPersona="matAutocomplete" (optionSelected)="selectedNomeCognome($event)">
                                     <!-- <mat-spinner *ngIf="nomeAlunnoIsLoading" class="is-loading" diameter="40"></mat-spinner> -->
                                     <mat-option *ngFor="let element of filteredPersone$ | async"  [value]="element.nome + ' ' + element.cognome" [id]="element.id.toString()" #option>
                                         <small>{{element.nome}} {{element.cognome}}</small>

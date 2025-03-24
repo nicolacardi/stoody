@@ -112,7 +112,7 @@ export class UserService {
 
   getByUsername(userName: string): Observable<User>{
     return this.http.get<User>(environment.apiBaseUrl+'ApplicationUser/GetByUsername' + userName);
-    //http://213.215.231.4/swappX/api/ApplicationUser/GetByUsername/a
+    //http://213.215.231.4/swappX/api/ApplicationUser/GetByUsername/2
   }
 
   getByPersonaID(personaID: number): Observable<User>{

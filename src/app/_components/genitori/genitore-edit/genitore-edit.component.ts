@@ -1,37 +1,37 @@
 //#region ----- IMPORTS ------------------------
 
-import { AfterViewInit, Component, EventEmitter, Inject, OnInit, Output, ViewChild }      from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup }                                                             from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA }                      from '@angular/material/dialog';
-import { MatSnackBar }                                                                    from '@angular/material/snack-bar';
-import { SnackbarComponent }                                                              from '../../utilities/snackbar/snackbar.component';
-import { iif, Observable, of }                                                            from 'rxjs';
-import { concatMap, debounceTime, switchMap, tap }                                                                 from 'rxjs/operators';
+import { Component, Inject, OnInit, ViewChild }                            from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }                            from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA }       from '@angular/material/dialog';
+import { MatSnackBar }                                                     from '@angular/material/snack-bar';
+import { forkJoin, iif, Observable, of }                                   from 'rxjs';
+import { concatMap, debounceTime, map, switchMap, tap }                    from 'rxjs/operators';
+import { FormCustomValidatorsArray }                                       from '../../utilities/requireMatch/requireMatch';
+import { MatAutocompleteSelectedEvent }                                    from '@angular/material/autocomplete';
 
 //components
-import { AlunniListComponent }                                                            from '../../alunni/alunni-list/alunni-list.component';
-import { DialogYesNoComponent }                                                           from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-import { PersonaFormComponent }                                                           from '../../persone/persona-form/persona-form.component';
-import { AlunnoEditComponent }                                                            from '../../alunni/alunno-edit/alunno-edit.component';
-import { GenitoreFormComponent }                                                          from '../genitore-form/genitore-form.component';
-import { UserFormComponent }                                                              from '../../users/user-form/user-form.component';
+import { AlunniListComponent }                                             from '../../alunni/alunni-list/alunni-list.component';
+
+import { DialogYesNoComponent }                                            from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { SnackbarComponent }                                               from '../../utilities/snackbar/snackbar.component';
+
+import { PersonaFormComponent }                                            from '../../persone/persona-form/persona-form.component';
+import { AlunnoEditComponent }                                             from '../../alunni/alunno-edit/alunno-edit.component';
+import { GenitoreFormComponent }                                           from '../genitore-form/genitore-form.component';
+import { UserFormComponent }                                               from '../../users/user-form/user-form.component';
+
 //services
-import { GenitoriService }                                                                from 'src/app/_components/genitori/genitori.service';
-import { LoadingService }                                                                 from '../../utilities/loading/loading.service';
-import { AlunniService }                                                                  from '../../alunni/alunni.service';
-import { TipiGenitoreService }                                                            from '../tipi-genitore.service';
+import { GenitoriService }                                                 from 'src/app/_components/genitori/genitori.service';
+import { LoadingService }                                                  from '../../utilities/loading/loading.service';
+import { AlunniService }                                                   from '../../alunni/alunni.service';
+import { UserService }                                                     from 'src/app/_user/user.service';
+import { PersoneService }                                                  from '../../persone/persone.service';
 
 //models
-import { ALU_Genitore }                                                                   from 'src/app/_models/ALU_Genitore';
-import { _UT_Comuni }                                                                     from 'src/app/_models/_UT_Comuni';
-import { ALU_Alunno }                                                                     from 'src/app/_models/ALU_Alunno';
-import { ALU_TipoGenitore }                                                               from 'src/app/_models/ALU_Tipogenitore';
-import { UserService } from 'src/app/_user/user.service';
-import { PersoneService } from '../../persone/persone.service';
-import { FormCustomValidatorsArray } from '../../utilities/requireMatch/requireMatch';
-import { PER_Persona } from 'src/app/_models/PER_Persone';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-
+import { ALU_Genitore }                                                    from 'src/app/_models/ALU_Genitore';
+import { _UT_Comuni }                                                      from 'src/app/_models/_UT_Comuni';
+import { ALU_Alunno }                                                      from 'src/app/_models/ALU_Alunno';
+import { PER_Persona }                                                     from 'src/app/_models/PER_Persone';
 
 //#endregion
 
@@ -47,9 +47,6 @@ export class GenitoreEditComponent implements OnInit {
 //#region ----- Variabili ----------------------
 
   genitore$!               : Observable<ALU_Genitore>;
-  obsTipiGenitore$!        : Observable<ALU_TipoGenitore[]>;
-  filteredComuni$!         : Observable<_UT_Comuni[]>;
-  filteredComuniNascita$!  : Observable<_UT_Comuni[]>;
 
   public personaID!        : number;
   public userID!           : string;
@@ -57,49 +54,47 @@ export class GenitoreEditComponent implements OnInit {
 
   personaFormisValid!      : boolean;
   genitoreFormisValid!     : boolean;
+  userFormisValid!         : boolean;
 
   emptyForm                : boolean = false;
   loading                  : boolean = true;
 
-  comuniIsLoading          : boolean = false;
-  comuniNascitaIsLoading   : boolean = false;
   breakpoint!              : number;
   selectedTab              : number = 0;
   filteredPersone$!        : Observable<PER_Persona[]>;
   filteredPersoneArray!    : PER_Persona[];
-    form!                  : UntypedFormGroup;
+  form!                    : UntypedFormGroup;
   
     
 //#endregion
 
 //#region ----- ViewChild Input Output ---------
-  @ViewChild('alunniFamiglia') alunniFamigliaComponent!: AlunniListComponent; 
-  @ViewChild(PersonaFormComponent) personaFormComponent!: PersonaFormComponent; 
-  @ViewChild(UserFormComponent) userFormComponent!: UserFormComponent; 
-  @ViewChild(GenitoreFormComponent) genitoreFormComponent!: GenitoreFormComponent; 
+  @ViewChild('alunniFamiglia') alunniFamigliaComponent!        : AlunniListComponent; 
+  @ViewChild(PersonaFormComponent) personaFormComponent!       : PersonaFormComponent;
+  @ViewChild(UserFormComponent) userFormComponent!             : UserFormComponent;
+  @ViewChild(GenitoreFormComponent) genitoreFormComponent!     : GenitoreFormComponent;
 
 //#endregion
 
 //#region ----- Constructor --------------------
-  constructor(public _dialogRef                                : MatDialogRef<GenitoreEditComponent>,
-              @Inject(MAT_DIALOG_DATA) public genitoreID       : number,
-              private fb                                       : UntypedFormBuilder,
-              private svcGenitori                              : GenitoriService,
-              private svcUser                                  : UserService,
-              private svcPersone                               : PersoneService,
-              private svcAlunni                                : AlunniService, //serve perchè è in questa che si trovano le addToFamily e RemoveFromFamily"
-              public _dialog                                   : MatDialog,
-              private _snackBar                                : MatSnackBar,
-              private _loadingService :                   LoadingService) {
-
+  constructor(
+    public _dialogRef                                 : MatDialogRef<GenitoreEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public genitoreID        : number,
+    private fb                                        : UntypedFormBuilder,
+    private svcGenitori                               : GenitoriService,
+    private svcUser                                   : UserService,
+    private svcPersone                                : PersoneService,
+    private svcAlunni                                 : AlunniService,
+    public _dialog                                    : MatDialog,
+    private _snackBar                                 : MatSnackBar,
+    private _loadingService                           : LoadingService
+  ) 
+  {
     _dialogRef.disableClose = true;
-
     this.form = this.fb.group(
     {
-    nomeCognomePersona: [null],
+      nomeCognomePersona: [null],
     });
-
-    //this.obsTipiGenitore$ = this.svcTipiGenitore.list();
   }
 
 //#endregion 
@@ -112,23 +107,32 @@ export class GenitoreEditComponent implements OnInit {
 
   loadData(){
 
+    //quello che segue è il modo per
+    //estrarre la lista delle persone
+    //estrarre la lista dei genitori
+    //togliere dalla lista delle eprsone quelle che sono già genitori
+    //questo serve per evitare di creare un SECONDO genitore con la stessa persona
+    //nulla infatti impedirebbe di farlo
 
-
-        this.svcPersone.list().subscribe(persone => {
-          this.form.controls['nomeCognomePersona'].setValidators(
-            [FormCustomValidatorsArray.valueSelected(persone)]
-          );
-        })
+    forkJoin({
+      persone: this.svcPersone.list(),
+      genitori: this.svcGenitori.list()
+    }).subscribe(({ persone, genitori }) => {
+      const genitoriIDs = new Set(genitori.map(g => g.personaID));
+      const personeFiltrate = persone.filter(p => !genitoriIDs.has(p.id));
     
-        this.filteredPersone$ = this.form.controls['nomeCognomePersona'].valueChanges
-          .pipe(
-            debounceTime(300),
-            switchMap(() => this.svcPersone.filterPersone(this.form.value.nomeCognomePersona)),
-          );
-
-
-
-    this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
+      // Imposta il validatore con persone filtrate
+      this.form.controls['nomeCognomePersona'].setValidators(
+        [FormCustomValidatorsArray.valueSelected(personeFiltrate)]
+      );
+    
+      this.filteredPersone$ = this.form.controls['nomeCognomePersona'].valueChanges.pipe(
+        debounceTime(300),
+        switchMap(value => this.svcPersone.filterPersone(value).pipe(
+          map(filtered => filtered.filter(p => !genitoriIDs.has(p.id))) // Escludi i genitori
+        ))
+      );
+    });
     
     if (this.genitoreID && this.genitoreID + '' != "0") {
       const obsGenitore$: Observable<ALU_Genitore> = this.svcGenitori.get(this.genitoreID);
@@ -149,7 +153,6 @@ export class GenitoreEditComponent implements OnInit {
                 }
               });
               this.genitoreNomeCognome = genitore.persona.nome + " "+ genitore.persona.cognome;
-              // this.form.patchValue(genitore);
             }
           )
       );
@@ -162,50 +165,46 @@ export class GenitoreEditComponent implements OnInit {
 //#region ----- Operazioni CRUD ----------------
 
   save() {
-      this.personaFormComponent.save()
-      //.pipe(
-        //tap(persona => {
-          //console.log ("genitore-edit save() - questo è persona dopo save di personaForm", persona)
-          //if (this.genitoreFormComponent.form.controls['personaID'].value == null) this.genitoreFormComponent.form.controls['personaID'].setValue(persona.id);
-          //if (this.userFormComponent.form.controls['personaID'].value == null) this.userFormComponent.form.controls['personaID'].setValue(persona.id);
-        //}),
-        //concatMap( () => this.genitoreFormComponent.save())
-      //)
-      .subscribe({
-        next: res=> {
-          console.log ("genitore-edit save() - subscribe...prima di genitoreFormComponent.save() ");
-          console.log ("genitoreFormComponent.form.value", this.genitoreFormComponent.form.value);
+    this.personaFormComponent.save()
+    .subscribe({
+      next: persona=> {
 
-          // if (this.genitoreFormComponent.form.controls['personaID'].value == null) this.genitoreFormComponent.form.controls['personaID'].setValue(this.personaID);
-          // if (this.userFormComponent.form.controls['personaID'].value == null) this.userFormComponent.form.controls['personaID'].setValue(this.personaID);
+        //console.log ("genitore-edit save() - subscribe...prima di genitoreFormComponent.save() e userFormComponent.save() ");
 
+        //quello che segue serve per la POST e non per la PUT
+        if (this.genitoreFormComponent.form.controls['personaID'].value == null) this.genitoreFormComponent.form.controls['personaID'].setValue(persona.id);
+        //console.log ("genitoreFormComponent.form.value", this.genitoreFormComponent.form.value);
+        this.genitoreFormComponent.save();
 
-          this.genitoreFormComponent.save();
+        //quello che segue serve per la POST e non per la PUT
+        if (this.userFormComponent.form.controls['personaID'].value == null) this.userFormComponent.form.controls['personaID'].setValue(persona.id);
+        if (this.userFormComponent.form.controls['userName'].value == null) this.userFormComponent.form.controls['userName'].setValue(this.userFormComponent.form.controls['email'].value);
+        if (this.userFormComponent.form.controls['password'].value == null) this.userFormComponent.form.controls['password'].setValue(1234);
+        //console.log ("userFormComponent.form.value", this.userFormComponent.form.value);
 
-          console.log ("userFormComponent.form.value", this.userFormComponent.form.value);
-
-          this.userFormComponent.save();
-          this._dialogRef.close();
-          this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
-        },
-        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
-      });
+        this.userFormComponent.save();
+        this._dialogRef.close();
+        this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
+      },
+      error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
+    });
   }
 
   delete()
   {
     const dialogRef = this._dialog.open(DialogYesNoComponent, {
       width: '320px',
-      data: {titolo: "ATTENZIONE", sottoTitolo: "Si conferma la cancellazione del record ?"}
+      data: {titolo: "ATTENZIONE", sottoTitolo: "Si conferma la cancellazione del record ? <br> Qualora possibile verrà cancellato ma solo come Genitore.<br>Resterà l'anagrafica della persona."}
     });
 
     dialogRef.afterClosed().subscribe( result => {
       if(result) {
         this.svcGenitori.delete(Number(this.genitoreID))
-        .pipe(
+        //.pipe(
           //tap( () => this.personaFormComponent.form.controls['tipoPersonaID'].setValue(12)),
           //concatMap(()=> this.personaFormComponent.save()) //non cancelliamo la persona ma impostiamo a non assegnato il tipo
-        ).subscribe({
+        //)
+        .subscribe({
           next: res=>{
             this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
             this._dialogRef.close();
@@ -279,30 +278,12 @@ export class GenitoreEditComponent implements OnInit {
   }
 
   formUserValidEmitted(isValid: boolean) {
-    this.genitoreFormisValid = isValid;
+    this.userFormisValid = isValid;
   }
 
-
-    selected(event: MatAutocompleteSelectedEvent): void {
-  
-      //come approccio alternativo all'uso di un customformvalidator vorrei fare come in 
-      //https://stackblitz.com/edit/mat-autocomplete-force-selection-of-option?file=src%2Fapp%2Fautocomplete-auto-active-first-option-example.ts 
-      //sembra infatti molto più "diretto" e "semplice" MA....come lo propone lui su ngAfterViewInit ...NON FUNZIONA CASSO! quindi lo metto qui che non è il massimo
-  
-      //***NC 25.12.22 ***/
-      // this.form.controls['personaID'].setValue(event.option.id);
-      // //vado a pescare la mail della persona selezionata
-      // const obsPersona$: Observable<PER_Persona> = this.svcPersone.get(event.option.id);
-      //   const loadPersona$ = this._loadingService.showLoaderUntilCompleted(obsPersona$);
-      //   this.persona$ = loadPersona$
-      //   .pipe( 
-      //       tap(
-      //         persona => {this.form.controls['email'].setValue(persona.email);}
-      //       )
-      //   );
-      //   this.persona$.subscribe();
-      
-    }
+  selectedNomeCognome(event: MatAutocompleteSelectedEvent): void {
+      this.personaID = +event.option.id;
+  }
   
 //#endregion
 }

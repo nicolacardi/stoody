@@ -1,6 +1,6 @@
 <!-- genitore form + persona form = genitore edit -->
 <form *ngIf="(user$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
-    <mat-label class="frameLabelRel t10">Dati dello User</mat-label>
+    <mat-label class="frameLabelRel t10">Dati dello User (se presente)</mat-label>
 
     <!-- <mat-icon class="_pos-absolute r20 mt5 pointer topZIndex" (click)="deleteRole()">delete</mat-icon> -->
     
@@ -10,18 +10,18 @@
         <mat-grid-tile>
             <mat-form-field>
                 <mat-label>email</mat-label>
-                <input matInput type="text" formControlName="email">
+                <input matInput type="text" formControlName="email" #email>
             </mat-form-field>
         </mat-grid-tile>
 
-        <mat-grid-tile>
+        <mat-grid-tile *ngIf="email.value">
             <mat-form-field>
                 <input matInput type="password" placeholder="Password" formControlName="password">
             </mat-form-field>
         </mat-grid-tile>
 
-        <mat-grid-tile>
-            <button mat-button class="_btn-text">Cambio Password</button>
+        <mat-grid-tile *ngIf="email.value">
+            <button mat-button class="_btn-text" (click)="cambioPassword()">Cambio Password</button>
         </mat-grid-tile>
 
 
