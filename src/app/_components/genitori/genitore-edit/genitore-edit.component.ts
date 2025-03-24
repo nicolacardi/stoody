@@ -1,12 +1,12 @@
 //#region ----- IMPORTS ------------------------
 
 import { AfterViewInit, Component, EventEmitter, Inject, OnInit, Output, ViewChild }      from '@angular/core';
-import { UntypedFormBuilder }                                                             from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup }                                                             from '@angular/forms';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA }                      from '@angular/material/dialog';
 import { MatSnackBar }                                                                    from '@angular/material/snack-bar';
 import { SnackbarComponent }                                                              from '../../utilities/snackbar/snackbar.component';
 import { iif, Observable, of }                                                            from 'rxjs';
-import { concatMap, tap }                                                                 from 'rxjs/operators';
+import { concatMap, debounceTime, switchMap, tap }                                                                 from 'rxjs/operators';
 
 //components
 import { AlunniListComponent }                                                            from '../../alunni/alunni-list/alunni-list.component';
@@ -27,6 +27,10 @@ import { _UT_Comuni }                                                           
 import { ALU_Alunno }                                                                     from 'src/app/_models/ALU_Alunno';
 import { ALU_TipoGenitore }                                                               from 'src/app/_models/ALU_Tipogenitore';
 import { UserService } from 'src/app/_user/user.service';
+import { PersoneService } from '../../persone/persone.service';
+import { FormCustomValidatorsArray } from '../../utilities/requireMatch/requireMatch';
+import { PER_Persona } from 'src/app/_models/PER_Persone';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 
 
 //#endregion
@@ -61,7 +65,11 @@ export class GenitoreEditComponent implements OnInit {
   comuniNascitaIsLoading   : boolean = false;
   breakpoint!              : number;
   selectedTab              : number = 0;
-
+  filteredPersone$!        : Observable<PER_Persona[]>;
+  filteredPersoneArray!    : PER_Persona[];
+    form!                  : UntypedFormGroup;
+  
+    
 //#endregion
 
 //#region ----- ViewChild Input Output ---------
@@ -73,22 +81,23 @@ export class GenitoreEditComponent implements OnInit {
 //#endregion
 
 //#region ----- Constructor --------------------
-  constructor(public _dialogRef: MatDialogRef<GenitoreEditComponent>,
-              @Inject(MAT_DIALOG_DATA) public genitoreID: number,
-              private fb:                                 UntypedFormBuilder, 
-              private svcGenitori:                        GenitoriService,
-              private svcUser:                            UserService,
-              private svcAlunni:                          AlunniService, //serve perchè è in questa che si trovano le addToFamily e RemoveFromFamily"
-              public _dialog:                             MatDialog,
-              private _snackBar:                          MatSnackBar,
+  constructor(public _dialogRef                                : MatDialogRef<GenitoreEditComponent>,
+              @Inject(MAT_DIALOG_DATA) public genitoreID       : number,
+              private fb                                       : UntypedFormBuilder,
+              private svcGenitori                              : GenitoriService,
+              private svcUser                                  : UserService,
+              private svcPersone                               : PersoneService,
+              private svcAlunni                                : AlunniService, //serve perchè è in questa che si trovano le addToFamily e RemoveFromFamily"
+              public _dialog                                   : MatDialog,
+              private _snackBar                                : MatSnackBar,
               private _loadingService :                   LoadingService) {
 
     _dialogRef.disableClose = true;
 
-    // this.form = this.fb.group(
-    // {
-    //   tipoGenitoreID:             [''],
-    // });
+    this.form = this.fb.group(
+    {
+    nomeCognomePersona: [null],
+    });
 
     //this.obsTipiGenitore$ = this.svcTipiGenitore.list();
   }
@@ -102,6 +111,23 @@ export class GenitoreEditComponent implements OnInit {
   }
 
   loadData(){
+
+
+
+        this.svcPersone.list().subscribe(persone => {
+          this.form.controls['nomeCognomePersona'].setValidators(
+            [FormCustomValidatorsArray.valueSelected(persone)]
+          );
+        })
+    
+        this.filteredPersone$ = this.form.controls['nomeCognomePersona'].valueChanges
+          .pipe(
+            debounceTime(300),
+            switchMap(() => this.svcPersone.filterPersone(this.form.value.nomeCognomePersona)),
+          );
+
+
+
     this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;
     
     if (this.genitoreID && this.genitoreID + '' != "0") {
@@ -256,5 +282,27 @@ export class GenitoreEditComponent implements OnInit {
     this.genitoreFormisValid = isValid;
   }
 
+
+    selected(event: MatAutocompleteSelectedEvent): void {
+  
+      //come approccio alternativo all'uso di un customformvalidator vorrei fare come in 
+      //https://stackblitz.com/edit/mat-autocomplete-force-selection-of-option?file=src%2Fapp%2Fautocomplete-auto-active-first-option-example.ts 
+      //sembra infatti molto più "diretto" e "semplice" MA....come lo propone lui su ngAfterViewInit ...NON FUNZIONA CASSO! quindi lo metto qui che non è il massimo
+  
+      //***NC 25.12.22 ***/
+      // this.form.controls['personaID'].setValue(event.option.id);
+      // //vado a pescare la mail della persona selezionata
+      // const obsPersona$: Observable<PER_Persona> = this.svcPersone.get(event.option.id);
+      //   const loadPersona$ = this._loadingService.showLoaderUntilCompleted(obsPersona$);
+      //   this.persona$ = loadPersona$
+      //   .pipe( 
+      //       tap(
+      //         persona => {this.form.controls['email'].setValue(persona.email);}
+      //       )
+      //   );
+      //   this.persona$.subscribe();
+      
+    }
+  
 //#endregion
 }
