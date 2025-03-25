@@ -46,14 +46,15 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
               private svcAlunni:                AlunniService,
               private _loadingService :         LoadingService ) {
 
-    this.form = this.fb.group(
+    this.form                          = this.fb.group(
     {
-      id:                                       [null],
-      personaID:                                [null],
-      scuolaProvenienza:                        ['', Validators.maxLength(255)],
-      indirizzoScuolaProvenienza:               ['', Validators.maxLength(255)],
-      ckDSA:                                    [false],
-      ckDisabile:                               [false],
+      id                               : [null],
+      personaID                        : [null],
+      scuolaProvenienza                : ['', Validators.maxLength(255)],
+      indirizzoScuolaProvenienza       : ['', Validators.maxLength(255)],
+      ckDSA                            : [false],
+      ckDisabile                       : [false],
+      ckAttivo                         : [false]
     });
   }
 
@@ -87,7 +88,10 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
       this.alunno$ = loadAlunno$
       .pipe( 
           tap(
-            alunno => this.form.patchValue(alunno)
+            alunno => {
+              console.log(alunno);
+              this.form.patchValue(alunno)
+            }
           )
       );
     }

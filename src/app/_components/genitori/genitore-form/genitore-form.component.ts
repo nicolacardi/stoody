@@ -54,13 +54,14 @@ export class GenitoreFormComponent implements OnInit {
               private svcTipiGenitore:          TipiGenitoreService,
               private _loadingService :         LoadingService ) {
 
-    this.form = this.fb.group(
+    this.form        = this.fb.group(
     {
-      id:                                       [null],
-      personaID:                                [null],
-      tipoGenitoreID:                           ['', Validators.required],
-      titoloStudio:                             [''],
-      professione:                              ['']
+      id             : [null],
+      personaID      : [null],
+      tipoGenitoreID : ['', Validators.required],
+      titoloStudio   : [''],
+      professione    : [''],
+      ckAttivo       : [null]
     });
 
     this.obsTipiGenitore$ = this.svcTipiGenitore.list();

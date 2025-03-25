@@ -20,9 +20,8 @@
             </mat-form-field>
         </mat-grid-tile>
 
-        <mat-grid-tile class="tileCk">
 
-        </mat-grid-tile>
+
     </mat-grid-list>
 
     <mat-grid-list class="no-overflowx" [cols]="3" rowHeight="60px">
@@ -40,12 +39,19 @@
         </mat-grid-tile>
 
 
-        <mat-grid-tile class="_pos-absolute" style="position: absolute; top: 0px">
+        <!-- <mat-grid-tile class="_pos-absolute" style="position: absolute; top: 0px">
             <div >
                 <button mat-button *ngFor="let genitore of (alunno$ | async)?._Genitori; let i = index">
-                    copia residenza da genitore {{genitore.id}}  <!-- qui mettere "padre" "madre"-->
+                    copia residenza da genitore {{genitore.id}} 
                 </button>
             </div>
+        </mat-grid-tile> -->
+
+        <mat-grid-tile class="tileCk">
+            <mat-checkbox color="primary" formControlName="ckAttivo" #ckAttivo>
+                <span [ngClass]="{'_red': !ckAttivo.checked}">Alunno Attivo</span>
+            </mat-checkbox>
         </mat-grid-tile>
+        
     </mat-grid-list>
 </form>

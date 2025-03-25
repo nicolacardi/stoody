@@ -54,11 +54,12 @@ export class DocenteFormComponent implements OnInit {
               
   ) {
 
-    this.form = this.fb.group(
+    this.form        = this.fb.group(
     {
-      id:                                       [null],
-      personaID:                                [null],
-      abilitazione:                             ['', Validators.maxLength(255)],
+      id             : [null],
+      personaID      : [null],
+      abilitazione   : ['', Validators.maxLength(255)],
+      ckAttivo       : [null]
     });
   }
 

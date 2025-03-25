@@ -31,4 +31,17 @@
             </mat-form-field>
         </mat-grid-tile>
     </mat-grid-list>
+    <mat-grid-list class="mt10" [cols]="3" rowHeight="60px">
+        <mat-grid-tile>
+        </mat-grid-tile>
+
+        <mat-grid-tile>
+        </mat-grid-tile>
+
+        <mat-grid-tile class="tileCk">
+            <mat-checkbox color="primary" formControlName="ckAttivo" #ckAttivo>
+                <span [ngClass]="{'_red': !ckAttivo.checked}">Genitore Attivo</span>
+            </mat-checkbox>
+        </mat-grid-tile>
+    </mat-grid-list>
 </form>
