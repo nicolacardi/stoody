@@ -1,20 +1,20 @@
 //#region ----- IMPORTS ------------------------
-import { Component, EventEmitter, Input, OnInit, Output }      from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators }    from '@angular/forms';
-import { MatDialog }                                           from '@angular/material/dialog';
-import { Observable, of, tap }                                 from 'rxjs';
-import { MatSnackBar }                                         from '@angular/material/snack-bar';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output }       from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators }                from '@angular/forms';
+import { MatDialog }                                                       from '@angular/material/dialog';
+import { Observable, of, tap }                                             from 'rxjs';
+import { MatSnackBar }                                                     from '@angular/material/snack-bar';
 
 //components
-import { SnackbarComponent }                                   from '../../utilities/snackbar/snackbar.component';
+import { SnackbarComponent }                                               from '../../utilities/snackbar/snackbar.component';
 
 
 //services
-import { DocentiService }                                      from '../docenti.service';
-import { LoadingService }                                      from '../../utilities/loading/loading.service';
+import { DocentiService }                                                  from '../docenti.service';
+import { LoadingService }                                                  from '../../utilities/loading/loading.service';
 
 //models
-import { PER_Docente }                                         from 'src/app/_models/PER_Docente';
+import { PER_Docente }                                                     from 'src/app/_models/PER_Docente';
 
 
 //#endregion
@@ -25,7 +25,7 @@ import { PER_Docente }                                         from 'src/app/_mo
   styleUrls:    ['./../docenti.css']
 })
 
-export class DocenteFormComponent implements OnInit {
+export class DocenteFormComponent implements OnInit, OnChanges {
 
 //#region ----- Variabili ----------------------
   docente$!:                                    Observable<PER_Docente>;
@@ -78,6 +78,10 @@ export class DocenteFormComponent implements OnInit {
     )
   }
 
+  ngOnChanges () {
+    this.loadData();
+  }
+
   loadData(){
 
     if (this.docenteID && this.docenteID + '' != "0") {
@@ -87,7 +91,10 @@ export class DocenteFormComponent implements OnInit {
       this.docente$ = loadDocente$
       .pipe( 
           tap(
-            docente => this.form.patchValue(docente)
+            docente => 
+              {this.form.patchValue(docente)
+                console.log (docente);
+              }
           )
       );
     }

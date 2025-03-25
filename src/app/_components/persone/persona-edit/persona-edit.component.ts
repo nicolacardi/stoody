@@ -31,12 +31,11 @@ import { DocentiCoordService }                  from '../docenticoord.service';
 import { NonDocentiService }                    from '../nondocenti.service';
 import { ITManagersService }                    from '../ITmanagers.service';
 import { DirigentiService }                     from '../dirigenti.service';
-import { UserService }                          from 'src/app/_user/user.service';
+
 
 //models
 import { PER_Persona, PER_TipoPersona }         from 'src/app/_models/PER_Persone';
 import { User }                                 from 'src/app/_user/Users';
-import { PER_Docente }                          from 'src/app/_models/PER_Docente';
 
 
 //#endregion
@@ -433,18 +432,7 @@ export class PersonaEditComponent implements OnInit {
   //   this.breakpoint2 = (event.target.innerWidth <= 800) ? 2 : 4;
   // }
 
-  // formPersonaValidEmitted(isValid: boolean) {
-  //   console.log("formPersonaValidEmitted")
-  //   this.personaFormIsValid = isValid;
-  // }
 
-  // formGenitoreValidEmitted(isValid: boolean) {
-  //   this.genitoreFormIsValid = isValid;
-  // }
-
-  // formAlunnoValidEmitted(isValid: boolean) {
-  //   this.alunnoFormIsValid = isValid;
-  // }
 
   // formPersonaChangedRolesEmitted () {
   //   console.log("passo di qua");

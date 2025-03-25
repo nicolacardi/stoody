@@ -84,7 +84,6 @@ export class GenitoreFormComponent implements OnInit {
   }
 
   ngOnChanges () {
-    // console.log("genitore-form - ngOnChanges - arrivato genitoreID", this.genitoreID);
     this.loadData();
   }
 
