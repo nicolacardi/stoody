@@ -108,8 +108,6 @@ export class DocenteFormComponent implements OnInit, OnChanges {
     else 
       this.svcDocenti.put(this.form.value).subscribe();
   }
-
-
   
   delete(){
     if (this.docenteID != null) 
