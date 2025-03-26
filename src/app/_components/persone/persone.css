@@ -12,3 +12,84 @@
     :host ::ng-deep ._low-list-row {
         height: 55px !important;
     }
+
+
+
+/* Caratteristiche dell'expansion panel nel persona-edit */
+    ::ng-deep mat-expansion-panel {
+        box-shadow: none !important; /* Rimuove l'ombra */
+        border: 1px solid grey !important;
+        
+    }
+
+
+
+/* Fine expansion panel */
+
+/* custom panel per aggiunta ruoli */
+.custom-panel {
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.custom-panel:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.custom-panel-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.custom-panel-title {
+    font-weight: 500;
+}
+
+.custom-panel-icon {
+    color: #007BFF;
+}
+/* fine custom panel */
+
+.chip-genitore {
+    background-color: #2070bb !important; /* Arancione */
+    --mdc-chip-label-text-color: white;
+
+}
+
+.chip-alunno {
+    background-color: #ff991d !important; /* Blu */
+    --mdc-chip-label-text-color: white;
+}
+
+.chip-docente {
+    background-color: #12b618 !important; /* Verde */
+    --mdc-chip-label-text-color: white;
+}
+
+.chip-docentecoord {
+    background-color: #d84646 !important; /* Verde */
+    --mdc-chip-label-text-color: white;
+}
+
+.chip-ITManager {
+    background-color: #e64242 !important; /* Verde */
+    --mdc-chip-label-text-color: white;
+}
+
+.mini-chip {
+    --mdc-chip-label-text-size: 10px;
+    --mdc-chip-container-height: 20px;
+
+}
+
+

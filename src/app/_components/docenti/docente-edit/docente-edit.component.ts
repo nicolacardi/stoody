@@ -210,7 +210,7 @@ export class DocenteEditComponent implements OnInit {
     this.personaFormisValid = isValid;
   }
 
-  formValidEmitted(isValid: boolean) {
+  formDocenteValidEmitted(isValid: boolean) {
     this.isValid = isValid;
   }
 

@@ -109,11 +109,21 @@
         </ng-container>
 
         <ng-container matColumnDef="ruoli">
-            <th mat-header-cell class="center w50px"  *matHeaderCellDef cdkDrag >
-                Ruoli
-            </th>
+
             <!-- <td mat-cell class="center" *matCellDef="let element"> -->
-                <td mat-cell *matCellDef="let element" [innerHTML]="element._LstRoles|json | highlight: filterValue"></td>
+                <!-- <td mat-cell *matCellDef="let element" [innerHTML]="element._LstRoles|json | highlight: filterValue"></td> -->
+
+                <th mat-header-cell class="center w50px" *matHeaderCellDef cdkDrag>
+                    Ruoli
+                </th>
+                <td mat-cell *matCellDef="let element">
+                    <mat-chip-set>
+                        <mat-chip *ngFor="let ruolo of element._LstRoles" 
+                                  [ngClass]="'chip-' + ruolo.toLowerCase()" class="mini-chip">
+                            {{ ruolo }}
+                        </mat-chip>
+                    </mat-chip-set>
+                </td>
                 <!-- <mat-checkbox [checked]="element._LstRoles.includes['Alunno']" color="primary" disabled></mat-checkbox> -->
             <!-- </td> -->
         </ng-container>

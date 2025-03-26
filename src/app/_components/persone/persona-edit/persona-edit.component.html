@@ -27,58 +27,128 @@
             
 <!-- ********************************       COMPONENT PERSONA-FORM      *********************************** -->
 
+
+            <div class="center mb20 mt10">
+                <mat-chip-set>
+                    <mat-chip *ngFor="let ruolo of _lstRoles" 
+                            [ngClass]="'chip-' + ruolo.toLowerCase()" class="custom-chip">
+                        {{ ruolo }}
+                    </mat-chip>
+                </mat-chip-set>
+            </div>
+
+
             <app-persona-form #apppersonaform
                 [personaID] = "personaID"
                 (formChanged) = "refreshSaveDisable()">  
             </app-persona-form>
-            <!-- (formValid)="formPersonaValidEmitted($event)" -->
 
- <!-- ********************************       RUOLI      *********************************** -->           
-            <!-- <div class="mt20"> -->
-            <form [formGroup] = "form"> 
-                <div>
-                    <mat-grid-list [cols]="3" class="_low-list-row no-overflowx mt20" rowHeight="60px">
-                        <mat-grid-tile>
-                            <mat-form-field >
-                                <mat-label>Ruoli</mat-label>
-                                <!-- <mat-select matNativeControl formControlName="_lstRoles" multiple #selectroles > -->
-                                <mat-select formControlName="_lstRoles" multiple #selectroles>    
-                                    <mat-option (onSelectionChange)="changeOptionRoles($event)" *ngFor="let element of (obsTipiPersona$ | async)" 
-                                        [value]="element.id" 
-                                        [disabled] ="currUser.personaID == personaID  || !currUser.persona!._LstRoles!.includes('ITManager') ">
-                                        {{element.descrizione}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </mat-grid-tile>
-                    </mat-grid-list>
+            <mat-accordion >
+
+                <div class="custom-panel mt10" *ngIf="!showUserForm" >
+                    <div class="custom-panel-header">
+                        <span class="custom-panel-title">Aggiungi Utente</span>
+                        <mat-icon class="custom-panel-icon" (click)="aggiungiUser(personaID)">add_circle</mat-icon>
+                    </div>
                 </div>
-            </form> 
- 
-            <div class="_bordered-grey mt5" *ngIf="showGenitoreForm" >
-                <app-genitore-form #appgenitoreform
-                    [genitoreID] = "genitoreID"
-                    [personaID] = "personaID"
-                    (deletedRole) ="deletedRole($event)"
-                    (formChanged) = "refreshSaveDisable()" >
-                </app-genitore-form>
-                <!-- (formValid)="formGenitoreValidEmitted($event)" -->
-            </div>
-            <div class="_bordered-grey mt5" *ngIf="showAlunnoForm" >
-                <app-alunno-form #appalunnoform
-                    [alunnoID] = "alunnoID"
-                    (deletedRole) ="deletedRole($event)"
-                    (formChanged) = "refreshSaveDisable()">
-                </app-alunno-form>
-                <!-- (formValid)="formAlunnoValidEmitted($event)" -->
+                <mat-expansion-panel class="mt10" *ngIf="showUserForm" #userPanel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Dati dell'Utente</mat-panel-title>
+                        <mat-icon class="right" >{{ userPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </mat-expansion-panel-header>
+                        <app-user-form                           
+                            [userID] = "userID"
+                            (formValid)="formUserValidEmitted($event)">
+                        </app-user-form>
+                </mat-expansion-panel>
+
+                <div class="custom-panel mt10" *ngIf="!showGenitoreForm" >
+                    <div class="custom-panel-header">
+                        <span class="custom-panel-title">Aggiungi ruolo Genitore</span>
+                        <mat-icon class="custom-panel-icon" (click)="aggiungiGenitore(personaID)">add_circle</mat-icon>
+                    </div>
+                </div>
+
+                <mat-expansion-panel class="mt10" *ngIf="showGenitoreForm" #genitorePanel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Dati del Genitore</mat-panel-title>
+                        <mat-icon class="right" >{{ genitorePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </mat-expansion-panel-header>
+                    <!-- <div class="_bordered-grey mt5" > -->
+                        <app-genitore-form #appgenitoreform
+                            [genitoreID] = "genitoreID"
+                            [personaID] = "personaID"
+                            (deletedRole) ="deletedRole($event)"
+                            (formChanged) = "refreshSaveDisable()" >
+                        </app-genitore-form>
+                        <!-- (formValid)="formGenitoreValidEmitted($event)" -->
+                    <!-- </div> -->
+                </mat-expansion-panel>
+
+                <div class="custom-panel mt10" *ngIf="!showAlunnoForm" >
+                    <div class="custom-panel-header">
+                        <span class="custom-panel-title">Aggiungi ruolo Alunno</span>
+                        <mat-icon class="custom-panel-icon" (click)="aggiungiAlunno(personaID)">add_circle</mat-icon>
+                    </div>
+                </div>
+
+                <mat-expansion-panel class="mt10" *ngIf="showAlunnoForm" #alunnoPanel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Dati dell'Alunno</mat-panel-title>
+                        <mat-icon class="right" >{{ alunnoPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </mat-expansion-panel-header>
+                    <!-- <div class="_bordered-grey mt5" > -->
+                        <app-alunno-form #appalunnoform
+                            [alunnoID] = "alunnoID"
+                            (deletedRole) ="deletedRole($event)"
+                            (formChanged) = "refreshSaveDisable()">
+                        </app-alunno-form>
+                        <!-- (formValid)="formAlunnoValidEmitted($event)" -->
+                    <!-- </div> -->
+                </mat-expansion-panel>
+
+
+                <div class="custom-panel mt10" *ngIf="!showDocenteForm" >
+                    <div class="custom-panel-header">
+                        <span class="custom-panel-title">Aggiungi ruolo Docente</span>
+                        <mat-icon class="custom-panel-icon" (click)="aggiungiDocente(personaID)">add_circle</mat-icon>
+                    </div>
+                </div>
+
+                <mat-expansion-panel class="mt10" *ngIf="showDocenteForm" #docentePanel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Dati del Docente</mat-panel-title>
+                        <mat-icon class="right" >{{ docentePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </mat-expansion-panel-header>
+                    <!-- <div class="_bordered-grey mt5" > -->
+                        <app-docente-form #appdocenteform
+                            [docenteID] = "docenteID"
+                            (deletedRole) ="deletedRole($event)"
+                            (formChanged) = "refreshSaveDisable()">
+                        </app-docente-form>
+                    <!-- </div> -->
+                </mat-expansion-panel>
+
+            </mat-accordion>
+
+
+
+
+
+
+
+            <div class="custom-panel mt10">
+                <div class="custom-panel-header">
+                    <span class="custom-panel-title">Aggiungi ruolo personale non Docente</span>
+                    <mat-icon class="custom-panel-icon" (click)="aggiungiNonDocente(personaID)">add_circle</mat-icon>
+                </div>
             </div>
 
-            <div class="_bordered-grey mt5" *ngIf="showDocenteForm" >
-                <app-docente-form #appdocenteform
-                    [docenteID] = "docenteID"
-                    (deletedRole) ="deletedRole($event)"
-                    (formChanged) = "refreshSaveDisable()">
-                </app-docente-form>
+            <div class="custom-panel mt10">
+                <div class="custom-panel-header">
+                    <span class="custom-panel-title">Aggiungi ruolo personale Dirigente</span>
+                    <mat-icon class="custom-panel-icon" (click)="aggiungiDirigente(personaID)">add_circle</mat-icon>
+                </div>
             </div>
 
         <!--
@@ -91,3 +161,26 @@
         -->
         </mat-card-content>
     </mat-card>
+
+
+    <!-- ********************************       RUOLI      *********************************** -->           
+            <!-- <div class="mt20"> -->
+            <!-- <form [formGroup] = "form"> 
+                <div>
+                    <mat-grid-list [cols]="3" class="_low-list-row no-overflowx mt20" rowHeight="60px">
+                        <mat-grid-tile>
+                            <mat-form-field >
+                                <mat-label>Ruoli</mat-label> -->
+                                <!-- <mat-select matNativeControl formControlName="_lstRoles" multiple #selectroles > -->
+                                <!-- <mat-select formControlName="_lstRoles" multiple #selectroles>    
+                                    <mat-option (onSelectionChange)="changeOptionRoles($event)" *ngFor="let element of (obsTipiPersona$ | async)" 
+                                        [value]="element.id" 
+                                        [disabled] ="currUser.personaID == personaID  || !currUser.persona!._LstRoles!.includes('ITManager') ">
+                                        {{element.descrizione}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </div>
+            </form>  -->

@@ -36,6 +36,8 @@ import { DirigentiService }                     from '../dirigenti.service';
 //models
 import { PER_Persona, PER_TipoPersona }         from 'src/app/_models/PER_Persone';
 import { User }                                 from 'src/app/_user/Users';
+import { UserFormComponent } from '../../users/user-form/user-form.component';
+import { UserService } from 'src/app/_user/user.service';
 
 
 //#endregion
@@ -50,7 +52,7 @@ export class PersonaEditComponent implements OnInit {
 //#region ----- Variabili ----------------------
 
   form!                 : UntypedFormGroup;
-
+  public userID!           : string;
   currUser!             : User;
   persona$!             : Observable<PER_Persona>;
   persona!              : PER_Persona;
@@ -59,8 +61,15 @@ export class PersonaEditComponent implements OnInit {
   lstTipiPersona!       : PER_TipoPersona[];
   selectedRoles         : number[] = []
 
+
+  personaFormisValid!      : boolean;
+  genitoreFormisValid!     : boolean;
+  userFormisValid!         : boolean;
+
+
   showGenitoreForm      : boolean  = false;
   showAlunnoForm        : boolean = false;
+  showUserForm          : boolean = false;
   showDocenteForm       : boolean = false;
 
   alunnoID!             : number;
@@ -75,9 +84,20 @@ export class PersonaEditComponent implements OnInit {
 //#region ----- ViewChild Input Output ---------
   @ViewChild(PersonaFormComponent) personaFormComponent!: PersonaFormComponent; 
   //[static false servirebbe a consentire un riferimento a appalunnoform anche se non è stato caricato ancora]
-  @ViewChild('appalunnoform', {static: false}) appalunnoform!: AlunnoFormComponent; 
-  @ViewChild('appgenitoreform', {static: false}) appgenitoreform!: GenitoreFormComponent;
-  @ViewChild('appdocenteform', {static: false}) appdocenteform!: DocenteFormComponent; 
+  // @ViewChild('appalunnoform', {static: false}) appalunnoform!: AlunnoFormComponent; 
+  // @ViewChild('appgenitoreform', {static: false}) appgenitoreform!: GenitoreFormComponent;
+  // @ViewChild('appdocenteform', {static: false}) appdocenteform!: DocenteFormComponent; 
+
+
+    @ViewChild(AlunnoFormComponent) alunnoFormComponent!       : AlunnoFormComponent;
+    @ViewChild(UserFormComponent) userFormComponent!           : UserFormComponent;
+    @ViewChild(GenitoreFormComponent) genitoreFormComponent!   : GenitoreFormComponent;
+    @ViewChild(DocenteFormComponent) docenteFormComponent!     : DocenteFormComponent;
+
+    
+
+
+  
   //TODO....
   
 //#endregion
@@ -88,13 +108,10 @@ export class PersonaEditComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public personaID: number,
               private fb:                       UntypedFormBuilder, 
               private svcPersone:               PersoneService,
+              private svcUser:                  UserService,
               private svcAlunni:                AlunniService,
               private svcGenitori:              GenitoriService,
               private svcDocenti:               DocentiService,
-              private svcDocentiCoord:          DocentiCoordService,
-              private svcNonDocenti:            NonDocentiService,
-              private svcITManagers:            ITManagersService,
-              private svcDirigenti:             DirigentiService,
               private svcTipiPersona:           TipiPersonaService,
 
               public _dialog:                   MatDialog,
@@ -125,7 +142,16 @@ export class PersonaEditComponent implements OnInit {
     if (this.personaID && this.personaID + '' != "0") {
 
       //interrogo ed aspetto per avere la lista dei tipi persona che mi serve nella loadPersona successiva
-      await firstValueFrom(this.obsTipiPersona$.pipe(tap(lstTipiPersona=> this.lstTipiPersona = lstTipiPersona)));
+      //await firstValueFrom(this.obsTipiPersona$.pipe(tap(lstTipiPersona=> this.lstTipiPersona = lstTipiPersona)));
+      //lstTipiPersona contiene ora un array con i vari tipi persona estratti dalla tabella tipipersona 
+
+      await firstValueFrom(this.svcUser.getByPersonaID(this.personaID).pipe(tap(user=> {
+        if (user) {
+          this.userID = user.id; this.showUserForm = true;
+        } else {
+          this.userID = '';
+        }
+      })));
 
       const obsPersona$: Observable<PER_Persona> = this.svcPersone.get(this.personaID);
       const loadPersona$ = this._loadingService.showLoaderUntilCompleted(obsPersona$);
@@ -138,31 +164,17 @@ export class PersonaEditComponent implements OnInit {
               this.personaID = persona.id
               this.persona = persona
               this._lstRoles = persona._LstRoles!;
-              //console.log("persona-edit arrivati:", persona._LstRoles)
 
-              for (let i= 0; i < persona._LstRoles!.length; i++) {
-                const ruoloPersona = this.lstTipiPersona.find(tp => tp.descrizione === persona._LstRoles![i]);
-                if (ruoloPersona) this.selectedRoles.push(ruoloPersona.id)
-              }
-              //imposto i ruoli arrivati e mostro il form specifico
-              this.form.controls['_lstRoles'].setValue(this.selectedRoles);
               if (persona._LstRoles!.includes('Alunno')) { 
                 this.svcAlunni.getByPersona(this.persona.id).subscribe(alunno=>{this.alunnoID= alunno.id; this.showAlunnoForm = true; });
               }//devo anche valorizzare alunnoID e passarlo a alunno form
               if (persona._LstRoles!.includes('Genitore')) {
-                this.svcGenitori.getByPersona(this.persona.id).subscribe(genitore=> {
-                  console.log ("persona-edit - loadData - ritorno da getByPersona di genitori", genitore);
-                  this.genitoreID= genitore.id; 
-                  this.showGenitoreForm = true
-                } );
+                this.svcGenitori.getByPersona(this.persona.id).subscribe(genitore=> {this.genitoreID= genitore.id; this.showGenitoreForm = true });
               } //devo anche valorizzare genitoreID e passarlo a genitore form
               if (persona._LstRoles!.includes('Docente')) {
                 this.svcDocenti.getByPersona(this.persona.id).subscribe(docente=> {this.docenteID= docente.id; this.showDocenteForm = true});
               }  //devo anche valorizzare docenteID e passarlo a docente form
-              //TODO...
-
             }
-            //this.form.patchValue(persona)
           ),
           shareReplay(1)   //serve perchè la tap per qualche motivo veniva chiamata DUE volte e quindi popolava la multiple combo due volte!!!
       );
@@ -178,9 +190,40 @@ export class PersonaEditComponent implements OnInit {
   save()
   {
     this.personaFormComponent.save().subscribe({
-      next: ()=> {
+      next: persona=> {
+
+
+        //console.log ("genitore-edit save() - subscribe...prima di genitoreFormComponent.save() e userFormComponent.save() ");
+
+        //quello che segue serve per la POST e non per la PUT
+        if (this.showGenitoreForm) {
+          if (this.genitoreFormComponent.form.controls['personaID'].value == null) this.genitoreFormComponent.form.controls['personaID'].setValue(persona.id);
+          console.log ("genitoreFormComponent.form.value", this.genitoreFormComponent.form.value);
+          this.genitoreFormComponent.save();
+        }
+        if (this.showDocenteForm) {
+          if (this.docenteFormComponent.form.controls['personaID'].value == null) this.docenteFormComponent.form.controls['personaID'].setValue(persona.id);
+          //console.log ("docenteFormComponent.form.value", this.docenteFormComponent.form.value);
+          this.docenteFormComponent.save();
+        }
+        if (this.showAlunnoForm) {
+          if (this.alunnoFormComponent.form.controls['personaID'].value == null) this.alunnoFormComponent.form.controls['personaID'].setValue(persona.id);
+          //console.log ("alunnoFormComponent.form.value", this.alunnoFormComponent.form.value);
+          this.alunnoFormComponent.save();
+        }
+        //quello che segue serve per la POST e non per la PUT
+        if (this.showUserForm) {
+          if (this.userFormComponent.form.controls['personaID'].value == null) this.userFormComponent.form.controls['personaID'].setValue(persona.id);
+          if (this.userFormComponent.form.controls['userName'].value == null) this.userFormComponent.form.controls['userName'].setValue(this.userFormComponent.form.controls['email'].value);
+          if (this.userFormComponent.form.controls['password'].value == null) this.userFormComponent.form.controls['password'].setValue(1234);
+          //console.log ("userFormComponent.form.value", this.userFormComponent.form.value);
+
+          this.userFormComponent.save();
+        }
+
+
         this._dialogRef.close();
-        this.saveRoles();
+        //this.saveRoles();
 
         this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
       },
@@ -192,11 +235,11 @@ export class PersonaEditComponent implements OnInit {
   getCurrentForm(role:string): any {
     switch (role) {
       case "Alunno":
-        return this.appalunnoform ? this.appalunnoform.form : null;
+        return this.alunnoFormComponent ? this.alunnoFormComponent.form : null;
       case "Genitore":
-        return this.appgenitoreform ? this.appgenitoreform.form : null;
+        return this.genitoreFormComponent ? this.genitoreFormComponent.form : null;
       case "Docente":
-        return this.appdocenteform ? this.appdocenteform.form : null;
+        return this.docenteFormComponent ? this.docenteFormComponent.form : null;
       default:
         return null;
     }
@@ -212,11 +255,11 @@ export class PersonaEditComponent implements OnInit {
     //PER_Dirigente
     //PER_ITManager
 
-    let selectedRolesIds = []
-    if (this.form.controls['_lstRoles'].value.length != 0) selectedRolesIds = this.form.controls['_lstRoles'].value;
-      const selectedRolesDescrizioni = selectedRolesIds.map((tipo:any) => {const tipoPersona = this.lstTipiPersona.find(tp => tp.id === tipo);
-      return tipoPersona ? tipoPersona.descrizione : ''; // Restituisce la descrizione se trovata, altrimenti una stringa vuota
-    });
+    // let selectedRolesIds = []
+    // if (this.form.controls['_lstRoles'].value.length != 0) selectedRolesIds = this.form.controls['_lstRoles'].value;
+    //   const selectedRolesDescrizioni = selectedRolesIds.map((tipo:any) => {const tipoPersona = this.lstTipiPersona.find(tp => tp.id === tipo);
+    //   return tipoPersona ? tipoPersona.descrizione : ''; // Restituisce la descrizione se trovata, altrimenti una stringa vuota
+    // });
 
     /*
     console.log("this._lstRoles - quello che attualmente c'è in db",this._lstRoles);
@@ -264,55 +307,55 @@ export class PersonaEditComponent implements OnInit {
 
     //ora vado a vedere se ne sono stati aggiunti quindi faccio il check inverso, però attenzione manca la put in questo modo c'è solo la post di un nuovo ruolo!
     //ma se uno modifica senza cambiare i ruoli? manca un pezzo
-    selectedRolesDescrizioni.forEach(async (roleselected:string)=> {
-      {
+    // selectedRolesDescrizioni.forEach(async (roleselected:string)=> {
+    //   {
 
-          const currentForm = this.getCurrentForm(roleselected);
-          console.log ("persona.ID", this.personaID);
+    //       const currentForm = this.getCurrentForm(roleselected);
+    //       console.log ("persona.ID", this.personaID);
 
-          let formData = {
-            ...currentForm.value, // Ottiene tutti i valori del form selezionato
-            personaID: this.personaID
-          };
+    //       let formData = {
+    //         ...currentForm.value, // Ottiene tutti i valori del form selezionato
+    //         personaID: this.personaID
+    //       };
 
-          console.log ("adesso faccio post o put del formData per ", roleselected, formData);
-          switch (roleselected) {
-            case "Alunno":
-              //this._lstRoles.includes(roleselected)? this.svcAlunni.put(formData).subscribe() : this.svcAlunni.post(formData).subscribe();
-              this.appalunnoform.save();
-              break;
-            case "Genitore":
-              //this._lstRoles.includes(roleselected)? this.svcGenitori.put(formData).subscribe() : this.svcGenitori.post(formData).subscribe();
-              this.appgenitoreform.save();
-              break;
-            case "Docente":
-              //this._lstRoles.includes(roleselected)? this.svcDocenti.put(formData).subscribe() : this.svcDocenti.post(formData).subscribe();  
-              this.appdocenteform.save();  
-              break;
-            case "DocenteCoord":
-              let formDataDocenteCoord = {};
-              await firstValueFrom(this.svcDocenti.getByPersona(this.personaID).pipe(tap(docenteEstratto => 
-                {
-                  formDataDocenteCoord = {
-                    docenteID: docenteEstratto.id
-                  }
-                })));
-              this.svcDocentiCoord.post(formDataDocenteCoord).subscribe();
+    //       console.log ("adesso faccio post o put del formData per ", roleselected, formData);
+    //       switch (roleselected) {
+    //         case "Alunno":
+    //           //this._lstRoles.includes(roleselected)? this.svcAlunni.put(formData).subscribe() : this.svcAlunni.post(formData).subscribe();
+    //           this.alunnoFormComponent.save();
+    //           break;
+    //         case "Genitore":
+    //           //this._lstRoles.includes(roleselected)? this.svcGenitori.put(formData).subscribe() : this.svcGenitori.post(formData).subscribe();
+    //           this.genitoreFormComponent.save();
+    //           break;
+    //         case "Docente":
+    //           //this._lstRoles.includes(roleselected)? this.svcDocenti.put(formData).subscribe() : this.svcDocenti.post(formData).subscribe();  
+    //           this.docenteFormComponent.save();  
+    //           break;
+    //         case "DocenteCoord":
+    //           let formDataDocenteCoord = {};
+    //           await firstValueFrom(this.svcDocenti.getByPersona(this.personaID).pipe(tap(docenteEstratto => 
+    //             {
+    //               formDataDocenteCoord = {
+    //                 docenteID: docenteEstratto.id
+    //               }
+    //             })));
+    //           this.svcDocentiCoord.post(formDataDocenteCoord).subscribe();
 
-              break;
-            case "NonDocente":
-              this._lstRoles.includes(roleselected)? this.svcNonDocenti.put(formData).subscribe() : this.svcNonDocenti.post(formData).subscribe();
-              break;
-            case "Dirigente":
-              this._lstRoles.includes(roleselected)? this.svcDirigenti.put(formData).subscribe() : this.svcDirigenti.post(formData).subscribe();
-              break;
-            case "ITManager":
-              this._lstRoles.includes(roleselected)? this.svcITManagers.put(formData).subscribe() : this.svcITManagers.post(formData).subscribe();
-              break;
-          }
+    //           break;
+    //         case "NonDocente":
+    //           this._lstRoles.includes(roleselected)? this.svcNonDocenti.put(formData).subscribe() : this.svcNonDocenti.post(formData).subscribe();
+    //           break;
+    //         case "Dirigente":
+    //           this._lstRoles.includes(roleselected)? this.svcDirigenti.put(formData).subscribe() : this.svcDirigenti.post(formData).subscribe();
+    //           break;
+    //         case "ITManager":
+    //           this._lstRoles.includes(roleselected)? this.svcITManagers.put(formData).subscribe() : this.svcITManagers.post(formData).subscribe();
+    //           break;
+    //       }
         
-      }
-    })
+    //   }
+    // })
     
   }
 
@@ -388,14 +431,14 @@ export class PersonaEditComponent implements OnInit {
     if (this.personaFormComponent) 
       personaFormValid = this.personaFormComponent.form.valid;
 
-    if (this.showAlunnoForm && this.appalunnoform && this.appalunnoform.form) 
-      alunnoFormValid = this.appalunnoform.form.valid;
+    if (this.showAlunnoForm && this.alunnoFormComponent && this.alunnoFormComponent.form) 
+      alunnoFormValid = this.alunnoFormComponent.form.valid;
 
-    if (this.showGenitoreForm && this.appgenitoreform && this.appgenitoreform.form) 
-      genitoreFormValid = this.appgenitoreform.form.valid;
+    if (this.showGenitoreForm && this.genitoreFormComponent && this.genitoreFormComponent.form) 
+      genitoreFormValid = this.genitoreFormComponent.form.valid;
     
-    if (this.showDocenteForm && this.appdocenteform && this.appdocenteform.form) 
-      docenteFormValid = this.appdocenteform.form.valid;
+    if (this.showDocenteForm && this.docenteFormComponent && this.docenteFormComponent.form) 
+      docenteFormValid = this.docenteFormComponent.form.valid;
     
 
     this.disabledSave = !personaFormValid || !alunnoFormValid || !genitoreFormValid || !docenteFormValid;
@@ -421,6 +464,45 @@ export class PersonaEditComponent implements OnInit {
     }
     this.refreshSaveDisable();                  //va infine aggiornata l'abilitazione della save
   }
+
+  aggiungiDirigente(personaID: number) {
+
+  }
+
+  aggiungiNonDocente(personaID:number){
+
+  }
+
+  aggiungiGenitore(personaID:number){
+    this.showGenitoreForm = true;
+  }
+
+  aggiungiDocente(personaID:number){
+    this.showDocenteForm = true;
+  }
+
+  aggiungiAlunno(personaID:number){
+    this.showAlunnoForm = true;
+  }
+
+  aggiungiUser(personaID:number){
+    this.showUserForm = true;
+  }
+
+
+  formPersonaValidEmitted(isValid: boolean) {
+    this.personaFormisValid = isValid;
+  }
+
+  formGenitoreValidEmitted(isValid: boolean) {
+    this.genitoreFormisValid = isValid;
+  }
+
+  formUserValidEmitted(isValid: boolean) {
+    this.userFormisValid = isValid;
+  }
+
+
 }
 
 
