@@ -61,7 +61,7 @@ export class GenitoreFormComponent implements OnInit {
       tipoGenitoreID : ['', Validators.required],
       titoloStudio   : [''],
       professione    : [''],
-      ckAttivo       : [null]
+      ckAttivo       : [true]
     });
 
     this.obsTipiGenitore$ = this.svcTipiGenitore.list();
@@ -74,17 +74,21 @@ export class GenitoreFormComponent implements OnInit {
 
   ngOnInit(){
     this.loadData();
-
     this.form.valueChanges.subscribe(
       res=> {
+        console.log ("genitore-form - ngonchanges - emit del form valid");
         this.formValid.emit(this.form.valid);
         this.formChanged.emit();
       }
     )
+
   }
 
   ngOnChanges () {
     this.loadData();
+    console.log ("genitore-form - ngonchanges - emit del form valid", this.form.valid);
+    this.formValid.emit(this.form.valid);
+    this.formChanged.emit();
   }
 
   loadData(){

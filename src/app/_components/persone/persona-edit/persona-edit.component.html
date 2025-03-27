@@ -79,7 +79,8 @@
                             [genitoreID] = "genitoreID"
                             [personaID] = "personaID"
                             (deletedRole) ="deletedRole($event)"
-                            (formChanged) = "refreshSaveDisable()" >
+                            (formChanged) = "refreshSaveDisable()"
+                             >
                         </app-genitore-form>
                         <!-- (formValid)="formGenitoreValidEmitted($event)" -->
                     <!-- </div> -->
@@ -129,20 +130,30 @@
                     <!-- </div> -->
                 </mat-expansion-panel>
 
+                <div class="custom-panel mt10" *ngIf="!showNonDocenteForm" >
+                    <div class="custom-panel-header">
+                        <span class="custom-panel-title">Aggiungi ruolo personale Non Docente</span>
+                        <mat-icon class="custom-panel-icon" (click)="aggiungiNonDocente(personaID)">add_circle</mat-icon>
+                    </div>
+                </div>
+
+                <mat-expansion-panel class="mt10" *ngIf="showNonDocenteForm" #nondocentePanel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Dati del Non Docente</mat-panel-title>
+                        <mat-icon class="right" >{{ nondocentePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </mat-expansion-panel-header>
+                    <!-- <div class="_bordered-grey mt5" > -->
+                        <app-docente-form #appnondocenteform
+                            [docenteID] = "nondocenteID"
+                            (deletedRole) ="deletedRole($event)"
+                            (formChanged) = "refreshSaveDisable()">
+                        </app-docente-form>
+                    <!-- </div> -->
+                </mat-expansion-panel>
+
             </mat-accordion>
 
 
-
-
-
-
-
-            <div class="custom-panel mt10">
-                <div class="custom-panel-header">
-                    <span class="custom-panel-title">Aggiungi ruolo personale non Docente</span>
-                    <mat-icon class="custom-panel-icon" (click)="aggiungiNonDocente(personaID)">add_circle</mat-icon>
-                </div>
-            </div>
 
             <div class="custom-panel mt10">
                 <div class="custom-panel-header">

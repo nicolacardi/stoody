@@ -249,10 +249,15 @@ import { DomandeFilterComponent }                  from './_components/impostazi
 import { DocumentiAlunnoListComponent }            from './_components/pagelle/documenti-alunno-list/documenti-alunno-list.component';
 import { ClassiAnniMaterieFilterComponent }        from './_components/classi-anni-materie/classi-anni-materie-filter/classi-anni-materie-filter.component';
 import { RisorseCSAListEditComponent }             from './_components/impostazioni/risorse-csa/risorse-csa-list-edit/risorse-csa-list-edit.component';
+
+//Docenti
 import { DocentiPageComponent }                    from './_components/docenti/docenti-page/docenti-page.component';
 import { DocentiListComponent }                    from './_components/docenti/docenti-list/docenti-list.component';
 import { DocenteEditComponent }                    from './_components/docenti/docente-edit/docente-edit.component';
 import { DocentiFilterComponent }                  from './_components/docenti/docenti-filter/docenti-filter.component';
+
+//NonDocenti
+import { NonDocenteFormComponent }                 from './_components/nondocenti/nondocente-form/nondocente-form.component';
 
 
 // FullCalendarModule.registerPlugins([ // register FullCalendar plugins
@@ -303,6 +308,8 @@ import { DocentiFilterComponent }                  from './_components/docenti/d
     DocentiListComponent,
     DocenteEditComponent,
     DocentiFilterComponent,
+
+    NonDocenteFormComponent,
 
     ClassiPageComponent,
     ClasseSezioneAnnoEditComponent,

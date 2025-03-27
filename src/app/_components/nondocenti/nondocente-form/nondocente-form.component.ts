@@ -10,25 +10,25 @@ import { SnackbarComponent }                                               from 
 
 
 //services
-import { DocentiService }                                                  from '../docenti.service';
+import { NonDocentiService }                                                  from '../nondocenti.service';
 import { LoadingService }                                                  from '../../utilities/loading/loading.service';
 
 //models
-import { PER_Docente }                                                     from 'src/app/_models/PER_Docente';
+import { PER_NonDocente }                                                     from 'src/app/_models/PER_NonDocente';
 
 
 //#endregion
 
 @Component({
-  selector: 'app-docente-form',
-  templateUrl: './docente-form.component.html',
-  styleUrls:    ['./../docenti.css']
+  selector: 'app-nondocente-form',
+  templateUrl: './nondocente-form.component.html',
+  styleUrls:    ['./../nondocenti.css']
 })
 
-export class DocenteFormComponent implements OnInit, OnChanges {
+export class NonDocenteFormComponent implements OnInit, OnChanges {
 
 //#region ----- Variabili ----------------------
-  docente$!:                                    Observable<PER_Docente>;
+  nondocente$!:                                    Observable<PER_NonDocente>;
   form! :                                       UntypedFormGroup;
   
   emptyForm :                                   boolean = false;
@@ -36,7 +36,7 @@ export class DocenteFormComponent implements OnInit, OnChanges {
 //#endregion
 
 //#region ----- ViewChild Input Output -------
-  @Input() docenteID!:                           number;
+  @Input() nondocenteID!:                           number;
   @Output('formValid') formValid = new EventEmitter<boolean>();
   @Output('formChanged') formChanged = new EventEmitter();
   @Output('deletedRole') deletedRole = new EventEmitter<string>();
@@ -48,7 +48,7 @@ export class DocenteFormComponent implements OnInit, OnChanges {
   constructor(
     public _dialog               : MatDialog,
     private fb                   : UntypedFormBuilder,
-    private svcDocenti           : DocentiService,
+    private svcNonDocenti           : NonDocentiService,
     private _loadingService      : LoadingService,
     private _snackBar            : MatSnackBar,
               
@@ -84,16 +84,16 @@ export class DocenteFormComponent implements OnInit, OnChanges {
 
   loadData(){
 
-    if (this.docenteID && this.docenteID + '' != "0") {
-      const obsDocente$: Observable<PER_Docente> = this.svcDocenti.get(this.docenteID);
-      const loadDocente$ = this._loadingService.showLoaderUntilCompleted(obsDocente$);
+    if (this.nondocenteID && this.nondocenteID + '' != "0") {
+      const obsNonDocente$: Observable<PER_NonDocente> = this.svcNonDocenti.get(this.nondocenteID);
+      const loadNonDocente$ = this._loadingService.showLoaderUntilCompleted(obsNonDocente$);
 
-      this.docente$ = loadDocente$
+      this.nondocente$ = loadNonDocente$
       .pipe( 
           tap(
-            docente => 
-              {this.form.patchValue(docente)
-                console.log (docente);
+            nondocente => 
+              {this.form.patchValue(nondocente)
+                console.log (nondocente);
               }
           )
       );
@@ -103,15 +103,15 @@ export class DocenteFormComponent implements OnInit, OnChanges {
   }
 
   save() {
-    if (this.docenteID == null || this.docenteID == 0) 
-      this.svcDocenti.post(this.form.value).subscribe();
+    if (this.nondocenteID == null || this.nondocenteID == 0) 
+      this.svcNonDocenti.post(this.form.value).subscribe();
     else 
-      this.svcDocenti.put(this.form.value).subscribe();
+      this.svcNonDocenti.put(this.form.value).subscribe();
   }
   
   delete(){
-    if (this.docenteID != null) 
-      this.svcDocenti.delete(this.docenteID)
+    if (this.nondocenteID != null) 
+      this.svcNonDocenti.delete(this.nondocenteID)
       .subscribe({
         next: res=>{
           this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
@@ -123,7 +123,7 @@ export class DocenteFormComponent implements OnInit, OnChanges {
 
   deleteRole() {
     this.delete();
-    this.deletedRole.emit('Docente')
+    this.deletedRole.emit('NonDocente')
   }
 //#endregion
 }

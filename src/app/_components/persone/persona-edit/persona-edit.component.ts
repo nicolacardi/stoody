@@ -13,6 +13,7 @@ import { PersonaFormComponent }                 from '../persona-form/persona-fo
 import { GenitoreFormComponent }                from '../../genitori/genitore-form/genitore-form.component';
 import { AlunnoFormComponent }                  from '../../alunni/alunno-form/alunno-form.component';
 import { DocenteFormComponent }                 from '../../docenti/docente-form/docente-form.component';
+import { NonDocenteFormComponent }                 from '../../nondocenti/nondocente-form/nondocente-form.component';
 
 import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
 import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
@@ -71,10 +72,12 @@ export class PersonaEditComponent implements OnInit {
   showAlunnoForm        : boolean = false;
   showUserForm          : boolean = false;
   showDocenteForm       : boolean = false;
+  showNonDocenteForm       : boolean = false;
 
   alunnoID!             : number;
   genitoreID!           : number;
   docenteID!            : number;
+  nondocenteID!            : number;
 
   emptyForm             : boolean = false;
   disabledSave          = false;
@@ -89,10 +92,11 @@ export class PersonaEditComponent implements OnInit {
   // @ViewChild('appdocenteform', {static: false}) appdocenteform!: DocenteFormComponent; 
 
 
-    @ViewChild(AlunnoFormComponent) alunnoFormComponent!       : AlunnoFormComponent;
-    @ViewChild(UserFormComponent) userFormComponent!           : UserFormComponent;
-    @ViewChild(GenitoreFormComponent) genitoreFormComponent!   : GenitoreFormComponent;
-    @ViewChild(DocenteFormComponent) docenteFormComponent!     : DocenteFormComponent;
+    @ViewChild(AlunnoFormComponent) alunnoFormComponent!                : AlunnoFormComponent;
+    @ViewChild(UserFormComponent) userFormComponent!                    : UserFormComponent;
+    @ViewChild(GenitoreFormComponent) genitoreFormComponent!            : GenitoreFormComponent;
+    @ViewChild(DocenteFormComponent) docenteFormComponent!              : DocenteFormComponent;
+    @ViewChild(NonDocenteFormComponent) nondocenteFormComponent!        : NonDocenteFormComponent;
 
     
 
@@ -112,6 +116,8 @@ export class PersonaEditComponent implements OnInit {
               private svcAlunni:                AlunniService,
               private svcGenitori:              GenitoriService,
               private svcDocenti:               DocentiService,
+              private svcNonDocenti:            NonDocentiService,
+
               private svcTipiPersona:           TipiPersonaService,
 
               public _dialog:                   MatDialog,
@@ -174,6 +180,9 @@ export class PersonaEditComponent implements OnInit {
               if (persona._LstRoles!.includes('Docente')) {
                 this.svcDocenti.getByPersona(this.persona.id).subscribe(docente=> {this.docenteID= docente.id; this.showDocenteForm = true});
               }  //devo anche valorizzare docenteID e passarlo a docente form
+              if (persona._LstRoles!.includes('NonDocente')) {
+                this.svcNonDocenti.getByPersona(this.persona.id).subscribe(nondocente=> {this.nondocenteID= nondocente.id; this.showNonDocenteForm = true});
+              }  //devo anche valorizzare docenteID e passarlo a docente form
             }
           ),
           shareReplay(1)   //serve perchè la tap per qualche motivo veniva chiamata DUE volte e quindi popolava la multiple combo due volte!!!
@@ -205,6 +214,11 @@ export class PersonaEditComponent implements OnInit {
           if (this.docenteFormComponent.form.controls['personaID'].value == null) this.docenteFormComponent.form.controls['personaID'].setValue(persona.id);
           //console.log ("docenteFormComponent.form.value", this.docenteFormComponent.form.value);
           this.docenteFormComponent.save();
+        }
+        if (this.showNonDocenteForm) {
+          if (this.nondocenteFormComponent.form.controls['personaID'].value == null) this.nondocenteFormComponent.form.controls['personaID'].setValue(persona.id);
+          //console.log ("nondocenteFormComponent.form.value", this.nondocenteFormComponent.form.value);
+          this.nondocenteFormComponent.save();
         }
         if (this.showAlunnoForm) {
           if (this.alunnoFormComponent.form.controls['personaID'].value == null) this.alunnoFormComponent.form.controls['personaID'].setValue(persona.id);
@@ -240,6 +254,8 @@ export class PersonaEditComponent implements OnInit {
         return this.genitoreFormComponent ? this.genitoreFormComponent.form : null;
       case "Docente":
         return this.docenteFormComponent ? this.docenteFormComponent.form : null;
+      case "NonDocente":
+        return this.nondocenteFormComponent ? this.nondocenteFormComponent.form : null;
       default:
         return null;
     }
@@ -390,31 +406,31 @@ export class PersonaEditComponent implements OnInit {
 //#endregion
 
 
-  changeOptionRoles (event: MatOptionSelectionChange){
+  // changeOptionRoles (event: MatOptionSelectionChange){
 
-    //se si vuole impedire il deflaggamento
-    // if (!event.source.selected) {
-    //   event.source.select();
-    //   return;
-    // }
+  //   //se si vuole impedire il deflaggamento
+  //   // if (!event.source.selected) {
+  //   //   event.source.select();
+  //   //   return;
+  //   // }
 
 
 
-    if (event.source.viewValue == 'Alunno') 
-      this.showAlunnoForm = event.source.selected; 
+  //   if (event.source.viewValue == 'Alunno') 
+  //     this.showAlunnoForm = event.source.selected; 
 
-    if (event.source.viewValue == 'Genitore')
-      this.showGenitoreForm = event.source.selected; 
+  //   if (event.source.viewValue == 'Genitore')
+  //     this.showGenitoreForm = event.source.selected; 
 
-    if (event.source.viewValue == 'Docente')
-      this.showDocenteForm = event.source.selected; 
+  //   if (event.source.viewValue == 'Docente')
+  //     this.showDocenteForm = event.source.selected; 
 
-    //TODO ...-
+  //   //TODO ...-
 
-    setTimeout(() => {
-      this.refreshSaveDisable();
-    }, 10); //devo ritardare altrimenti non fa a tempo a essere attivo il form caricato
-  }
+  //   setTimeout(() => {
+  //     this.refreshSaveDisable();
+  //   }, 10); //devo ritardare altrimenti non fa a tempo a essere attivo il form caricato
+  // }
 
   // ngDoCheck() {
   //   this.refreshSaveDisable(); //questo fa schifo perchè viene chiamato ad ogni piè sospinto!
@@ -427,6 +443,7 @@ export class PersonaEditComponent implements OnInit {
     let alunnoFormValid = true;
     let genitoreFormValid = true;
     let docenteFormValid = true;
+    let nondocenteFormValid = true;
 
     if (this.personaFormComponent) 
       personaFormValid = this.personaFormComponent.form.valid;
@@ -440,8 +457,10 @@ export class PersonaEditComponent implements OnInit {
     if (this.showDocenteForm && this.docenteFormComponent && this.docenteFormComponent.form) 
       docenteFormValid = this.docenteFormComponent.form.valid;
     
+    if (this.showNonDocenteForm && this.nondocenteFormComponent && this.nondocenteFormComponent.form) 
+      docenteFormValid = this.docenteFormComponent.form.valid;
 
-    this.disabledSave = !personaFormValid || !alunnoFormValid || !genitoreFormValid || !docenteFormValid;
+    this.disabledSave = !personaFormValid || !alunnoFormValid || !genitoreFormValid || !docenteFormValid || !nondocenteFormValid;
   }
 
   deletedRole(who: string) {
@@ -470,19 +489,51 @@ export class PersonaEditComponent implements OnInit {
   }
 
   aggiungiNonDocente(personaID:number){
-
+    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+      width: '320px',
+      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Non Docente?"}
+    });
+    
+    dialogYesNo.afterClosed().subscribe( result => {
+    if(result){
+      this.showNonDocenteForm = true;
+    }});
   }
 
   aggiungiGenitore(personaID:number){
-    this.showGenitoreForm = true;
+    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+      width: '320px',
+      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Genitore?"}
+    });
+    
+    dialogYesNo.afterClosed().subscribe( result => {
+    if(result){
+      this.showGenitoreForm = true;
+    }});
   }
 
   aggiungiDocente(personaID:number){
-    this.showDocenteForm = true;
+    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+      width: '320px',
+      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Docente?"}
+    });
+    
+    dialogYesNo.afterClosed().subscribe( result => {
+    if(result){
+      this.showDocenteForm = true;
+    }});
   }
 
   aggiungiAlunno(personaID:number){
-    this.showAlunnoForm = true;
+    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+      width: '320px',
+      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Alunno?"}
+    });
+    
+    dialogYesNo.afterClosed().subscribe( result => {
+    if(result){
+      this.showAlunnoForm = true;
+    }});
   }
 
   aggiungiUser(personaID:number){

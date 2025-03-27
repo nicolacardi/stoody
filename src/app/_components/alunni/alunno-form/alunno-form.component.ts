@@ -54,7 +54,7 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
       indirizzoScuolaProvenienza       : ['', Validators.maxLength(255)],
       ckDSA                            : [false],
       ckDisabile                       : [false],
-      ckAttivo                         : [false]
+      ckAttivo                         : [true]
     });
   }
 
