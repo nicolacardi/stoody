@@ -37,6 +37,7 @@ import { UserService }                                from 'src/app/_user/user.s
 import { PER_Persona, PER_TipoPersona }               from 'src/app/_models/PER_Persone';
 import { User }                                       from 'src/app/_user/Users';
 import { DirigentiService }                           from '../../dirigenti/dirigenti.service';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 
 
@@ -99,6 +100,8 @@ export class PersonaEditComponent implements OnInit {
     @ViewChild(NonDocenteFormComponent) nondocenteFormComponent!  : NonDocenteFormComponent;
     @ViewChild(DirigenteFormComponent) dirigenteFormComponent!    : DirigenteFormComponent;
 
+
+    @ViewChild('genitorePanel') genitorePanel!: MatExpansionPanel;
  //#endregion
 
 //#region ----- Constructor --------------------
@@ -280,13 +283,13 @@ export class PersonaEditComponent implements OnInit {
 
 
   aggiungiDerivato(Derivato: string, personaID: number) {
-    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
-      width: '320px',
-      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>"+Derivato+"?"}
-    });
+    // const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+    //   width: '320px',
+    //   data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>"+Derivato+"?"}
+    // });
     
-    dialogYesNo.afterClosed().subscribe( result => {
-    if(result){
+    // dialogYesNo.afterClosed().subscribe( result => {
+    // if(result){
 
       switch (Derivato) {
         // case 'Persona':
@@ -300,6 +303,7 @@ export class PersonaEditComponent implements OnInit {
           break;
         case 'Genitore':
           this.showGenitoreForm = true;
+          this.genitorePanel.open();
           break;
         case 'Docente':
           this.showDocenteForm = true;
@@ -314,7 +318,8 @@ export class PersonaEditComponent implements OnInit {
           console.warn('Unknown form type');
       
       }
-    }});
+
+    // }});
   }
 
 //#endregion
