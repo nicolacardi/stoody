@@ -8,7 +8,6 @@ import { MatSnackBar }                                                     from 
 //components
 import { SnackbarComponent }                                               from '../../utilities/snackbar/snackbar.component';
 
-
 //services
 import { DocentiService }                                                  from '../docenti.service';
 import { LoadingService }                                                  from '../../utilities/loading/loading.service';
@@ -50,9 +49,7 @@ export class DocenteFormComponent implements OnInit, OnChanges {
     private fb                   : UntypedFormBuilder,
     private svcDocenti           : DocentiService,
     private _loadingService      : LoadingService,
-    private _snackBar            : MatSnackBar,
-              
-  ) {
+    private _snackBar            : MatSnackBar  ) {
 
     this.form        = this.fb.group(
     {
@@ -95,7 +92,7 @@ export class DocenteFormComponent implements OnInit, OnChanges {
           tap(
             docente => 
               {this.form.patchValue(docente)
-                console.log (docente);
+                //console.log (docente);
               }
           )
       );
