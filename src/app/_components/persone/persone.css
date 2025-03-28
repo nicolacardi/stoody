@@ -60,47 +60,6 @@
 }
 /* fine custom panel */
 
-.chip-genitore {
-    background-color: #024259!important; /* Arancione */
-    --mdc-chip-label-text-color: white;
-
-}
-
-.chip-alunno {
-    background-color: #2a75bf !important; /* Blu */
-    --mdc-chip-label-text-color: white;
-}
-
-.chip-docente {
-    background-color: #6cdacf !important; /* Verde */
-    --mdc-chip-label-text-color: white;
-}
-
-.chip-nondocente {
-    background-color: #6cda89 !important; /* Verde */
-    --mdc-chip-label-text-color: white;
-}
-
-.chip-docentecoord {
-    background-color: #ff7700 !important; /* Verde */
-    --mdc-chip-label-text-color: white;
-}
-
-.chip-itmanager {
-    background-color: #e43e02 !important; /* Verde */
-    --mdc-chip-label-text-color: white;
-}
-
-.chip-dirigente {
-    background-color: #a50000 !important; /* Verde */
-    --mdc-chip-label-text-color: white;
-}
-
-.mini-chip {
-    --mdc-chip-label-text-size: 10px;
-    --mdc-chip-container-height: 20px;
-
-}
 
 
 .icon-container {
@@ -115,3 +74,15 @@
     margin-left: auto;
 }
 
+
+
+/* chips */
+
+.chip {
+    --mdc-chip-label-text-color: white;
+}
+.mini-chip {
+    --mdc-chip-label-text-size: 10px;
+    --mdc-chip-container-height: 20px;
+}
+/* fine chips */

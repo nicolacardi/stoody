@@ -119,7 +119,8 @@
                 <td mat-cell *matCellDef="let element">
                     <mat-chip-set>
                         <mat-chip *ngFor="let ruolo of element._LstRoles" 
-                                  [ngClass]="'chip-' + ruolo.toLowerCase()" class="mini-chip">
+                                  [ngClass]="['colore-'+ ruolo.toLowerCase()]"
+                                  class="chip mini-chip">
                             {{ ruolo }}
                         </mat-chip>
                     </mat-chip-set>

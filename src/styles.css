@@ -2168,6 +2168,41 @@ max-height: calc(100% - 20px) !important;
 
 }
 
+.pallino {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%; /* Per rendere il pallino rotondo */
+    display: inline-block;
+    margin-right: 10px; /* Distanza tra il pallino e il testo */
+}
+
+.colore-genitore {
+    background-color: #003e95!important; /* Arancione */
+}
+
+.colore-alunno {
+    background-color: #2a75bf !important; /* Blu */
+}
+
+.colore-docente {
+    background-color: #6cdacf !important; /* Verde */
+}
+
+.colore-nondocente {
+    background-color: #6cda89 !important; /* Verde */
+}
+
+.colore-docentecoord {
+    background-color: #ff7700 !important; /* Verde */
+}
+
+.colore-itmanager {
+    background-color: #e43e02 !important; /* Verde */
+}
+
+.colore-dirigente {
+    background-color: #a50000 !important; /* Verde */
+}
 
 
 
