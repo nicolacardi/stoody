@@ -99,7 +99,7 @@ export class AnnoscolasticoEditComponent implements OnInit {
         .pipe(
           tap(
             anno => {
-              console.log ("annoscolastico-edit - loadData - anno", anno, this.annoCorrenteID)
+              // console.log ("annoscolastico-edit - loadData - anno", anno, this.annoCorrenteID)
               if (this.annoCorrenteID == anno.id) this.ckCorrente = true;
               this.form.patchValue(anno);
 
@@ -192,7 +192,6 @@ export class AnnoscolasticoEditComponent implements OnInit {
   }
 
   changedCkChiuso(event: any) {
-    console.log ("qui", event.checked);
     
     if (event.checked) {
       const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
@@ -202,7 +201,7 @@ export class AnnoscolasticoEditComponent implements OnInit {
 
       dialogYesNo.afterClosed().subscribe(result => {
         if(result) {
-          console.log("ANNO CHIUSO", this.form.controls['id'].value);
+          // console.log("ANNO CHIUSO", this.form.controls['id'].value);
           //TODO qui scatta una serie di eventi
 
           //TODO chiusura di tutte le pagelle

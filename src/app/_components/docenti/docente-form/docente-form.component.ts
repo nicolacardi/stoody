@@ -80,8 +80,7 @@ export class DocenteFormComponent implements OnInit, OnChanges {
 
   ngOnChanges () {
     this.loadData();
-    console.log ("docente-form - ngOnChange - emit del form valid", this.form.valid);
-
+    // console.log ("docente-form - ngOnChange - emit del form valid", this.form.valid);
     this.formValid.emit(this.form.valid);
   }
 

@@ -40,7 +40,9 @@
 
             <app-persona-form #apppersonaform
                 [personaID] = "personaID"
-                (formValid)="formValidEmitted('Persona', $event)">  
+                (formValid)="formValidEmitted('Persona', $event)"
+                (ckAttivoPersona) = "changedCkAttivoPersona($event)"
+                >  
             </app-persona-form>
 
             <mat-accordion >

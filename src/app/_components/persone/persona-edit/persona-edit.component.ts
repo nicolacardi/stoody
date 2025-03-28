@@ -1,45 +1,42 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { Observable, firstValueFrom }           from 'rxjs';
-import { shareReplay, take, tap }                            from 'rxjs/operators';
-import { MatOptionSelectionChange }             from '@angular/material/core';
+import { Component, Inject, OnInit, ViewChild }       from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }   from '@angular/material/dialog';
+import { MatSnackBar }                                from '@angular/material/snack-bar';
+import { Observable, firstValueFrom }                 from 'rxjs';
+import { shareReplay, tap }                           from 'rxjs/operators';
 
 //components
-import { PersonaFormComponent }                 from '../persona-form/persona-form.component';
-import { GenitoreFormComponent }                from '../../genitori/genitore-form/genitore-form.component';
-import { AlunnoFormComponent }                  from '../../alunni/alunno-form/alunno-form.component';
-import { DocenteFormComponent }                 from '../../docenti/docente-form/docente-form.component';
-import { NonDocenteFormComponent }              from '../../nondocenti/nondocente-form/nondocente-form.component';
-import { UserFormComponent }                    from '../../users/user-form/user-form.component';
-import { DirigenteFormComponent }               from '../../dirigenti/dirigente-form/dirigente-form.component';
+import { PersonaFormComponent }                       from '../persona-form/persona-form.component';
+import { GenitoreFormComponent }                      from '../../genitori/genitore-form/genitore-form.component';
+import { AlunnoFormComponent }                        from '../../alunni/alunno-form/alunno-form.component';
+import { DocenteFormComponent }                       from '../../docenti/docente-form/docente-form.component';
+import { NonDocenteFormComponent }                    from '../../nondocenti/nondocente-form/nondocente-form.component';
+import { UserFormComponent }                          from '../../users/user-form/user-form.component';
+import { DirigenteFormComponent }                     from '../../dirigenti/dirigente-form/dirigente-form.component';
 
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { Utility }                              from '../../utilities/utility.component';
+import { DialogYesNoComponent }                       from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { DialogOkComponent }                          from '../../utilities/dialog-ok/dialog-ok.component';
+import { SnackbarComponent }                          from '../../utilities/snackbar/snackbar.component';
+import { Utility }                                    from '../../utilities/utility.component';
 
 
 //services
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { PersoneService }                       from '../persone.service';
-import { TipiPersonaService }                   from '../tipi-persona.service';
-import { AlunniService }                        from '../../alunni/alunni.service';
-import { GenitoriService }                      from '../../genitori/genitori.service';
-import { DocentiService }                       from '../../docenti/docenti.service';
-import { DocentiCoordService }                  from '../docenticoord.service';
-import { NonDocentiService }                    from '../nondocenti.service';
-import { ITManagersService }                    from '../ITmanagers.service';
+import { LoadingService }                             from '../../utilities/loading/loading.service';
+import { PersoneService }                             from '../persone.service';
+import { TipiPersonaService }                         from '../tipi-persona.service';
+import { AlunniService }                              from '../../alunni/alunni.service';
+import { GenitoriService }                            from '../../genitori/genitori.service';
+import { DocentiService }                             from '../../docenti/docenti.service';
+import { NonDocentiService }                          from '../nondocenti.service';
 
-import { UserService }                          from 'src/app/_user/user.service';
+import { UserService }                                from 'src/app/_user/user.service';
 
 //models
-import { PER_Persona, PER_TipoPersona }         from 'src/app/_models/PER_Persone';
-import { User }                                 from 'src/app/_user/Users';
-import { DirigentiService } from '../../dirigenti/dirigenti.service';
+import { PER_Persona, PER_TipoPersona }               from 'src/app/_models/PER_Persone';
+import { User }                                       from 'src/app/_user/Users';
+import { DirigentiService }                           from '../../dirigenti/dirigenti.service';
 
 
 
@@ -161,7 +158,7 @@ export class PersonaEditComponent implements OnInit {
       .pipe( 
           tap(
             persona => {
-              console.log("persona-edit loadData - persona", persona);
+              // console.log("persona-edit loadData - persona", persona);
               this.personaID = persona.id
               this.persona = persona
               this._lstRoles = persona._LstRoles!;
@@ -198,13 +195,11 @@ export class PersonaEditComponent implements OnInit {
   {
     this.personaFormComponent.save().subscribe({
       next: persona=> {
-
         //console.log ("genitore-edit save() - subscribe...prima di genitoreFormComponent.save() e userFormComponent.save() ");
-
         //quello che segue serve per la POST e non per la PUT
         if (this.showGenitoreForm) {
           if (this.genitoreFormComponent.form.controls['personaID'].value == null) this.genitoreFormComponent.form.controls['personaID'].setValue(persona.id);
-          console.log ("genitoreFormComponent.form.value", this.genitoreFormComponent.form.value);
+          // console.log ("genitoreFormComponent.form.value", this.genitoreFormComponent.form.value);
           this.genitoreFormComponent.save();
         }
         if (this.showDocenteForm) {
@@ -424,15 +419,32 @@ export class PersonaEditComponent implements OnInit {
                           !dirigenteFormValid;
                       }, 0);
 
-    console.log("Valore di disabledSave aggiornato:", this.disabledSave);
+    // console.log("Valore di disabledSave aggiornato:", this.disabledSave);
 
-    console.log ("*******persona-edit - disableSave", this.disabledSave);
-    console.log ("personaFormValid", personaFormValid);
-    console.log ("alunnoFormValid", alunnoFormValid);
-    console.log ("genitoreFormValid", genitoreFormValid);
-    console.log ("docenteFormValid", docenteFormValid);
-    console.log ("nondocenteFormValid", nonDocenteFormValid);
-    console.log ("dirigenteFormValid", dirigenteFormValid);
+    // console.log ("*******persona-edit - disableSave", this.disabledSave);
+    // console.log ("personaFormValid", personaFormValid);
+    // console.log ("alunnoFormValid", alunnoFormValid);
+    // console.log ("genitoreFormValid", genitoreFormValid);
+    // console.log ("docenteFormValid", docenteFormValid);
+    // console.log ("nondocenteFormValid", nonDocenteFormValid);
+    // console.log ("dirigenteFormValid", dirigenteFormValid);
+  }
+
+  changedCkAttivoPersona (ckAttivoPersona: boolean) {
+    console.log (" persona-edit - changedckAttivoPersona - arrivato ckAttivoPersona", ckAttivoPersona);
+    if (!ckAttivoPersona) {
+      this._dialog.open(DialogOkComponent, {
+        width: '320px',
+        data: { titolo: "ATTENZIONE!", sottoTitolo: "Il flag 'attivo' di tutti i ruoli <br>di questa persona<br>verrà tolto" }
+      });
+      //devo disabilitare il ckjAttivo di tutti i form Derivati
+      if (this.alunnoFormComponent) this.alunnoFormComponent.form.controls['ckAttivo'].setValue (false);
+      if (this.genitoreFormComponent) this.genitoreFormComponent.form.controls['ckAttivo'].setValue (false);
+      if (this.docenteFormComponent) this.docenteFormComponent.form.controls['ckAttivo'].setValue (false);
+      if (this.nondocenteFormComponent) this.nondocenteFormComponent.form.controls['ckAttivo'].setValue (false);
+      if (this.dirigenteFormComponent) this.dirigenteFormComponent.form.controls['ckAttivo'].setValue (false);      
+
+    }
   }
 }
 

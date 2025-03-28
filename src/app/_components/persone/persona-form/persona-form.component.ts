@@ -1,27 +1,29 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild }            from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators }                     from '@angular/forms';
-import { MatDialog }                                                            from '@angular/material/dialog';
-import { Observable, firstValueFrom, from, of }                                 from 'rxjs';
-import { mergeMap, tap }                                                        from 'rxjs/operators';
-import { MatSelectTrigger }                                                     from '@angular/material/select';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild }     from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators }                         from '@angular/forms';
+import { MatDialog }                                                                from '@angular/material/dialog';
+import { Observable, firstValueFrom,                                                from , of }                                 from 'rxjs';
+import { mergeMap, tap }                                                            from 'rxjs/operators';
+import { MatSelectTrigger }                                                         from '@angular/material/select';
+import { MatCheckboxChange }                                                        from '@angular/material/checkbox';
 
 //components
-import { FormatoData, Utility }                 from '../../utilities/utility.component';
-import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { FormatoData, Utility }                                                     from '../../utilities/utility.component';
+import { DialogOkComponent }                                                        from '../../utilities/dialog-ok/dialog-ok.component';
+import { DialogYesNoComponent }                                                     from '../../utilities/dialog-yes-no/dialog-yes-no.component';
 
 //services
-import { ComuniService }                        from 'src/app/_services/comuni.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { PersoneService }                       from '../persone.service';
-import { UserService }                          from 'src/app/_user/user.service';
+import { ComuniService }                                                            from 'src/app/_services/comuni.service';
+import { LoadingService }                                                           from '../../utilities/loading/loading.service';
+import { PersoneService }                                                           from '../persone.service';
+import { UserService }                                                              from 'src/app/_user/user.service';
 
 //models
-import { PER_Persona, PER_TipoPersona }         from 'src/app/_models/PER_Persone';
-import { _UT_Comuni }                           from 'src/app/_models/_UT_Comuni';
-import { User }                                 from 'src/app/_user/Users';
+import { PER_Persona, PER_TipoPersona }                                             from 'src/app/_models/PER_Persone';
+import { _UT_Comuni }                                                               from 'src/app/_models/_UT_Comuni';
+import { User }                                                                     from 'src/app/_user/Users';
+
 
 //#endregion
 
@@ -75,8 +77,9 @@ export class PersonaFormComponent implements OnInit, OnChanges {
   @Input() tipoPersonaID!:                      number;
   @Input() dove!:                               string;
 
-  @Output('formChanged') formChanged = new EventEmitter();
+  // @Output('formChanged') formChanged = new EventEmitter();
   @Output('formValid') formValid = new EventEmitter<boolean>();
+  @Output('ckAttivoPersona') ckAttivoPersona = new EventEmitter<boolean>();
   // @Output('changedRoles') changedRoles = new EventEmitter();
 
 //#endregion
@@ -172,7 +175,9 @@ export class PersonaFormComponent implements OnInit, OnChanges {
               this.form.patchValue(persona);
               this.svcUser.getByPersonaID(persona.id).subscribe( {
                 next: user=> {if (user) this.form.controls['ckRegistrato'].setValue(true);},
-                error: err=> {console.log ("non ho trovato user")}
+                error: err=> {
+                  // console.log ("non ho trovato user")
+                }
                 })
               
               
@@ -231,6 +236,167 @@ export class PersonaFormComponent implements OnInit, OnChanges {
       }
     )
   }
+
+  async checkExists(): Promise<any[] | null> {
+
+    let result = [];
+    let objTrovatoNC: PER_Persona | null = null;
+    let objTrovatoCF: PER_Persona | null = null;
+    let objTrovatoEM: PER_Persona | null = null;
+
+    objTrovatoNC = await firstValueFrom(this.svcPersone.getByNomeCognome(this.form.controls['nome'].value, this.form.controls['cognome'].value, this.personaID? this.personaID : 0));
+    if (this.form.controls['cf'].value && this.form.controls['cf'].value!= '') objTrovatoCF = await firstValueFrom(this.svcPersone.getByCF(this.form.controls['cf'].value, this.personaID? this.personaID : 0));
+    if (this.form.controls['email'].value) {
+      objTrovatoEM = await firstValueFrom(this.svcPersone.getByEmail(this.form.controls['email'].value, this.personaID? this.personaID : 0));
+    } else {
+      objTrovatoEM = null;
+    }
+    
+    //console.log ("objTrovatoNC", objTrovatoNC);
+    //console.log ("objTrovatoCF", objTrovatoCF);    
+    //console.log ("objTrovatoEM", objTrovatoEM);    
+
+    if (objTrovatoNC) result.push({msg: "Combinazione Nome e Cognome <br>già presente", grav: "nonBlock"} );
+    if (objTrovatoCF) result.push({msg: "CF già presente", grav: "Block"} );
+    if (objTrovatoEM) result.push({msg: "Email già presente", grav: "Block"} );
+    
+    return result;
+  }
+
+
+  save() :Observable<any>{
+
+    //se 'Utente Registrato' è flaggato deve esistere la mail altrimenti va bloccato il salvataggio (la mail è necessaria.)
+    //si pone altro tema  " e se qualcuno modifica la mail dopo che è stato registrato?" forse andrebbe resa non modificabile quando accade? Oppure andrebbe cambiata anche la mail di login?
+    // if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
+    //   this._dialog.open(DialogOkComponent, {
+    //     width: '320px',
+    //     data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è necessario indicare l'indirizzo mail" }
+    //   });
+    //   return of();
+    // }
+
+    //verifica (e attende l'esito) se ci sono già persone con lo stesso nome-cognome, cf, email. 
+    return from(this.checkExists()).pipe(
+      mergeMap((msg) => {
+        if (msg && msg.length > 0) {
+          //console.log("persona-form - save - this.checkexists ha trovato qualcosa già esistente");
+          //blockMessages conterrà l'array dei messaggi bloccanti
+          const blockMessages = msg
+            .filter(item => item.grav === "Block")
+            .map(item => item.msg);
+          // la presenza di persone con stessa email e/o cf genera uno stop (gravità Block)
+          if (blockMessages && blockMessages.length > 0) {
+            this._dialog.open(DialogOkComponent, {
+              width: '320px',
+              data: { titolo: "ATTENZIONE!", sottoTitolo: blockMessages.join(', ') + '<br>Impossibile Salvare' }
+            });
+            return of();
+          } 
+          else {
+            const UnblockMessages = msg
+              .filter(item => item.grav === "nonBlock")
+              .map(item => item.msg);
+              // la presenza di persone con stesso nome e cognome genera una richiesta all'utente (gravità nonBlock)
+              //se procedere o meno
+            const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+              width: '320px',
+              data: { titolo: "ATTENZIONE!", sottoTitolo: UnblockMessages.join(', ') + '<br>Vuoi salvare un omonimo?' }
+            });
+          
+            return dialogYesNo.afterClosed().pipe(
+              mergeMap(result => result ? this.salvaPersona() : of())
+            );
+          }
+        } else {
+          return this.salvaPersona();
+        }
+      })
+    );
+  };
+
+
+  private salvaPersona(): Observable<any> {
+    if (this.personaID == null || this.personaID == 0) {
+        // POST
+        // console.log("persona-form - save - POST del form", this.form.value);
+        return this.svcPersone.post(this.form.value).pipe(
+            tap(persona => {
+                let formData = {
+                    UserName: this.form.controls['email'].value,
+                    Email: this.form.controls['email'].value,
+                    PersonaID: persona.id,
+                    Password: "1234"
+                };
+                // console.log("persona-form - dave - sto creando l'utente", formData);
+                this.svcUser.post(formData).subscribe();
+            })
+        );
+    } else {
+        // PUT
+        // console.log("persona-form - save - PUT del form", this.form.value);
+        this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
+        return this.svcPersone.put(this.form.value);
+    }
+}
+
+
+           
+
+
+  delete() :Observable<any>{
+
+    //BISOGNA CHE PRIMA CANCELLI TUTTI I VARI GENITORE, ALUNNO, DOCENTE, NON DOCENTE E USER ECC. TODO
+    if (this.personaID != null) 
+      return this.svcPersone.delete(this.personaID) ;
+    else 
+      return of();
+  }
+
+//#endregion
+
+//#region ----- Altri metodi -------
+
+  popolaProv(prov: string, cap: string) {
+    this.form.controls['prov'].setValue(prov);
+    this.form.controls['cap'].setValue(cap);
+    this.form.controls['nazione'].setValue('ITA');
+  }
+
+  popolaProvNascita(prov: string) {
+    this.form.controls['provNascita'].setValue(prov);
+    this.form.controls['nazioneNascita'].setValue('ITA');
+  }
+  
+  changedCkAttivo(event: MatCheckboxChange) {
+    this.ckAttivoPersona.emit(event.checked);
+  }
+
+  formatDtNascita(dtNascita: string){
+
+    //prendo la stringa e ne estraggo i pezzi
+    const parts = dtNascita.split('/'); // Split the input string by '/'
+    const day = parts[0];
+    const month = parts[1];
+    const year = parts[2];
+  
+    // creo la nuova data con i valori estratti (assumendo l'ordine day/month/year)
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  
+    // formatto la data al tipo richiesto dal controllo data ('yyyy-MM-dd')
+    let formattedDate = date.toISOString().slice(0, 10);
+  
+    //piccolo step per evitare che 1/1/2008 diventi 31/12/2007
+    formattedDate = Utility.formatDate(date, FormatoData.yyyy_mm_dd);
+
+    //impostazione della data finale
+    this.form.controls['dtNascita'].setValue(formattedDate);
+  }
+//#endregion
+
+}
+
+
 
 //#region ----- TENTATIVO DI RENDERE SINCRONA LA SAVE ------------
 
@@ -349,111 +515,8 @@ export class PersonaFormComponent implements OnInit, OnChanges {
 //#endregion ----- TENTATIVO ----------------------
 
 
-  async checkExists(): Promise<any[] | null> {
 
-    let result = [];
-    let objTrovatoNC: PER_Persona | null = null;
-    let objTrovatoCF: PER_Persona | null = null;
-    let objTrovatoEM: PER_Persona | null = null;
-
-    objTrovatoNC = await firstValueFrom(this.svcPersone.getByNomeCognome(this.form.controls['nome'].value, this.form.controls['cognome'].value, this.personaID? this.personaID : 0));
-    if (this.form.controls['cf'].value && this.form.controls['cf'].value!= '') objTrovatoCF = await firstValueFrom(this.svcPersone.getByCF(this.form.controls['cf'].value, this.personaID? this.personaID : 0));
-    if (this.form.controls['email'].value) {
-      objTrovatoEM = await firstValueFrom(this.svcPersone.getByEmail(this.form.controls['email'].value, this.personaID? this.personaID : 0));
-    } else {
-      objTrovatoEM = null;
-    }
-    
-    //console.log ("objTrovatoNC", objTrovatoNC);
-    //console.log ("objTrovatoCF", objTrovatoCF);    
-    //console.log ("objTrovatoEM", objTrovatoEM);    
-
-    if (objTrovatoNC) result.push({msg: "Combinazione Nome e Cognome <br>già presente", grav: "nonBlock"} );
-    if (objTrovatoCF) result.push({msg: "CF già presente", grav: "Block"} );
-    if (objTrovatoEM) result.push({msg: "Email già presente", grav: "Block"} );
-    
-    return result;
-  }
-
-
-  save() :Observable<any>{
-
-    //se 'Utente Registrato' è flaggato deve esistere la mail altrimenti va bloccato il salvataggio (la mail è necessaria.)
-    //si pone altro tema  " e se qualcuno modifica la mail dopo che è stato registrato?" forse andrebbe resa non modificabile quando accade? Oppure andrebbe cambiata anche la mail di login?
-    // if (this.form.controls['ckRegistrato'].value && this.form.controls['email'].value == "") {
-    //   this._dialog.open(DialogOkComponent, {
-    //     width: '320px',
-    //     data: { titolo: "ATTENZIONE!", sottoTitolo: "Per registrare l'utente è necessario indicare l'indirizzo mail" }
-    //   });
-    //   return of();
-    // }
-
-    //verifica (e attende l'esito) se ci sono già persone con lo stesso nome-cognome, cf, email. 
-    return from(this.checkExists()).pipe(
-      mergeMap((msg) => {
-        if (msg && msg.length > 0) {
-          //console.log("persona-form - save - this.checkexists ha trovato qualcosa già esistente");
-          //blockMessages conterrà l'array dei messaggi bloccanti
-          const blockMessages = msg
-            .filter(item => item.grav === "Block")
-            .map(item => item.msg);
-          // la presenza di persone con stessa email e/o cf genera uno stop (gravità Block)
-          if (blockMessages && blockMessages.length > 0) {
-            this._dialog.open(DialogOkComponent, {
-              width: '320px',
-              data: { titolo: "ATTENZIONE!", sottoTitolo: blockMessages.join(', ') + '<br>Impossibile Salvare' }
-            });
-            return of();
-          } 
-          else {
-            const UnblockMessages = msg
-              .filter(item => item.grav === "nonBlock")
-              .map(item => item.msg);
-              // la presenza di persone con stesso nome e cognome genera una richiesta all'utente (gravità nonBlock)
-              //se procedere o meno
-            const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
-              width: '320px',
-              data: { titolo: "ATTENZIONE!", sottoTitolo: UnblockMessages.join(', ') + '<br>Vuoi salvare un omonimo?' }
-            });
-          
-            return dialogYesNo.afterClosed().pipe(
-              mergeMap(result => result ? this.salvaPersona() : of())
-            );
-          }
-        } else {
-          return this.salvaPersona();
-        }
-      })
-    );
-  };
-
-
-  private salvaPersona(): Observable<any> {
-    if (this.personaID == null || this.personaID == 0) {
-        // POST
-        console.log("persona-form - save - POST del form", this.form.value);
-        return this.svcPersone.post(this.form.value).pipe(
-            tap(persona => {
-                let formData = {
-                    UserName: this.form.controls['email'].value,
-                    Email: this.form.controls['email'].value,
-                    PersonaID: persona.id,
-                    Password: "1234"
-                };
-                console.log("sto creando l'utente", formData);
-                this.svcUser.post(formData).subscribe();
-            })
-        );
-    } else {
-        // PUT
-        console.log("persona-form - save - PUT del form", this.form.value);
-        this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
-        return this.svcPersone.put(this.form.value);
-    }
-}
-
-
-           //mergeMap(result => {
+//mergeMap(result => {
                 //if (result) {
                   // //se l'utente dice di procedere allora si valuta se post o put
                   // //***********************QUESTO BLOCCO SI RIPETE ANCHE IN CASO NON VENGA TROVATO ALCUN MSG ************/
@@ -514,56 +577,6 @@ export class PersonaFormComponent implements OnInit, OnChanges {
           //   return this.svcPersone.put(this.form.value);
           // }
           // //*****************************FINO A QUI ***********************************************************/
-
-
-  delete() :Observable<any>{
-
-    //BISOGNA CHE PRIMA CANCELLI TUTTI I VARI GENITORE, ALUNNO, DOCENTE, NON DOCENTE E USER ECC. TODO
-    if (this.personaID != null) 
-      return this.svcPersone.delete(this.personaID) ;
-    else 
-      return of();
-  }
-
-//#endregion
-
-//#region ----- Altri metodi -------
-
-  popolaProv(prov: string, cap: string) {
-    this.form.controls['prov'].setValue(prov);
-    this.form.controls['cap'].setValue(cap);
-    this.form.controls['nazione'].setValue('ITA');
-  }
-
-  popolaProvNascita(prov: string) {
-    this.form.controls['provNascita'].setValue(prov);
-    this.form.controls['nazioneNascita'].setValue('ITA');
-  }
-
-  formatDtNascita(dtNascita: string){
-
-    //prendo la stringa e ne estraggo i pezzi
-    const parts = dtNascita.split('/'); // Split the input string by '/'
-    const day = parts[0];
-    const month = parts[1];
-    const year = parts[2];
-  
-    // creo la nuova data con i valori estratti (assumendo l'ordine day/month/year)
-    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-  
-    // formatto la data al tipo richiesto dal controllo data ('yyyy-MM-dd')
-    let formattedDate = date.toISOString().slice(0, 10);
-  
-    //piccolo step per evitare che 1/1/2008 diventi 31/12/2007
-    formattedDate = Utility.formatDate(date, FormatoData.yyyy_mm_dd);
-
-    //impostazione della data finale
-    this.form.controls['dtNascita'].setValue(formattedDate);
-  }
-//#endregion
-
-}
-
 
 /* ##### OLD ######
 

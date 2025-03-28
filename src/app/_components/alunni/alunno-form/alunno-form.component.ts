@@ -26,11 +26,11 @@ import { SnackbarComponent } from '../../utilities/snackbar/snackbar.component';
 export class AlunnoFormComponent implements OnInit, OnChanges {
 
 //#region ----- Variabili ----------------------
-  alunno$!:                                     Observable<ALU_Alunno>;
-  form! :                                       UntypedFormGroup;
+  alunno$!        : Observable<ALU_Alunno>;
+  public form!    : UntypedFormGroup;
   
-  emptyForm :                                   boolean = false;
-  loading:                                      boolean = true;
+  emptyForm       : boolean = false;
+  loading         : boolean = true;
 //#endregion
 
 //#region ----- ViewChild Input Output -------
@@ -93,7 +93,7 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
       .pipe( 
           tap(
             alunno => {
-              console.log(alunno);
+              // console.log("alunno-form loadData - alunno", alunno);
               this.form.patchValue(alunno)
             }
           )
@@ -109,12 +109,12 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
     //this.form.controls['personaID'].setValue(this.personaID);
 
     if (this.alunnoID == null || this.alunnoID == 0) {
-      console.log ("alunno-form - save - post form", this.form.value);
+      // console.log ("alunno-form - save - post form", this.form.value);
       //return this.svcGenitori.post(this.form.value)
       this.svcAlunni.post(this.form.value).subscribe();
     }
     else {
-      console.log ("alunno-form - save - put form", this.form.value);
+      // console.log ("alunno-form - save - put form", this.form.value);
       this.svcAlunni.put(this.form.value).subscribe();
     }
   }

@@ -19,7 +19,7 @@
         </mat-grid-tile>
 
         <mat-grid-tile *ngIf="dove!= 'procedura-iscrizione'"  class="tileCk">
-            <mat-checkbox color="primary" formControlName="ckAttivo">
+            <mat-checkbox color="primary" (change)="changedCkAttivo($event)" formControlName="ckAttivo">
                 Anagrafica Attiva
             </mat-checkbox>
         </mat-grid-tile>
