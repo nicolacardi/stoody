@@ -149,7 +149,6 @@ export class PersoneListComponent implements OnInit {
     this.svcTableColsVisible.listByUserIDAndTable(this.currUser.userID, this.tableName).subscribe( colonne => {
         if (colonne.length != 0) this.displayedColumns = colonne.map(a => a.tableCol!.colName)
         else this.svcTableCols.listByTable(this.tableName).subscribe( colonne => {
-            console.log ("colonne", colonne);
             this.displayedColumns = colonne.filter(colonna=> colonna.defaultShown == true).map(a => a.colName)
         })      
     });
@@ -173,7 +172,6 @@ export class PersoneListComponent implements OnInit {
         //map(val=> val.filter( val => (!val._LstRoles!.includes('Alunno') && !val._LstRoles!.includes('Genitore')))) //vogliamo vedere tutti meno genitori e alunni...
 
     ).subscribe( val => {
-      console.log ("persone-list", val);
         this.matDataSource.data = val;
         this.matDataSource.paginator = this.paginator;
         this.matDataSource.sort = this.sort; 

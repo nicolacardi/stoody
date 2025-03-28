@@ -73,13 +73,16 @@ export class DocenteFormComponent implements OnInit, OnChanges {
 
     this.form.valueChanges.subscribe( res=> {
         this.formValid.emit(this.form.valid);
-        this.formChanged.emit()
+        //this.formChanged.emit()
       }
     )
   }
 
   ngOnChanges () {
     this.loadData();
+    console.log ("docente-form - ngOnChange - emit del form valid", this.form.valid);
+
+    this.formValid.emit(this.form.valid);
   }
 
   loadData(){
@@ -114,7 +117,7 @@ export class DocenteFormComponent implements OnInit, OnChanges {
       this.svcDocenti.delete(this.docenteID)
       .subscribe({
         next: res=>{
-          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
+          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Ruolo Docente cancellato', panelClass: ['red-snackbar']});
         },
         error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
       });

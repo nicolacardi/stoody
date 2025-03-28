@@ -12,6 +12,8 @@ import { LoadingService }                       from '../../utilities/loading/lo
 
 //models
 import { ALU_Alunno }                           from 'src/app/_models/ALU_Alunno';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from '../../utilities/snackbar/snackbar.component';
 
 //#endregion
 
@@ -41,10 +43,11 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
   
 //#region ----- Constructor --------------------
 
-  constructor(public _dialog:                   MatDialog,
-              private fb:                       UntypedFormBuilder, 
-              private svcAlunni:                AlunniService,
-              private _loadingService :         LoadingService ) {
+  constructor(public _dialog                 : MatDialog,
+              private fb                     : UntypedFormBuilder,
+              private svcAlunni              : AlunniService,
+              private _loadingService        : LoadingService,
+                private _snackBar            : MatSnackBar,) {
 
     this.form                          = this.fb.group(
     {
@@ -69,13 +72,14 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
     this.form.valueChanges.subscribe(
       res=> {
         this.formValid.emit(this.form.valid);
-        this.formChanged.emit()
+        //this.formChanged.emit()
       }
     )
   }
 
   ngOnChanges () {
     this.loadData();
+    this.formValid.emit(this.form.valid);
   }
   
   loadData(){
@@ -116,11 +120,16 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
   }
 
 
-  delete() :Observable<any>{
+  delete(){
     if (this.alunnoID != null) 
-      return this.svcAlunni.delete(this.alunnoID) 
-    else 
-      return of();
+      this.svcAlunni.delete(this.alunnoID)
+      .subscribe({
+        next: res=>{
+          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Ruolo Alunno cancellato', panelClass: ['red-snackbar']});
+        },
+        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+      });
+
   }
 
 

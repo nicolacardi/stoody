@@ -14,6 +14,8 @@ import { LoadingService }                       from '../../utilities/loading/lo
 import { ALU_Genitore }                         from 'src/app/_models/ALU_Genitore';
 import { ALU_TipoGenitore } from 'src/app/_models/ALU_Tipogenitore';
 import { TipiGenitoreService } from '../tipi-genitore.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from '../../utilities/snackbar/snackbar.component';
 
 //#endregion
 
@@ -48,11 +50,14 @@ export class GenitoreFormComponent implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(public _dialog:                   MatDialog,
-              private fb:                       UntypedFormBuilder, 
-              private svcGenitori:              GenitoriService,
-              private svcTipiGenitore:          TipiGenitoreService,
-              private _loadingService :         LoadingService ) {
+  constructor(
+    public _dialog               : MatDialog,
+    private fb                   : UntypedFormBuilder,
+    private svcGenitori          : GenitoriService,
+    private svcTipiGenitore      : TipiGenitoreService,
+    private _loadingService      : LoadingService,
+    private _snackBar            : MatSnackBar,
+   ) {
 
     this.form        = this.fb.group(
     {
@@ -76,9 +81,9 @@ export class GenitoreFormComponent implements OnInit {
     this.loadData();
     this.form.valueChanges.subscribe(
       res=> {
-        console.log ("genitore-form - ngonchanges - emit del form valid");
+        console.log ("genitore-form - ngOninit - emit del form valid", this.form.valid);
         this.formValid.emit(this.form.valid);
-        this.formChanged.emit();
+        //this.formChanged.emit();
       }
     )
 
@@ -86,9 +91,9 @@ export class GenitoreFormComponent implements OnInit {
 
   ngOnChanges () {
     this.loadData();
-    console.log ("genitore-form - ngonchanges - emit del form valid", this.form.valid);
+    console.log ("genitore-form - ngOnChange - emit del form valid", this.form.valid);
+
     this.formValid.emit(this.form.valid);
-    this.formChanged.emit();
   }
 
   loadData(){
@@ -123,10 +128,15 @@ export class GenitoreFormComponent implements OnInit {
     }
   }
 
-  delete() :Observable<any>{
+  delete(){
     if (this.genitoreID != null) 
-      return this.svcGenitori.delete(this.genitoreID) 
-    else return of();
+      this.svcGenitori.delete(this.genitoreID)
+      .subscribe({
+        next: res=>{
+          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Ruolo Genitore cancellato', panelClass: ['red-snackbar']});
+        },
+        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+      });
   }
 
   deleteRole() {

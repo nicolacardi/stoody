@@ -125,10 +125,15 @@ export class UserFormComponent implements OnInit, OnChanges {
     }
   }
 
-  delete() :Observable<any>{
+  delete(){
     if (this.userID != null) 
-      return this.svcUser.delete(this.userID) 
-    else return of();
+      this.svcUser.delete(this.userID)      
+      .subscribe({
+        next: res=>{
+          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Utente cancellato', panelClass: ['red-snackbar']});
+        },
+        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+      });
   }
 
   async cambioPassword() {

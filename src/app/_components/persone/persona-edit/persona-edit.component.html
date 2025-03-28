@@ -40,136 +40,135 @@
 
             <app-persona-form #apppersonaform
                 [personaID] = "personaID"
-                (formChanged) = "refreshSaveDisable()">  
+                (formValid)="formValidEmitted('Persona', $event)">  
             </app-persona-form>
 
             <mat-accordion >
 
+
                 <div class="custom-panel mt10" *ngIf="!showUserForm" >
                     <div class="custom-panel-header">
                         <span class="custom-panel-title">Aggiungi Utente</span>
-                        <mat-icon class="custom-panel-icon" (click)="aggiungiUser(personaID)">add_circle</mat-icon>
+                        <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('User', personaID)">add_circle</mat-icon>
                     </div>
                 </div>
+
                 <mat-expansion-panel class="mt10" *ngIf="showUserForm" #userPanel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>Dati dell'Utente</mat-panel-title>
                         <mat-icon class="right" >{{ userPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
                     </mat-expansion-panel-header>
-                        <app-user-form                           
-                            [userID] = "userID"
-                            (formValid)="formUserValidEmitted($event)">
-                        </app-user-form>
+                    <app-user-form                           
+                        [userID] = "userID"
+                        (formValid)="formValidEmitted('user', $event)">
+                    </app-user-form>
                 </mat-expansion-panel>
+
 
                 <div class="custom-panel mt10" *ngIf="!showGenitoreForm" >
                     <div class="custom-panel-header">
                         <span class="custom-panel-title">Aggiungi ruolo Genitore</span>
-                        <mat-icon class="custom-panel-icon" (click)="aggiungiGenitore(personaID)">add_circle</mat-icon>
+                        <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('Genitore', personaID)">add_circle</mat-icon>
                     </div>
                 </div>
 
                 <mat-expansion-panel class="mt10" *ngIf="showGenitoreForm" #genitorePanel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>Dati del Genitore</mat-panel-title>
-                        <mat-icon class="right" >{{ genitorePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right mr20" >{{ genitorePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right _red" (click)="rimuoviDerivato('Genitore', personaID)">remove_circle</mat-icon>
                     </mat-expansion-panel-header>
-                    <!-- <div class="_bordered-grey mt5" > -->
-                        <app-genitore-form #appgenitoreform
-                            [genitoreID] = "genitoreID"
-                            [personaID] = "personaID"
-                            (deletedRole) ="deletedRole($event)"
-                            (formChanged) = "refreshSaveDisable()"
-                             >
-                        </app-genitore-form>
-                        <!-- (formValid)="formGenitoreValidEmitted($event)" -->
-                    <!-- </div> -->
+                    <app-genitore-form #appgenitoreform
+                        [genitoreID] = "genitoreID"
+                        [personaID] = "personaID"
+                        (formValid)="formValidEmitted('Genitore',$event)"
+                            >
+                    </app-genitore-form>
                 </mat-expansion-panel>
+
 
                 <div class="custom-panel mt10" *ngIf="!showAlunnoForm" >
                     <div class="custom-panel-header">
                         <span class="custom-panel-title">Aggiungi ruolo Alunno</span>
-                        <mat-icon class="custom-panel-icon" (click)="aggiungiAlunno(personaID)">add_circle</mat-icon>
+                        <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('Alunno', personaID)">add_circle</mat-icon>
                     </div>
                 </div>
 
                 <mat-expansion-panel class="mt10" *ngIf="showAlunnoForm" #alunnoPanel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>Dati dell'Alunno</mat-panel-title>
-                        <mat-icon class="right" >{{ alunnoPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right mr20" >{{ alunnoPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right _red" (click)="rimuoviDerivato('Alunno', personaID)">remove_circle</mat-icon>
                     </mat-expansion-panel-header>
-                    <!-- <div class="_bordered-grey mt5" > -->
-                        <app-alunno-form #appalunnoform
-                            [alunnoID] = "alunnoID"
-                            (deletedRole) ="deletedRole($event)"
-                            (formChanged) = "refreshSaveDisable()">
-                        </app-alunno-form>
-                        <!-- (formValid)="formAlunnoValidEmitted($event)" -->
-                    <!-- </div> -->
+                    <app-alunno-form #appalunnoform
+                        [alunnoID] = "alunnoID"
+                        (formValid)="formValidEmitted('Alunno',$event)">
+                    </app-alunno-form>
                 </mat-expansion-panel>
 
 
                 <div class="custom-panel mt10" *ngIf="!showDocenteForm" >
                     <div class="custom-panel-header">
                         <span class="custom-panel-title">Aggiungi ruolo Docente</span>
-                        <mat-icon class="custom-panel-icon" (click)="aggiungiDocente(personaID)">add_circle</mat-icon>
+                        <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('Docente', personaID)">add_circle</mat-icon>
                     </div>
                 </div>
 
                 <mat-expansion-panel class="mt10" *ngIf="showDocenteForm" #docentePanel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>Dati del Docente</mat-panel-title>
-                        <mat-icon class="right" >{{ docentePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right mr20" >{{ docentePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right _red" (click)="rimuoviDerivato('Docente', personaID)">remove_circle</mat-icon>
+
                     </mat-expansion-panel-header>
-                    <!-- <div class="_bordered-grey mt5" > -->
-                        <app-docente-form #appdocenteform
-                            [docenteID] = "docenteID"
-                            (deletedRole) ="deletedRole($event)"
-                            (formChanged) = "refreshSaveDisable()">
-                        </app-docente-form>
-                    <!-- </div> -->
+                    <app-docente-form #appdocenteform
+                        [docenteID] = "docenteID"
+                        (formValid)="formValidEmitted('Docente',$event)">
+                    </app-docente-form>
                 </mat-expansion-panel>
+
 
                 <div class="custom-panel mt10" *ngIf="!showNonDocenteForm" >
                     <div class="custom-panel-header">
                         <span class="custom-panel-title">Aggiungi ruolo personale Non Docente</span>
-                        <mat-icon class="custom-panel-icon" (click)="aggiungiNonDocente(personaID)">add_circle</mat-icon>
+                        <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('NonDocente', personaID)">add_circle</mat-icon>
                     </div>
                 </div>
 
                 <mat-expansion-panel class="mt10" *ngIf="showNonDocenteForm" #nondocentePanel>
                     <mat-expansion-panel-header>
                         <mat-panel-title>Dati del Non Docente</mat-panel-title>
-                        <mat-icon class="right" >{{ nondocentePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right mr20" >{{ nondocentePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right _red" (click)="rimuoviDerivato('NonDocente', personaID)">remove_circle</mat-icon>
                     </mat-expansion-panel-header>
-                    <!-- <div class="_bordered-grey mt5" > -->
-                        <app-docente-form #appnondocenteform
-                            [docenteID] = "nondocenteID"
-                            (deletedRole) ="deletedRole($event)"
-                            (formChanged) = "refreshSaveDisable()">
-                        </app-docente-form>
-                    <!-- </div> -->
+                    <app-nondocente-form #appnondocenteform
+                        [nondocenteID] = "nondocenteID"
+                        (formValid)="formValidEmitted('NonDocente', $event)">
+                    </app-nondocente-form>
+                </mat-expansion-panel>
+
+
+                <div class="custom-panel mt10" *ngIf="!showDirigenteForm">
+                    <div class="custom-panel-header">
+                        <span class="custom-panel-title">Aggiungi ruolo personale Dirigente</span>
+                        <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('Dirigente', personaID)">add_circle</mat-icon>
+                    </div>
+                </div>
+
+                <mat-expansion-panel class="mt10" *ngIf="showDirigenteForm" #dirigentePanel>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Dati del Dirigente</mat-panel-title>
+                        <mat-icon class="right mr20" >{{ dirigentePanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon>
+                        <mat-icon class="right _red" (click)="rimuoviDerivato('Dirigente', personaID)">remove_circle</mat-icon>
+                    </mat-expansion-panel-header>
+                    <app-dirigente-form #dirigenteform
+                        [dirigenteID] = "dirigenteID"
+                        (formValid)="formValidEmitted('Dirigente', $event)">
+                    </app-dirigente-form>
                 </mat-expansion-panel>
 
             </mat-accordion>
 
-
-
-            <div class="custom-panel mt10">
-                <div class="custom-panel-header">
-                    <span class="custom-panel-title">Aggiungi ruolo personale Dirigente</span>
-                    <mat-icon class="custom-panel-icon" (click)="aggiungiDirigente(personaID)">add_circle</mat-icon>
-                </div>
-            </div>
-
-        <!--
-            <div class="_bordered-grey mt5" *ngIf="showDocenteForm" >
-                <app-docente-form #appdoccenteform
-                    (deletedRole) ="deletedRole($event)"
-                    (formChanged) = "refreshSaveDisable()">
-                </app-docente-form>
-            </div>
-        -->
         </mat-card-content>
     </mat-card>
 

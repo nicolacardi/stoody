@@ -13,7 +13,9 @@ import { PersonaFormComponent }                 from '../persona-form/persona-fo
 import { GenitoreFormComponent }                from '../../genitori/genitore-form/genitore-form.component';
 import { AlunnoFormComponent }                  from '../../alunni/alunno-form/alunno-form.component';
 import { DocenteFormComponent }                 from '../../docenti/docente-form/docente-form.component';
-import { NonDocenteFormComponent }                 from '../../nondocenti/nondocente-form/nondocente-form.component';
+import { NonDocenteFormComponent }              from '../../nondocenti/nondocente-form/nondocente-form.component';
+import { UserFormComponent }                    from '../../users/user-form/user-form.component';
+import { DirigenteFormComponent }               from '../../dirigenti/dirigente-form/dirigente-form.component';
 
 import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
 import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
@@ -31,14 +33,15 @@ import { DocentiService }                       from '../../docenti/docenti.serv
 import { DocentiCoordService }                  from '../docenticoord.service';
 import { NonDocentiService }                    from '../nondocenti.service';
 import { ITManagersService }                    from '../ITmanagers.service';
-import { DirigentiService }                     from '../dirigenti.service';
 
+import { UserService }                          from 'src/app/_user/user.service';
 
 //models
 import { PER_Persona, PER_TipoPersona }         from 'src/app/_models/PER_Persone';
 import { User }                                 from 'src/app/_user/Users';
-import { UserFormComponent } from '../../users/user-form/user-form.component';
-import { UserService } from 'src/app/_user/user.service';
+import { DirigentiService } from '../../dirigenti/dirigenti.service';
+
+
 
 
 //#endregion
@@ -53,58 +56,53 @@ export class PersonaEditComponent implements OnInit {
 //#region ----- Variabili ----------------------
 
   form!                 : UntypedFormGroup;
-  public userID!           : string;
+  public userID!        : string;
   currUser!             : User;
   persona$!             : Observable<PER_Persona>;
   persona!              : PER_Persona;
   obsTipiPersona$!      : Observable<PER_TipoPersona[]>;
   _lstRoles!            : string[];
-  lstTipiPersona!       : PER_TipoPersona[];
   selectedRoles         : number[] = []
 
+  userFormisValid!      : boolean;
+  personaFormisValid!   : boolean;
+  alunnoFormisValid!  : boolean;
+  genitoreFormisValid!  : boolean;
+  docenteFormisValid!  : boolean;
+  nonDocenteFormisValid!  : boolean;
+  dirigenteFormisValid! : boolean;
 
-  personaFormisValid!      : boolean;
-  genitoreFormisValid!     : boolean;
-  userFormisValid!         : boolean;
 
 
-  showGenitoreForm      : boolean  = false;
+  showGenitoreForm      : boolean = false;
   showAlunnoForm        : boolean = false;
   showUserForm          : boolean = false;
   showDocenteForm       : boolean = false;
-  showNonDocenteForm       : boolean = false;
+  showNonDocenteForm    : boolean = false;
+  showDirigenteForm     : boolean = false;
 
   alunnoID!             : number;
   genitoreID!           : number;
   docenteID!            : number;
-  nondocenteID!            : number;
+  nondocenteID!         : number;
+  dirigenteID!          : number;
 
   emptyForm             : boolean = false;
-  disabledSave          = false;
+  disabledSave          : boolean = false;
 
-  //#endregion
-
-//#region ----- ViewChild Input Output ---------
-  @ViewChild(PersonaFormComponent) personaFormComponent!: PersonaFormComponent; 
-  //[static false servirebbe a consentire un riferimento a appalunnoform anche se non è stato caricato ancora]
-  // @ViewChild('appalunnoform', {static: false}) appalunnoform!: AlunnoFormComponent; 
-  // @ViewChild('appgenitoreform', {static: false}) appgenitoreform!: GenitoreFormComponent;
-  // @ViewChild('appdocenteform', {static: false}) appdocenteform!: DocenteFormComponent; 
-
-
-    @ViewChild(AlunnoFormComponent) alunnoFormComponent!                : AlunnoFormComponent;
-    @ViewChild(UserFormComponent) userFormComponent!                    : UserFormComponent;
-    @ViewChild(GenitoreFormComponent) genitoreFormComponent!            : GenitoreFormComponent;
-    @ViewChild(DocenteFormComponent) docenteFormComponent!              : DocenteFormComponent;
-    @ViewChild(NonDocenteFormComponent) nondocenteFormComponent!        : NonDocenteFormComponent;
-
-    
-
-
-  
-  //TODO....
-  
 //#endregion
+
+ //#region ----- ViewChild Input Output ---------
+  //[static false servirebbe a consentire un riferimento a appalunnoform anche se non è stato caricato ancora]
+    @ViewChild(PersonaFormComponent) personaFormComponent!        : PersonaFormComponent;
+    @ViewChild(AlunnoFormComponent) alunnoFormComponent!          : AlunnoFormComponent;
+    @ViewChild(UserFormComponent) userFormComponent!              : UserFormComponent;
+    @ViewChild(GenitoreFormComponent) genitoreFormComponent!      : GenitoreFormComponent;
+    @ViewChild(DocenteFormComponent) docenteFormComponent!        : DocenteFormComponent;
+    @ViewChild(NonDocenteFormComponent) nondocenteFormComponent!  : NonDocenteFormComponent;
+    @ViewChild(DirigenteFormComponent) dirigenteFormComponent!    : DirigenteFormComponent;
+
+ //#endregion
 
 //#region ----- Constructor --------------------
 
@@ -117,6 +115,7 @@ export class PersonaEditComponent implements OnInit {
               private svcGenitori:              GenitoriService,
               private svcDocenti:               DocentiService,
               private svcNonDocenti:            NonDocentiService,
+              private svcDirigenti:             DirigentiService,
 
               private svcTipiPersona:           TipiPersonaService,
 
@@ -147,10 +146,6 @@ export class PersonaEditComponent implements OnInit {
     //console.log ("persona-edit loadData");
     if (this.personaID && this.personaID + '' != "0") {
 
-      //interrogo ed aspetto per avere la lista dei tipi persona che mi serve nella loadPersona successiva
-      //await firstValueFrom(this.obsTipiPersona$.pipe(tap(lstTipiPersona=> this.lstTipiPersona = lstTipiPersona)));
-      //lstTipiPersona contiene ora un array con i vari tipi persona estratti dalla tabella tipipersona 
-
       await firstValueFrom(this.svcUser.getByPersonaID(this.personaID).pipe(tap(user=> {
         if (user) {
           this.userID = user.id; this.showUserForm = true;
@@ -166,23 +161,26 @@ export class PersonaEditComponent implements OnInit {
       .pipe( 
           tap(
             persona => {
-              //console.log("persona-edit loadData - persona", persona);
+              console.log("persona-edit loadData - persona", persona);
               this.personaID = persona.id
               this.persona = persona
               this._lstRoles = persona._LstRoles!;
 
               if (persona._LstRoles!.includes('Alunno')) { 
                 this.svcAlunni.getByPersona(this.persona.id).subscribe(alunno=>{this.alunnoID= alunno.id; this.showAlunnoForm = true; });
-              }//devo anche valorizzare alunnoID e passarlo a alunno form
+              }
               if (persona._LstRoles!.includes('Genitore')) {
                 this.svcGenitori.getByPersona(this.persona.id).subscribe(genitore=> {this.genitoreID= genitore.id; this.showGenitoreForm = true });
-              } //devo anche valorizzare genitoreID e passarlo a genitore form
+              } 
               if (persona._LstRoles!.includes('Docente')) {
                 this.svcDocenti.getByPersona(this.persona.id).subscribe(docente=> {this.docenteID= docente.id; this.showDocenteForm = true});
-              }  //devo anche valorizzare docenteID e passarlo a docente form
+              }  
               if (persona._LstRoles!.includes('NonDocente')) {
                 this.svcNonDocenti.getByPersona(this.persona.id).subscribe(nondocente=> {this.nondocenteID= nondocente.id; this.showNonDocenteForm = true});
-              }  //devo anche valorizzare docenteID e passarlo a docente form
+              }  
+              if (persona._LstRoles!.includes('Dirigente')) {
+               this.svcDirigenti.getByPersona(this.persona.id).subscribe(dirigente=> {this.dirigenteID= dirigente.id; this.showDirigenteForm = true});
+              }  
             }
           ),
           shareReplay(1)   //serve perchè la tap per qualche motivo veniva chiamata DUE volte e quindi popolava la multiple combo due volte!!!
@@ -200,7 +198,6 @@ export class PersonaEditComponent implements OnInit {
   {
     this.personaFormComponent.save().subscribe({
       next: persona=> {
-
 
         //console.log ("genitore-edit save() - subscribe...prima di genitoreFormComponent.save() e userFormComponent.save() ");
 
@@ -225,6 +222,11 @@ export class PersonaEditComponent implements OnInit {
           //console.log ("alunnoFormComponent.form.value", this.alunnoFormComponent.form.value);
           this.alunnoFormComponent.save();
         }
+        if (this.showDirigenteForm) {
+          if (this.dirigenteFormComponent.form.controls['personaID'].value == null) this.dirigenteFormComponent.form.controls['personaID'].setValue(persona.id);
+          //console.log ("dirigenteFormComponent.form.value", this.alunnoFormComponent.form.value);
+          this.dirigenteFormComponent.save();
+        }
         //quello che segue serve per la POST e non per la PUT
         if (this.showUserForm) {
           if (this.userFormComponent.form.controls['personaID'].value == null) this.userFormComponent.form.controls['personaID'].setValue(persona.id);
@@ -235,9 +237,7 @@ export class PersonaEditComponent implements OnInit {
           this.userFormComponent.save();
         }
 
-
         this._dialogRef.close();
-        //this.saveRoles();
 
         this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
       },
@@ -246,22 +246,295 @@ export class PersonaEditComponent implements OnInit {
   }
 
 
-  getCurrentForm(role:string): any {
-    switch (role) {
-      case "Alunno":
-        return this.alunnoFormComponent ? this.alunnoFormComponent.form : null;
-      case "Genitore":
-        return this.genitoreFormComponent ? this.genitoreFormComponent.form : null;
-      case "Docente":
-        return this.docenteFormComponent ? this.docenteFormComponent.form : null;
-      case "NonDocente":
-        return this.nondocenteFormComponent ? this.nondocenteFormComponent.form : null;
-      default:
-        return null;
-    }
+
+
+  delete()
+  {
+    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+      width: '320px',
+      data: {titolo: "ATTENZIONE", sottoTitolo: "Si conferma la cancellazione del record ?"}
+    });
+
+    dialogYesNo.afterClosed().subscribe( result => {
+      if(result){
+        if( this.persona._LstRoles!.length != 0) {
+          let lstRolesstr = this.persona._LstRoles!.join(', ');
+          this._dialog.open(DialogOkComponent, {
+            width: '320px',
+            data: {titolo: "ATTENZIONE!", sottoTitolo: "Questa persona non si può cancellare: <br>è "+ lstRolesstr}
+          });
+          return;
+        }
+        this.personaFormComponent.delete()
+        .subscribe( {
+          next: res=> { 
+            this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
+            this._dialogRef.close();
+          },
+          error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+        });
+      }
+    });
+  }
+//#endregion
+
+
+
+  
+//#region ----- AGGIUNTE ------------------------
+
+
+  aggiungiDerivato(Derivato: string, personaID: number) {
+    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+      width: '320px',
+      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>"+Derivato+"?"}
+    });
+    
+    dialogYesNo.afterClosed().subscribe( result => {
+    if(result){
+
+      switch (Derivato) {
+        // case 'Persona':
+        //   this.personaForm = true;
+        //   break;
+        case 'User':
+          this.showUserForm = true;
+          break;
+        case 'Alunno':
+          this.showAlunnoForm = true;
+          break;
+        case 'Genitore':
+          this.showGenitoreForm = true;
+          break;
+        case 'Docente':
+          this.showDocenteForm = true;
+          break;
+        case 'NonDocente':
+          this.showNonDocenteForm = true;
+          break;
+        case 'Dirigente':
+          this.showDirigenteForm = true;
+          break;
+        default:
+          console.warn('Unknown form type');
+      
+      }
+    }});
   }
 
-  saveRoles() {
+//#endregion
+
+//#region ----- RIMOZIONI ------------------------
+
+  rimuoviDerivato(Derivato: string, personaID: number) {
+    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+      width: '320px',
+      data: {titolo: "RIMOZIONE RUOLO", sottoTitolo: "Si conferma la cancellazione del ruolo di <br>"+Derivato+"? <br> Qualora possibile verrà cancellato ma solo in quanto "+Derivato+".<br>Resterà l'anagrafica della persona."}
+    });
+    
+    dialogYesNo.afterClosed().subscribe( result => {
+    if(result){
+
+      switch (Derivato) {
+        // case 'Persona':
+        //   this.personaForm = true;
+        //   break;
+        // case 'User':
+        //   this.userFormComponent.delete();  //DELICATISSIMO...forse meglio disabilitare per il momento
+        //   this.showUserForm = true;
+        //   break;
+        case 'Alunno':
+          this.alunnoFormComponent.delete();
+          this.showAlunnoForm = false;
+          break;
+        case 'Genitore':
+          this.genitoreFormComponent.delete();
+          this.showGenitoreForm = false;
+          break;
+        case 'Docente':
+          this.docenteFormComponent.delete();
+          this.showDocenteForm = false;
+          break;
+        case 'NonDocente':
+          this.nondocenteFormComponent.delete();
+          this.showNonDocenteForm = false;
+          break;
+        case 'Dirigente':
+          this.dirigenteFormComponent.delete();
+          this.showDirigenteForm = false;
+          break;
+        default:
+          console.warn('valore Derivato sconosciuto');
+      
+      }
+    }});
+  }
+
+
+
+//#endregion
+
+//#region ----- DISABLEDSAVE ------------------------
+
+  formValidEmitted(Derivato: string, isValid: boolean) {
+
+    switch (Derivato) {
+      case 'Persona':
+        this.personaFormisValid = isValid;
+        break;
+      case 'User':
+        this.userFormisValid = isValid;
+        break;
+      case 'Alunno':
+        this.alunnoFormisValid = isValid;
+        break;
+      case 'Genitore':
+        this.genitoreFormisValid = isValid;
+        break;
+      case 'Docente':
+        this.docenteFormisValid = isValid;
+        break;
+      case 'NonDocente':
+        this.nonDocenteFormisValid = isValid;
+        break;
+      case 'Dirigente':
+        this.dirigenteFormisValid = isValid;
+        break;
+      default:
+        console.warn('Unknown form type');
+    }
+
+    this.disabledSaveGetter();
+  }
+
+  disabledSaveGetter() {
+    let personaFormValid = this.personaFormisValid ?? true;
+    let alunnoFormValid = this.alunnoFormisValid ?? true;
+    let genitoreFormValid = this.genitoreFormisValid ?? true;
+    let docenteFormValid = this.docenteFormisValid ?? true;
+    let nonDocenteFormValid = this.nonDocenteFormisValid ?? true;
+    let dirigenteFormValid = this.dirigenteFormisValid ?? true;
+
+                        setTimeout(() => {  //BRUTTO MA EFFICACE X CONTRASTARE L'EXPRESSIONCHANGEDAFTERITWASCHECKED
+                          this.disabledSave = !personaFormValid || 
+                          !alunnoFormValid || 
+                          !genitoreFormValid || 
+                          !docenteFormValid || 
+                          !nonDocenteFormValid || 
+                          !dirigenteFormValid;
+                      }, 0);
+
+    console.log("Valore di disabledSave aggiornato:", this.disabledSave);
+
+    console.log ("*******persona-edit - disableSave", this.disabledSave);
+    console.log ("personaFormValid", personaFormValid);
+    console.log ("alunnoFormValid", alunnoFormValid);
+    console.log ("genitoreFormValid", genitoreFormValid);
+    console.log ("docenteFormValid", docenteFormValid);
+    console.log ("nondocenteFormValid", nonDocenteFormValid);
+    console.log ("dirigenteFormValid", dirigenteFormValid);
+  }
+}
+
+//#endregion
+
+
+  // getCurrentForm(role:string): any {
+  //   switch (role) {
+  //     case "Alunno":
+  //       return this.alunnoFormComponent ? this.alunnoFormComponent.form : null;
+  //     case "Genitore":
+  //       return this.genitoreFormComponent ? this.genitoreFormComponent.form : null;
+  //     case "Docente":
+  //       return this.docenteFormComponent ? this.docenteFormComponent.form : null;
+  //     case "NonDocente":
+  //       return this.nondocenteFormComponent ? this.nondocenteFormComponent.form : null;
+  //     case "Dirigente":
+  //       return this.dirigenteFormComponent ? this.dirigenteFormComponent.form : null;
+  //     default:
+  //       return null;
+  //   }
+  // }
+
+
+
+//#region ----- NON USATI -------------------
+
+  // onResize(event: any) {
+  //   this.breakpoint = (event.target.innerWidth <= 800) ? 1 : 4;
+  //   this.breakpoint2 = (event.target.innerWidth <= 800) ? 2 : 4;
+  // }
+
+
+
+  // formPersonaChangedRolesEmitted () {
+  //   console.log("passo di qua");
+  //   //in questo modo quando si cambia il ruolo viene emesso un emit e si impostano i valori a true o false
+  //   //ma se sono in edit di una persona??????questo va bene se faccio un nuovo alunno o nuovo genitore!
+  //   if (this.genitoreFormComponent) this.genitoreFormIsValid = this.genitoreFormComponent.form.valid;
+  //   if (this.alunnoFormComponent) this.alunnoFormIsValid = this.alunnoFormComponent.form.valid;
+  // }
+
+  // updateDisableSave () {
+  //   this.tmpN++;
+  //   console.log (this.tmpN, "updateDisableSave");
+  // }
+
+//#endregion
+
+
+
+// refreshSaveDisableOLD(){
+//   //è stato emesso il refreshSaveDisable in seguito a modifica di uno dei form
+//   //questa routine aggiorna la disable del pulsante save
+//   //console.log("persona-edit - refreshSaveDisable");
+//   let personaFormValid = true;
+//   let alunnoFormValid = true;
+//   let genitoreFormValid = true;
+//   let docenteFormValid = true;
+//   let nonDocenteFormValid = true;
+//   let dirigenteFormValid = true;
+
+//   //if (this.personaFormComponent) 
+//     this.personaFormisValid!=undefined?personaFormValid = this.personaFormisValid : null;
+
+//   //if (this.showAlunnoForm && this.alunnoFormComponent) 
+//   this.alunnoFormisValid!=undefined?alunnoFormValid = this.alunnoFormisValid : null
+
+//   //if (this.showGenitoreForm && this.genitoreFormComponent) 
+//   this.genitoreFormisValid!=undefined?genitoreFormValid = this.genitoreFormisValid : null
+  
+//   //if (this.showDocenteForm && this.docenteFormComponent) 
+//   this.docenteFormisValid!=undefined?docenteFormValid = this.docenteFormisValid : null
+  
+//   //if (this.showNonDocenteForm && this.nondocenteFormComponent)
+//   this.nonDocenteFormisValid!=undefined?nonDocenteFormValid = this.nonDocenteFormisValid : null
+
+
+//   //if (this.showDirigenteForm && this.dirigenteFormComponent) 
+//   this.dirigenteFormisValid!=undefined?dirigenteFormValid = this.dirigenteFormisValid : null
+
+//   // this.disabledSave = !personaFormValid || !alunnoFormValid || !genitoreFormValid || !docenteFormValid || !nonDocenteFormValid|| !dirigenteFormValid;
+
+//   setTimeout(() => {
+//     console.log("Valore di disabledSave aggiornato:");
+//     this.disabledSave = !personaFormValid || !alunnoFormValid || !genitoreFormValid || !docenteFormValid || !nonDocenteFormValid|| !dirigenteFormValid;
+//   }, 0);
+
+//   console.log ("*******persona-edit - disableSave", this.disabledSave);
+//   console.log ("personaFormValid", personaFormValid);
+//   console.log ("alunnoFormValid", alunnoFormValid);
+//   console.log ("genitoreFormValid", genitoreFormValid);
+//   console.log ("docenteFormValid", docenteFormValid);
+//   console.log ("nondocenteFormValid", nonDocenteFormValid);
+//   console.log ("dirigenteFormValid", dirigenteFormValid);
+// }
+// }
+
+
+
+
+  // saveRoles() {
     //parallelamente alla save (put o post che sia) della persona bisogna occuparsi di inserire i diversi ruoli
     //ALU_Alunno
     //ALU_Genitore
@@ -373,211 +646,4 @@ export class PersonaEditComponent implements OnInit {
     //   }
     // })
     
-  }
-
-  delete()
-  {
-    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
-      width: '320px',
-      data: {titolo: "ATTENZIONE", sottoTitolo: "Si conferma la cancellazione del record ?"}
-    });
-
-    dialogYesNo.afterClosed().subscribe( result => {
-      if(result){
-        if( this.persona._LstRoles!.length != 0) {
-          let lstRolesstr = this.persona._LstRoles!.join(', ');
-          this._dialog.open(DialogOkComponent, {
-            width: '320px',
-            data: {titolo: "ATTENZIONE!", sottoTitolo: "Questa persona non si può cancellare: <br>è "+ lstRolesstr}
-          });
-          return;
-        }
-        this.personaFormComponent.delete()
-        .subscribe( {
-          next: res=> { 
-            this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
-            this._dialogRef.close();
-          },
-          error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
-        });
-      }
-    });
-  }
-//#endregion
-
-
-  // changeOptionRoles (event: MatOptionSelectionChange){
-
-  //   //se si vuole impedire il deflaggamento
-  //   // if (!event.source.selected) {
-  //   //   event.source.select();
-  //   //   return;
-  //   // }
-
-
-
-  //   if (event.source.viewValue == 'Alunno') 
-  //     this.showAlunnoForm = event.source.selected; 
-
-  //   if (event.source.viewValue == 'Genitore')
-  //     this.showGenitoreForm = event.source.selected; 
-
-  //   if (event.source.viewValue == 'Docente')
-  //     this.showDocenteForm = event.source.selected; 
-
-  //   //TODO ...-
-
-  //   setTimeout(() => {
-  //     this.refreshSaveDisable();
-  //   }, 10); //devo ritardare altrimenti non fa a tempo a essere attivo il form caricato
   // }
-
-  // ngDoCheck() {
-  //   this.refreshSaveDisable(); //questo fa schifo perchè viene chiamato ad ogni piè sospinto!
-  // }
-
-  refreshSaveDisable(){
-    //è stato emesso il refreshSaveDisable in seguito a modifica di uno dei form
-    //questa routine aggiorna la disable del pulsante save
-    let personaFormValid = true;
-    let alunnoFormValid = true;
-    let genitoreFormValid = true;
-    let docenteFormValid = true;
-    let nondocenteFormValid = true;
-
-    if (this.personaFormComponent) 
-      personaFormValid = this.personaFormComponent.form.valid;
-
-    if (this.showAlunnoForm && this.alunnoFormComponent && this.alunnoFormComponent.form) 
-      alunnoFormValid = this.alunnoFormComponent.form.valid;
-
-    if (this.showGenitoreForm && this.genitoreFormComponent && this.genitoreFormComponent.form) 
-      genitoreFormValid = this.genitoreFormComponent.form.valid;
-    
-    if (this.showDocenteForm && this.docenteFormComponent && this.docenteFormComponent.form) 
-      docenteFormValid = this.docenteFormComponent.form.valid;
-    
-    if (this.showNonDocenteForm && this.nondocenteFormComponent && this.nondocenteFormComponent.form) 
-      docenteFormValid = this.docenteFormComponent.form.valid;
-
-    this.disabledSave = !personaFormValid || !alunnoFormValid || !genitoreFormValid || !docenteFormValid || !nondocenteFormValid;
-  }
-
-  deletedRole(who: string) {
-    //è stato emesso il deletedRole in seguito a pressione del cestino
-    //questa routine va anche aggiornare la combo così che ci sia coerenza
-    
-    const lstRolesCombo = this.form.get('_lstRoles');                                                     //lstRolesCombo è la combo
-    if (lstRolesCombo) {
-      this.obsTipiPersona$.pipe(take(1)).subscribe(options => {
-        const roleToDeflag = options.find(option => option.descrizione === who);                          //estraggo l'oggetto del ruolo da deflaggare
-        if (roleToDeflag) {
-          let selectedRolesArray = lstRolesCombo.value as number[];                                       //carico l'array delle selezioni corrente
-          const indexToRemove = selectedRolesArray.findIndex(roleId => roleId == roleToDeflag.id);        //Trovo nell'array della selezione corrente l'indice di quello da deflaggare
-          if (indexToRemove !== -1) {
-            selectedRolesArray.splice(indexToRemove, 1);                                                  //rimuovo dall'array delle selezioni correnti quello da deflaggare
-            lstRolesCombo.setValue(selectedRolesArray);                                                   //e ripasso l'array alla combo
-          }
-        }
-      });
-    }
-    this.refreshSaveDisable();                  //va infine aggiornata l'abilitazione della save
-  }
-
-  aggiungiDirigente(personaID: number) {
-
-  }
-
-  aggiungiNonDocente(personaID:number){
-    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
-      width: '320px',
-      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Non Docente?"}
-    });
-    
-    dialogYesNo.afterClosed().subscribe( result => {
-    if(result){
-      this.showNonDocenteForm = true;
-    }});
-  }
-
-  aggiungiGenitore(personaID:number){
-    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
-      width: '320px',
-      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Genitore?"}
-    });
-    
-    dialogYesNo.afterClosed().subscribe( result => {
-    if(result){
-      this.showGenitoreForm = true;
-    }});
-  }
-
-  aggiungiDocente(personaID:number){
-    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
-      width: '320px',
-      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Docente?"}
-    });
-    
-    dialogYesNo.afterClosed().subscribe( result => {
-    if(result){
-      this.showDocenteForm = true;
-    }});
-  }
-
-  aggiungiAlunno(personaID:number){
-    const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
-      width: '320px',
-      data: {titolo: "AGGIUNTA RUOLO", sottoTitolo: "Si conferma l'aggiunta del ruolo di <br>Alunno?"}
-    });
-    
-    dialogYesNo.afterClosed().subscribe( result => {
-    if(result){
-      this.showAlunnoForm = true;
-    }});
-  }
-
-  aggiungiUser(personaID:number){
-    this.showUserForm = true;
-  }
-
-
-  formPersonaValidEmitted(isValid: boolean) {
-    this.personaFormisValid = isValid;
-  }
-
-  formGenitoreValidEmitted(isValid: boolean) {
-    this.genitoreFormisValid = isValid;
-  }
-
-  formUserValidEmitted(isValid: boolean) {
-    this.userFormisValid = isValid;
-  }
-
-
-}
-
-
-
-//#region ----- NON USATI -------------------
-
-  // onResize(event: any) {
-  //   this.breakpoint = (event.target.innerWidth <= 800) ? 1 : 4;
-  //   this.breakpoint2 = (event.target.innerWidth <= 800) ? 2 : 4;
-  // }
-
-
-
-  // formPersonaChangedRolesEmitted () {
-  //   console.log("passo di qua");
-  //   //in questo modo quando si cambia il ruolo viene emesso un emit e si impostano i valori a true o false
-  //   //ma se sono in edit di una persona??????questo va bene se faccio un nuovo alunno o nuovo genitore!
-  //   if (this.genitoreFormComponent) this.genitoreFormIsValid = this.genitoreFormComponent.form.valid;
-  //   if (this.alunnoFormComponent) this.alunnoFormIsValid = this.alunnoFormComponent.form.valid;
-  // }
-
-  // updateDisableSave () {
-  //   this.tmpN++;
-  //   console.log (this.tmpN, "updateDisableSave");
-  // }
-
-//#endregion

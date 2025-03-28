@@ -141,7 +141,7 @@ export class PersonaFormComponent implements OnInit, OnChanges {
         // });
 
 
-        this.formChanged.emit();
+        //this.formChanged.emit();
         this.formValid.emit(this.form.valid)
       }
     )
@@ -149,8 +149,9 @@ export class PersonaFormComponent implements OnInit, OnChanges {
 
   ngOnChanges () {
     this.loadData();
-
+    this.formValid.emit(this.form.valid)
   }
+  
   loadData(){
 
     // this.breakpoint = (window.innerWidth <= 800) ? 1 : 3;

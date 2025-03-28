@@ -1,5 +1,3 @@
-// TEST GIT HUB ANDREA
-
 import { NgModule }                                from '@angular/core';
 import { DatePipe }                                from '@angular/common';
 import { BrowserModule }                           from '@angular/platform-browser';
@@ -78,6 +76,7 @@ import { IscrizioniListComponent }                 from './_components/iscrizion
 import { IscrizioniFilterComponent }               from './_components/iscrizioni/iscrizioni-filter/iscrizioni-filter.component';
 import { IscrizioniClasseCalcoloComponent }        from './_components/iscrizioni/iscrizioni-classe-calcolo/iscrizioni-classe-calcolo.component';
 import { IscrizioniAlunnoListComponent }           from './_components/iscrizioni/iscrizioni-alunno-list/iscrizioni-alunno-list.component';
+import { IscrizioneRisposteComponent }             from './_components/procedura-iscrizione/iscrizione-risposte/iscrizione-risposte.component';
 
 //Docenze
 import { DocenzeListComponent }                    from './_components/docenze/docenze-list/docenze-list.component';
@@ -222,33 +221,44 @@ import { PagelleClasseEditComponent }              from './_components/pagelle/p
 import { ImgUploadsComponent }                     from './_components/impostazioni/imguploads/imguploads.component';
 import { HttpErrorInterceptor }                    from './_user/auth/httperror.interceptor';
 
+//Domande
 import { DomandeListComponent }                    from './_components/impostazioni/domande/domande-list/domande-list.component';
 import { DomandePageComponent }                    from './_components/impostazioni/domande/domande-page/domande-page.component';
 import { DomandaEditComponent }                    from './_components/impostazioni/domande/domanda-edit/domanda-edit.component';
-import { IscrizioneRisposteComponent }             from './_components/procedura-iscrizione/iscrizione-risposte/iscrizione-risposte.component';
-import { RisorsePageComponent }                    from './_components/impostazioni/risorse/risorse-page/risorse-page.component';
-import { RisorseListComponent }                    from './_components/impostazioni/risorse/risorse-list/risorse-list.component';
-import { RisorsaEditComponent }                    from './_components/impostazioni/risorse/risorsa-edit/risorsa-edit.component';
+import { DomandeFilterComponent }                  from './_components/impostazioni/domande/domande-filter/domande-filter.component';
+
+//Soci
 import { AssociazioneComponent }                   from './_components/procedura-iscrizione/associazione/associazione.component';
 import { SociListComponent }                       from './_components/soci/soci-list/soci-list.component';
 import { SocioEditComponent }                      from './_components/soci/socio-edit/socio-edit.component';
 import { SociPageComponent }                       from './_components/soci/soci-page/soci-page.component';
 import { SociFilterComponent }                     from './_components/soci/soci-filter/soci-filter.component';
 import { SocioFormComponent }                      from './_components/soci/socio-form/socio-form.component';
+
+//Parametri
 import { ParametriPageComponent }                  from './_components/impostazioni/parametri/parametri-page/parametri-page.component';
 import { ParametriListComponent }                  from './_components/impostazioni/parametri/parametri-list/parametri-list.component';
 import { ParametriFilterComponent }                from './_components/impostazioni/parametri/parametri-filter/parametri-filter.component';
 import { ParametroEditComponent }                  from './_components/impostazioni/parametri/parametro-edit/parametro-edit.component';
+
+//Risorse
 import { RisorsaCSAEditComponent }                 from './_components/impostazioni/risorse-csa/risorsa-csa-edit/risorsa-csa-edit.component';
+import { RisorseCSAListEditComponent }             from './_components/impostazioni/risorse-csa/risorse-csa-list-edit/risorse-csa-list-edit.component';
+
+import { RisorsePageComponent }                    from './_components/impostazioni/risorse/risorse-page/risorse-page.component';
+import { RisorseListComponent }                    from './_components/impostazioni/risorse/risorse-list/risorse-list.component';
+import { RisorsaEditComponent }                    from './_components/impostazioni/risorse/risorsa-edit/risorsa-edit.component';
+
+//AnnoScolastico
 import { AnnoScolasticoPageComponent }             from './_components/anni-scolastici/annoscolastico-page/annoscolastico-page.component';
 import { AnniScolasticiListComponent }             from './_components/anni-scolastici/anniscolastici-list/anniscolastici-list.component';
 import { AnnoscolasticoEditComponent }             from './_components/anni-scolastici/annoscolastico-edit/annoscolastico-edit.component';
+
+
 import { CompitiPageComponent }                    from './_components/lezioni/compiti-page/compiti-page.component';
 import { VotiInterrPageComponent }                 from './_components/lezioni/voti-interr-page/voti-interr-page.component';
-import { DomandeFilterComponent }                  from './_components/impostazioni/domande/domande-filter/domande-filter.component';
 import { DocumentiAlunnoListComponent }            from './_components/pagelle/documenti-alunno-list/documenti-alunno-list.component';
 import { ClassiAnniMaterieFilterComponent }        from './_components/classi-anni-materie/classi-anni-materie-filter/classi-anni-materie-filter.component';
-import { RisorseCSAListEditComponent }             from './_components/impostazioni/risorse-csa/risorse-csa-list-edit/risorse-csa-list-edit.component';
 
 //Docenti
 import { DocentiPageComponent }                    from './_components/docenti/docenti-page/docenti-page.component';
@@ -258,6 +268,9 @@ import { DocentiFilterComponent }                  from './_components/docenti/d
 
 //NonDocenti
 import { NonDocenteFormComponent }                 from './_components/nondocenti/nondocente-form/nondocente-form.component';
+
+//Dirigenti
+import { DirigenteFormComponent }                  from './_components/dirigenti/dirigente-form/dirigente-form.component';
 
 
 // FullCalendarModule.registerPlugins([ // register FullCalendar plugins
@@ -311,6 +324,8 @@ import { NonDocenteFormComponent }                 from './_components/nondocent
 
     NonDocenteFormComponent,
 
+    DirigenteFormComponent,
+    
     ClassiPageComponent,
     ClasseSezioneAnnoEditComponent,
     ClassiSezioniAnniFilterComponent,

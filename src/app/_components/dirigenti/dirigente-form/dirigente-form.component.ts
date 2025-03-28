@@ -2,33 +2,32 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output }       from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators }                from '@angular/forms';
 import { MatDialog }                                                       from '@angular/material/dialog';
-import { Observable, of, tap }                                             from 'rxjs';
+import { Observable, tap }                                                 from 'rxjs';
 import { MatSnackBar }                                                     from '@angular/material/snack-bar';
 
 //components
 import { SnackbarComponent }                                               from '../../utilities/snackbar/snackbar.component';
 
-
 //services
-import { NonDocentiService }                                                  from '../nondocenti.service';
+import { DirigentiService }                                                from '../dirigenti.service';
 import { LoadingService }                                                  from '../../utilities/loading/loading.service';
 
 //models
-import { PER_NonDocente }                                                     from 'src/app/_models/PER_NonDocente';
+import { PER_Dirigente }                                                   from 'src/app/_models/PER_Dirigente';
 
 
 //#endregion
 
 @Component({
-  selector: 'app-nondocente-form',
-  templateUrl: './nondocente-form.component.html',
-  styleUrls:    ['./../nondocenti.css']
+  selector: 'app-dirigente-form',
+  templateUrl: './dirigente-form.component.html',
+  styleUrls:    ['./../dirigenti.css']
 })
 
-export class NonDocenteFormComponent implements OnInit, OnChanges {
+export class DirigenteFormComponent implements OnInit, OnChanges {
 
 //#region ----- Variabili ----------------------
-  nondocente$!:                                    Observable<PER_NonDocente>;
+  dirigente$!:                                    Observable<PER_Dirigente>;
   form! :                                       UntypedFormGroup;
   
   emptyForm :                                   boolean = false;
@@ -36,7 +35,7 @@ export class NonDocenteFormComponent implements OnInit, OnChanges {
 //#endregion
 
 //#region ----- ViewChild Input Output -------
-  @Input() nondocenteID!:                           number;
+  @Input() dirigenteID!:                           number;
   @Output('formValid') formValid = new EventEmitter<boolean>();
   @Output('formChanged') formChanged = new EventEmitter();
   @Output('deletedRole') deletedRole = new EventEmitter<string>();
@@ -48,7 +47,7 @@ export class NonDocenteFormComponent implements OnInit, OnChanges {
   constructor(
     public _dialog               : MatDialog,
     private fb                   : UntypedFormBuilder,
-    private svcNonDocenti           : NonDocentiService,
+    private svcDirigenti         : DirigentiService,
     private _loadingService      : LoadingService,
     private _snackBar            : MatSnackBar,
               
@@ -85,16 +84,16 @@ export class NonDocenteFormComponent implements OnInit, OnChanges {
 
   loadData(){
 
-    if (this.nondocenteID && this.nondocenteID + '' != "0") {
-      const obsNonDocente$: Observable<PER_NonDocente> = this.svcNonDocenti.get(this.nondocenteID);
-      const loadNonDocente$ = this._loadingService.showLoaderUntilCompleted(obsNonDocente$);
+    if (this.dirigenteID && this.dirigenteID + '' != "0") {
+      const obsDirigente$: Observable<PER_Dirigente> = this.svcDirigenti.get(this.dirigenteID);
+      const loadDirigente$ = this._loadingService.showLoaderUntilCompleted(obsDirigente$);
 
-      this.nondocente$ = loadNonDocente$
+      this.dirigente$ = loadDirigente$
       .pipe( 
           tap(
-            nondocente => 
-              {this.form.patchValue(nondocente)
-                console.log (nondocente);
+            dirigente => 
+              {this.form.patchValue(dirigente)
+                console.log (dirigente);
               }
           )
       );
@@ -104,27 +103,27 @@ export class NonDocenteFormComponent implements OnInit, OnChanges {
   }
 
   save() {
-    if (this.nondocenteID == null || this.nondocenteID == 0) 
-      this.svcNonDocenti.post(this.form.value).subscribe();
+    if (this.dirigenteID == null || this.dirigenteID == 0) 
+      this.svcDirigenti.post(this.form.value).subscribe();
     else 
-      this.svcNonDocenti.put(this.form.value).subscribe();
+      this.svcDirigenti.put(this.form.value).subscribe();
   }
   
   delete(){
-    if (this.nondocenteID != null) 
-      this.svcNonDocenti.delete(this.nondocenteID)
+    if (this.dirigenteID != null) 
+      this.svcDirigenti.delete(this.dirigenteID)
       .subscribe({
         next: res=>{
-          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Ruolo Non Docente cancellato', panelClass: ['red-snackbar']});
+          this._snackBar.openFromComponent(SnackbarComponent,{data: 'Ruolo Dirigente cancellato', panelClass: ['red-snackbar']});
         },
         error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
       });
-}
+  }
 
 
   deleteRole() {
     this.delete();
-    this.deletedRole.emit('NonDocente')
+    this.deletedRole.emit('Dirigente')
   }
 //#endregion
 }

@@ -61,28 +61,38 @@
 /* fine custom panel */
 
 .chip-genitore {
-    background-color: #2070bb !important; /* Arancione */
+    background-color: #024259!important; /* Arancione */
     --mdc-chip-label-text-color: white;
 
 }
 
 .chip-alunno {
-    background-color: #ff991d !important; /* Blu */
+    background-color: #2a75bf !important; /* Blu */
     --mdc-chip-label-text-color: white;
 }
 
 .chip-docente {
-    background-color: #12b618 !important; /* Verde */
+    background-color: #6cdacf !important; /* Verde */
+    --mdc-chip-label-text-color: white;
+}
+
+.chip-nondocente {
+    background-color: #6cda89 !important; /* Verde */
     --mdc-chip-label-text-color: white;
 }
 
 .chip-docentecoord {
-    background-color: #d84646 !important; /* Verde */
+    background-color: #ff7700 !important; /* Verde */
     --mdc-chip-label-text-color: white;
 }
 
-.chip-ITManager {
-    background-color: #e64242 !important; /* Verde */
+.chip-itmanager {
+    background-color: #e43e02 !important; /* Verde */
+    --mdc-chip-label-text-color: white;
+}
+
+.chip-dirigente {
+    background-color: #a50000 !important; /* Verde */
     --mdc-chip-label-text-color: white;
 }
 
@@ -92,4 +102,16 @@
 
 }
 
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.icon-container .custom-panel-icon, 
+.icon-container .right {
+    margin-left: auto;
+}
 
