@@ -2181,11 +2181,11 @@ max-height: calc(100% - 20px) !important;
 }
 
 .colore-alunno {
-    background-color: #2a75bf !important; /* Blu */
+    background-color: #4397eb !important; /* Blu */
 }
 
 .colore-docente {
-    background-color: #6cdacf !important; /* Verde */
+    background-color: #46c4b7 !important; /* Verde */
 }
 
 .colore-nondocente {
@@ -2197,11 +2197,11 @@ max-height: calc(100% - 20px) !important;
 }
 
 .colore-itmanager {
-    background-color: #e43e02 !important; /* Verde */
+    background-color: #f04b0f !important; /* Verde */
 }
 
 .colore-dirigente {
-    background-color: #a50000 !important; /* Verde */
+    background-color: #8b0202 !important; /* Verde */
 }
 
 
