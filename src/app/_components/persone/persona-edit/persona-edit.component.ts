@@ -303,17 +303,6 @@ export class PersonaEditComponent implements OnInit {
           break;
         case 'Genitore':
           this.showGenitoreForm = true;
-
-          console.log("MERDA");
-
-          console.log("this.genitorePanel ", this.genitorePanel);
-          console.log("Expanded? ", this.genitorePanel.expanded);
-          
-          this.genitorePanel.open();
-          
-          console.log("MERDA APERTA ");
-
-
           break;
         case 'Docente':
           this.showDocenteForm = true;

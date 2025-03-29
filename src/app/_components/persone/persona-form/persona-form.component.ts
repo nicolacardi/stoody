@@ -63,6 +63,7 @@ export class PersonaFormComponent implements OnInit, OnChanges {
   alunnoID = 0;
   
   showGenitoreForm:boolean  = false;
+  showDocenteForm:boolean  = false;
   showAlunnoForm:boolean = false;
 
   //TODO.....
@@ -338,11 +339,7 @@ export class PersonaFormComponent implements OnInit, OnChanges {
         this.form.controls['dtNascita'].setValue(Utility.formatDate(this.form.controls['dtNascita'].value, FormatoData.yyyy_mm_dd));
         return this.svcPersone.put(this.form.value);
     }
-}
-
-
-           
-
+  }
 
   delete() :Observable<any>{
 
