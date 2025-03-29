@@ -6,6 +6,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }   from '@angular/material/di
 import { MatSnackBar }                                from '@angular/material/snack-bar';
 import { Observable, firstValueFrom }                 from 'rxjs';
 import { shareReplay, tap }                           from 'rxjs/operators';
+import { MatExpansionPanel }                          from '@angular/material/expansion';
 
 //components
 import { PersonaFormComponent }                       from '../persona-form/persona-form.component';
@@ -37,7 +38,6 @@ import { UserService }                                from 'src/app/_user/user.s
 import { PER_Persona, PER_TipoPersona }               from 'src/app/_models/PER_Persone';
 import { User }                                       from 'src/app/_user/Users';
 import { DirigentiService }                           from '../../dirigenti/dirigenti.service';
-import { MatExpansionPanel } from '@angular/material/expansion';
 
 
 
@@ -102,8 +102,7 @@ export class PersonaEditComponent implements OnInit {
 
 
     @ViewChild('genitorePanel') genitorePanel!: MatExpansionPanel;
-
- //#endregion
+    //#endregion
 
 //#region ----- Constructor --------------------
 
