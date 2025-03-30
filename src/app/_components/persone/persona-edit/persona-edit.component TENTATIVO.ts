@@ -1,7 +1,7 @@
 //#region ----- IMPORTS ------------------------
 
 import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild }       from '@angular/core';
-import { Form, UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
+import { Form, FormGroup, UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }   from '@angular/material/dialog';
 import { MatSnackBar }                                from '@angular/material/snack-bar';
 import { Observable, firstValueFrom }                 from 'rxjs';
@@ -40,6 +40,14 @@ import { User }                                       from 'src/app/_user/Users'
 import { DirigentiService }                           from '../../dirigenti/dirigenti.service';
 
 
+
+export interface Variabili {
+  showForm: { get: () => boolean; set: (value: boolean) => void };
+  isValid: { get: () => boolean; set: (value: boolean) => void };
+  formComponent: { get: () => Component; set: (value: Component) => void };
+  panel: { get: () => MatExpansionPanel; set: (value: MatExpansionPanel) => void };
+  id: { get: () => number; set: (value: number) => void };
+}
 
 //#endregion
 
@@ -87,7 +95,7 @@ export class PersonaEditComponent implements OnInit {
   emptyForm                   : boolean = false;
   disabledSave                : boolean = false;
   ckMostraAggiunte            : boolean = false;
-
+  ruoli = ['Alunno', 'Genitore', 'Docente', 'NonDocente', 'Dirigente'];
 
 
   
@@ -467,42 +475,110 @@ export class PersonaEditComponent implements OnInit {
     // console.log ("dirigenteFormValid", dirigenteFormValid);
   }
 
-  changedCkAttivoPersona (ckAttivoPersona: boolean) {
-    console.log (" persona-edit - changedckAttivoPersona - arrivato ckAttivoPersona", ckAttivoPersona);
+  // changedCkAttivoPersona (ckAttivoPersona: boolean) {
+  //   console.log (" persona-edit - changedckAttivoPersona - arrivato ckAttivoPersona", ckAttivoPersona);
+  //   if (!ckAttivoPersona) {
+  //     this._dialog.open(DialogOkComponent, {
+  //       width: '320px',
+  //       data: { titolo: "ATTENZIONE!", sottoTitolo: "Il flag 'attivo' di tutti i ruoli <br>di questa persona<br>verrà tolto" }
+  //     });
+  //     //devo disabilitare il ckjAttivo di tutti i form Derivati
+  //     if (this.alunnoFormComponent) this.alunnoFormComponent.form.controls['ckAttivo'].setValue (false);
+  //     if (this.genitoreFormComponent) this.genitoreFormComponent.form.controls['ckAttivo'].setValue (false);
+  //     if (this.docenteFormComponent) this.docenteFormComponent.form.controls['ckAttivo'].setValue (false);
+  //     if (this.nondocenteFormComponent) this.nondocenteFormComponent.form.controls['ckAttivo'].setValue (false);
+  //     if (this.dirigenteFormComponent) this.dirigenteFormComponent.form.controls['ckAttivo'].setValue (false);      
+
+  //   }
+  // }
+
+
+  changedCkAttivoPersona(ckAttivoPersona: boolean) {
+    console.log("persona-edit - changedckAttivoPersona - arrivato ckAttivoPersona", ckAttivoPersona);
+    
     if (!ckAttivoPersona) {
       this._dialog.open(DialogOkComponent, {
         width: '320px',
         data: { titolo: "ATTENZIONE!", sottoTitolo: "Il flag 'attivo' di tutti i ruoli <br>di questa persona<br>verrà tolto" }
       });
-      //devo disabilitare il ckjAttivo di tutti i form Derivati
-      if (this.alunnoFormComponent) this.alunnoFormComponent.form.controls['ckAttivo'].setValue (false);
-      if (this.genitoreFormComponent) this.genitoreFormComponent.form.controls['ckAttivo'].setValue (false);
-      if (this.docenteFormComponent) this.docenteFormComponent.form.controls['ckAttivo'].setValue (false);
-      if (this.nondocenteFormComponent) this.nondocenteFormComponent.form.controls['ckAttivo'].setValue (false);
-      if (this.dirigenteFormComponent) this.dirigenteFormComponent.form.controls['ckAttivo'].setValue (false);      
-
+  
+      // Cicla su tutti i ruoli per disabilitare 'ckAttivo' in ogni form
+      this.ruoli.forEach(ruolo => {
+        const variabili = this.getVariabili(ruolo);
+        if (variabili && variabili.formComponent) {
+          variabili.formComponent.form.controls['ckAttivo'].setValue(false);
+        }
+      });
     }
   }
 
+
+
   mostraAggiunte() {
+
     this.ckMostraAggiunte = !this.ckMostraAggiunte;
+
     if (!this.ckMostraAggiunte) {
-      if (!this.alunnoID) {this.alunnoFormisValid = true; this.showAlunnoForm = false;}
-      if (!this.genitoreID) {this.genitoreFormisValid = true; this.showGenitoreForm = false;}
-      if (!this.docenteID) {this.docenteFormisValid = true; this.showDocenteForm = false;}
-      if (!this.nondocenteID) {this.nonDocenteFormisValid = true; this.showNonDocenteForm = false;}
-      if (!this.dirigenteID) {this.dirigenteFormisValid = true; this.showDirigenteForm = false}
+      this.ruoli.forEach(ruolo => {
+        const variabili = this.getVariabili(ruolo);
+        if (variabili && !variabili.id.get()) {
+          variabili.isValid.set(true);
+          variabili.showForm.set(false);
+        }
+      });
+  
       this.disabledSaveGetter();
     }
   }
 
-
-
-
   
-
-
-
+    // Funzione getVariabili
+    getVariabili(tipo: string): Variabili | null {
+      const variabili: Record<'Alunno' | 'Genitore' | 'Docente' | 'NonDocente' | 'Dirigente', Variabili> = {
+        'Alunno': {
+          showForm: { get: () => this.showAlunnoForm, set: (value) => this.showAlunnoForm = value },
+          isValid: { get: () => this.alunnoFormisValid, set: (value) => this.alunnoFormisValid = value },
+          formComponent: { get: () => this.alunnoFormComponent, set: (value) => this.alunnoFormComponent = value },
+          panel: { get: () => this.alunnoPanel, set: (value) => this.alunnoPanel = value },
+          id: { get: () => this.alunnoID, set: (value) => this.alunnoID = value }
+        },
+        'Genitore': {
+          showForm: { get: () => this.showGenitoreForm, set: (value) => this.showGenitoreForm = value },
+          isValid: { get: () => this.genitoreFormisValid, set: (value) => this.genitoreFormisValid = value },
+          formComponent: { get: () => this.genitoreFormComponent, set: (value) => this.genitoreFormComponent = value },
+          panel: { get: () => this.genitorePanel, set: (value) => this.genitorePanel = value },
+          id: { get: () => this.genitoreID, set: (value) => this.genitoreID = value }
+        },
+        'Docente': {
+          showForm: { get: () => this.showDocenteForm, set: (value) => this.showDocenteForm = value },
+          isValid: { get: () => this.docenteFormisValid, set: (value) => this.docenteFormisValid = value },
+          formComponent: { get: () => this.docenteFormComponent, set: (value) => this.docenteFormComponent = value },
+          panel: { get: () => this.docentePanel, set: (value) => this.docentePanel = value },
+          id: { get: () => this.docenteID, set: (value) => this.docenteID = value }
+        },
+        'NonDocente': {
+          showForm: { get: () => this.showNonDocenteForm, set: (value) => this.showNonDocenteForm = value },
+          isValid: { get: () => this.nonDocenteFormisValid, set: (value) => this.nonDocenteFormisValid = value },
+          formComponent: { get: () => this.nondocenteFormComponent, set: (value) => this.nondocenteFormComponent = value },
+          panel: { get: () => this.nondocentePanel, set: (value) => this.nondocentePanel = value },
+          id: { get: () => this.nondocenteID, set: (value) => this.nondocenteID = value }
+        },
+        'Dirigente': {
+          showForm: { get: () => this.showDirigenteForm, set: (value) => this.showDirigenteForm = value },
+          isValid: { get: () => this.dirigenteFormisValid, set: (value) => this.dirigenteFormisValid = value },
+          formComponent: { get: () => this.dirigenteFormComponent, set: (value) => this.dirigenteFormComponent = value },
+          panel: { get: () => this.dirigentePanel, set: (value) => this.dirigentePanel = value },
+          id: { get: () => this.dirigenteID, set: (value) => this.dirigenteID = value }
+        }
+      };
+    
+      // Controlla se 'tipo' è un valore valido prima di restituire le variabili
+      if (variabili.hasOwnProperty(tipo)) {
+        return variabili[tipo as 'Alunno' | 'Genitore' | 'Docente' | 'NonDocente' | 'Dirigente'];
+      } else {
+        return null;  // Restituisce null se 'tipo' non è valido
+      }
+    }
     
   
   

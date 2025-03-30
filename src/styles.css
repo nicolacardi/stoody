@@ -1524,6 +1524,10 @@ in fase di creazione della Dialog addAlunno*/
     background-color: rgba(173, 173, 173, 0.142);
 }
 
+._red-background {
+    background-color: #ba1414 !important;
+}
+
 ._cell-align-top {
     vertical-align: top;
 }
