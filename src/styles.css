@@ -902,7 +902,7 @@ h3 { font-family: 'Titillium Web', sans-serif !important;
 
 /*#region ********** CURSOR ************/
 .pointer{
-    cursor:pointer;
+    cursor:pointer !important;
 }
 
 .defaultcursor{
@@ -966,6 +966,22 @@ h3 { font-family: 'Titillium Web', sans-serif !important;
     color: white !important;
     background-color: #b5b5b5 !important;
 }
+
+
+@keyframes fade {
+    0%, 100% { border: none!important; }
+    50% { border: 3px solid red !important; }
+  }
+  
+/* ._colore-animato {
+    animation: blink 2s infinite alternate !important;
+    width: 80px !important;
+  } */
+
+  ._colore-animato {
+    animation: fade 2s infinite alternate !important;
+    /* border: 3px red solid !important; */
+  }
 
 /* .mat-mdc-button:not(:disabled) {
     color: white !important;              
@@ -2181,31 +2197,47 @@ max-height: calc(100% - 20px) !important;
 }
 
 .colore-genitore {
-    background-color: #003e95!important; /* Arancione */
+    background-color: #bb0000!important; /* Arancione */
+}
+
+.colore-genitoreM {
+    background-color: #28a9d4!important; /* Arancione */
+}
+
+.colore-genitoreF {
+    background-color: #d55bbf!important; /* Arancione */
 }
 
 .colore-alunno {
-    background-color: #4397eb !important; /* Blu */
+    background-color: #ff7700 !important; /* Blu */
+}
+
+.colore-alunnoM {
+    background-color: #28a9d4 !important; /* Blu */
+}
+
+.colore-alunnoF {
+    background-color: #d55bbf !important; /* Blu */
 }
 
 .colore-docente {
-    background-color: #46c4b7 !important; /* Verde */
+    background-color: #328aac !important; /* Verde */
 }
 
 .colore-nondocente {
-    background-color: #6cda89 !important; /* Verde */
+    background-color: #41ca66 !important; /* Verde */
 }
 
 .colore-docentecoord {
-    background-color: #ff7700 !important; /* Verde */
+    background-color: #0077ff !important; /* Verde */
 }
 
 .colore-itmanager {
-    background-color: #f04b0f !important; /* Verde */
+    background-color: #319e88 !important; /* Verde */
 }
 
 .colore-dirigente {
-    background-color: #8b0202 !important; /* Verde */
+    background-color: #8905db !important; /* Verde */
 }
 
 

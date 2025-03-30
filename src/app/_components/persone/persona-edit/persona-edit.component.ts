@@ -87,7 +87,8 @@ export class PersonaEditComponent implements OnInit {
   emptyForm                   : boolean = false;
   disabledSave                : boolean = false;
   ckMostraAggiunte            : boolean = false;
-
+  elencoFormsAggiunti: string[] = [];
+  ckDaSalvare: boolean = false;
 
 
   
@@ -246,6 +247,7 @@ export class PersonaEditComponent implements OnInit {
           //console.log ("userFormComponent.form.value", this.userFormComponent.form.value);
 
           this.userFormComponent.save();
+
         }
 
         this._dialogRef.close();
@@ -311,7 +313,6 @@ export class PersonaEditComponent implements OnInit {
         case 'User':
           this.showUserForm = true;
           this.cdr.detectChanges();
-          
           break;
         case 'Alunno':
           this.showAlunnoForm = true;
@@ -339,10 +340,11 @@ export class PersonaEditComponent implements OnInit {
           this.dirigentePanel.toggle();
           break;
         default:
-          console.warn('Unknown form type');
+          //console.warn('Unknown form type');
       
       }
 
+      this.elencoFormsAggiunti.push(Derivato);
     // }});
   }
 
@@ -396,6 +398,11 @@ export class PersonaEditComponent implements OnInit {
           console.warn('valore Derivato sconosciuto');
       
       }
+      const indexTosave = this.elencoFormsAggiunti.indexOf(Derivato);
+      if (indexTosave !== -1) {this.elencoFormsAggiunti.splice(indexTosave, 1);}
+
+      const index = this.persona!._LstRoles!.indexOf(Derivato);
+      if (index !== -1) {this.persona._LstRoles!.splice(index, 1);}
 
       this.disabledSaveGetter();
     }});
@@ -433,7 +440,7 @@ export class PersonaEditComponent implements OnInit {
         this.dirigenteFormisValid = isValid;
         break;
       default:
-        console.warn('Unknown form type');
+        //console.warn('Unknown form type');
     }
 
     this.disabledSaveGetter();
@@ -498,7 +505,57 @@ export class PersonaEditComponent implements OnInit {
 
 
 
+  checksedaSalvare() {
+    let personaFormDirty = this.personaFormComponent? this.personaFormComponent.form.dirty : false;
+    let alunnoFormDirty = this.alunnoFormComponent ? this.alunnoFormComponent.form.dirty : false;
+    let genitoreFormDirty = this.genitoreFormComponent? this.genitoreFormComponent.form.dirty : false;
+    let docenteFormDirty = this.docenteFormComponent? this.docenteFormComponent.form.dirty : false;
+    let nonDocenteFormDirty = this.nondocenteFormComponent? this.nondocenteFormComponent.form.dirty : false;
+    let dirigenteFormDirty = this.dirigenteFormComponent? this.dirigenteFormComponent.form.dirty : false;
 
+    let qualcheFormDirty = personaFormDirty || 
+    alunnoFormDirty || 
+    genitoreFormDirty || 
+    docenteFormDirty || 
+    nonDocenteFormDirty || 
+    dirigenteFormDirty;
+
+    console.log("Valore di qualcheFormDirty aggiornato:", qualcheFormDirty);
+
+    console.log ("*******persona-edit - checksedaSalvare - qualcheFormDirty", qualcheFormDirty);
+    console.log ("personaFormDirty", personaFormDirty);
+    console.log ("alunnoFormDirty", alunnoFormDirty);
+    console.log ("genitoreFormDirty", genitoreFormDirty);
+    console.log ("docenteFormDirty", docenteFormDirty);
+    console.log ("nonDocenteFormDirty", nonDocenteFormDirty);
+    console.log ("dirigenteFormDirty", dirigenteFormDirty);
+
+    console.log ("this.elencoFormsAggiunti.length", this.elencoFormsAggiunti.length);
+
+
+
+    this.ckDaSalvare = this.elencoFormsAggiunti.length != 0 || qualcheFormDirty;
+
+    console.log ("this.ckDaSalvare", this.ckDaSalvare);
+    
+    if (this.ckDaSalvare) {
+      const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
+        width: '320px',
+        data: {titolo: "ATTENZIONE", sottoTitolo: "Non hai salvato le modifiche.<br>Vuoi chiudere senza salvare?"}
+      });
+  
+      dialogYesNo.afterClosed()
+      .subscribe( result => {
+        if (result) {
+          this._dialogRef.close();
+        } 
+      }
+
+      );
+    } else {
+      this._dialogRef.close();
+    }
+  }
   
 
 

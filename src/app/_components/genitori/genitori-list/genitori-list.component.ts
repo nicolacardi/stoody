@@ -27,6 +27,7 @@ import { ALU_Genitore }                         from 'src/app/_models/ALU_Genito
 import { User }                                 from 'src/app/_user/Users';
 import { TableColsService }                     from '../../utilities/toolbar/tablecols.service';
 import { TableColsVisibleService }              from '../../utilities/toolbar/tablecolsvisible.service';
+import { AlunnoEditComponent } from '../../alunni/alunno-edit/alunno-edit.component';
 
 //#endregion
 @Component({
@@ -369,6 +370,20 @@ export class GenitoriListComponent implements OnInit {
     );
   }
 
+
+  openAlunno(id:any){
+
+    const dialogConfig : MatDialogConfig = {
+      panelClass: 'add-DetailDialog',
+      width: '900px',
+      height: '700px',
+      data: id
+    };
+    const dialogRef = this._dialog.open(AlunnoEditComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(() => this.loadData()
+    );
+  }
+  
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns, event.previousIndex, event.currentIndex);
   }

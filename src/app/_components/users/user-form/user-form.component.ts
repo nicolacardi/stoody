@@ -139,6 +139,14 @@ export class UserFormComponent implements OnInit, OnChanges {
   async cambioPassword() {
 
     console.log ("user-form - cambiopassword - userID",this.userID);
+    if (this.form.controls['password'].value == '') {
+      const dialogRef = this._dialog.open(DialogOkComponent, {
+        width: '320px',
+        data: {titolo: "CAMBIO PASSWORD", sottoTitolo: "E' necessario un valore<br>nel campo password!"}
+      });
+      return;
+    }
+
     await firstValueFrom(this.svcUser.get(this.userID)
         .pipe(
           tap(res => { this.user = res;}
@@ -170,7 +178,7 @@ export class UserFormComponent implements OnInit, OnChanges {
   
             const dialogRef = this._dialog.open(DialogOkComponent, {
               width: '320px',
-              data: {titolo: "CAMBIO PASSWORD", sottoTitolo: "La password è stata modificata<br>con successo.<br>"}
+              data: {titolo: "CAMBIO PASSWORD", sottoTitolo: "La password è stata modificata<br>con successo."}
             });
         },
         error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore nel salvataggio della password', panelClass: ['red-snackbar']})

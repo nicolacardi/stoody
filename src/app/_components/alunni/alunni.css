@@ -117,4 +117,19 @@
       background-color: #f9f9f9;
     }
 
+/* chips ci sono anche in persone.css e genitori.css perchè mettendoli in styles.css non funziona*/
 
+.chip {
+  --mdc-chip-label-text-color: white;
+}
+.mini-chip {
+  --mdc-chip-label-text-size: 10px;
+  --mdc-chip-container-height: 20px;
+
+}
+
+::ng-deep .mdc-evolution-chip__action--presentational {
+  cursor: pointer !important;
+}
+
+/* fine chips */

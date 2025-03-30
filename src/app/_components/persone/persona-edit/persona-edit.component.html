@@ -7,13 +7,14 @@
 
                 <img class="iconaMenuBig" src="./assets/persona_edit_T.svg">
 
-                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" [mat-dialog-close]="persona$|async"></button>
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" (click)="checksedaSalvare()" ></button>
+                <!-- <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" (click)="checksedaSalvare()" [mat-dialog-close]="persona$|async"></button> -->
 
                 <button *ngIf="personaID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10" (click)="loadData()" >
                     <mat-icon>restart_alt</mat-icon>
                 </button>
 
-                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"  
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10 _colore-animato" 
                         [disabled] = "disabledSave"
                         (click)="save()" >
                     <mat-icon>save</mat-icon>
@@ -57,12 +58,14 @@
 
             <div class="custom-panel mt10" *ngIf="!showUserForm && ckMostraAggiunte" >
                 <div class="custom-panel-header">
-                    <span class="custom-panel-title">Aggiungi Utente</span>
-                    <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('User', personaID)">add_circle</mat-icon>
+                    <span class="custom-panel-title">
+                        <mat-icon class="custom-panel-icon mr16" (click)="aggiungiDerivato('User', personaID)">add_circle</mat-icon>
+                        Aggiungi Utente
+                    </span>
                 </div>
             </div>
 
-            <mat-expansion-panel class="mt10" *ngIf="showUserForm" #userPanel>
+            <mat-expansion-panel class="mt10" *ngIf="showUserForm" #userPanel hideToggle>
                 <mat-expansion-panel-header>
                     <mat-panel-title class="ml10">Dati dell'Utente</mat-panel-title>
                     <!-- <mat-icon class="right" >{{ userPanel.expanded ? 'expand_less' : 'expand_more' }}</mat-icon> -->
@@ -106,7 +109,7 @@
                 </div>
             </div>
 
-            <mat-expansion-panel class="mt10" *ngIf="showGenitoreForm" [hideToggle]="true"  #genitorePanel>
+            <mat-expansion-panel class="mt10" *ngIf="showGenitoreForm" [hideToggle]="true"  #genitorePanel hideToggle>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <mat-icon class="_red" *ngIf="ckMostraAggiunte"  (click)="rimuoviDerivato('Genitore', personaID); $event.stopPropagation()">remove_circle</mat-icon>
@@ -133,7 +136,7 @@
                 </div>
             </div>
 
-            <mat-expansion-panel class="mt10" *ngIf="showAlunnoForm" #alunnoPanel>
+            <mat-expansion-panel class="mt10" *ngIf="showAlunnoForm" #alunnoPanel hideToggle>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <mat-icon class="_red" *ngIf="ckMostraAggiunte" (click)="rimuoviDerivato('Alunno', personaID); $event.stopPropagation()">remove_circle</mat-icon>
@@ -180,7 +183,7 @@
                 </div>
             </div>
 
-            <mat-expansion-panel class="mt10" *ngIf="showDocenteForm" #docentePanel>
+            <mat-expansion-panel class="mt10" *ngIf="showDocenteForm" #docentePanel hideToggle>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <mat-icon  class="_red" *ngIf="ckMostraAggiunte" (click)="rimuoviDerivato('Docente', personaID); $event.stopPropagation()">remove_circle</mat-icon>
@@ -209,7 +212,7 @@
                 </div>
             </div>
 
-            <mat-expansion-panel class="mt10" *ngIf="showNonDocenteForm" #nondocentePanel>
+            <mat-expansion-panel class="mt10" *ngIf="showNonDocenteForm" #nondocentePanel hideToggle>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <mat-icon class="right _red" *ngIf="ckMostraAggiunte" (click)="rimuoviDerivato('NonDocente', personaID); $event.stopPropagation()">remove_circle</mat-icon>
@@ -235,7 +238,7 @@
                 </div>
             </div>
 
-            <mat-expansion-panel class="mt10" *ngIf="showDirigenteForm" #dirigentePanel>
+            <mat-expansion-panel class="mt10" *ngIf="showDirigenteForm" #dirigentePanel hideToggle>
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <mat-icon class="right _red" *ngIf="ckMostraAggiunte" (click)="rimuoviDerivato('Dirigente', personaID); $event.stopPropagation()">remove_circle</mat-icon>

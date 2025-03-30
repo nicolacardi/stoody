@@ -28,6 +28,7 @@ import { TableColsVisibleService }              from '../../utilities/toolbar/ta
 //models
 import { ALU_Alunno }                           from 'src/app/_models/ALU_Alunno';
 import { User }                                 from 'src/app/_user/Users';
+import { GenitoreEditComponent } from '../../genitori/genitore-edit/genitore-edit.component';
 
 //#endregion
 @Component({
@@ -231,6 +232,7 @@ export class AlunniListComponent implements OnInit {
   loadLayout(){
     this.svcTableColsVisible.listByUserIDAndTable(this.currUser.userID, this.tableName).subscribe( 
       colonne => {
+        console.log(colonne);
         if (colonne.length != 0) this.displayedColumns = colonne.map(a => a.tableCol!.colName)
         else this.svcTableCols.listByTable(this.tableName).subscribe( colonne => {
           this.displayedColumns = colonne.filter(colonna=> colonna.defaultShown == true).map(a => a.colName)
@@ -254,6 +256,7 @@ export class AlunniListComponent implements OnInit {
 
       loadAlunni$.subscribe(
         res =>   {
+          console.log(res);
           this.matDataSource.data = res;
           this.matDataSource.paginator = this.paginator;
           this.sortCustom();
@@ -407,6 +410,20 @@ export class AlunniListComponent implements OnInit {
     };
     const dialogRef = this._dialog.open(AlunnoEditComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(() => this.loadData()
+    );
+  }
+
+  openGenitore(id:any){
+    const dialogConfig : MatDialogConfig = {
+      panelClass: 'add-DetailDialog',
+      width: '900px',
+      height: '700px',
+      data: id
+    };
+
+    const dialogRef = this._dialog.open(GenitoreEditComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+        () => this.loadData()
     );
   }
 

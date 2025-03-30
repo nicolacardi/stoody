@@ -7,7 +7,7 @@
     </mat-form-field>
     
     <!-- **************************   PAGINATOR   ******************* -->
-    <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator>
+    <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="12" [pageSizeOptions]="[12, 50]" showFirstLastButtons></mat-paginator>
 
 
     <!-- **************************   MAT-TABLE   ******************* -->
@@ -73,6 +73,23 @@
             <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
             <!-- <td mat-cell *matCellDef="let element">{{element.cognome}}</td> -->
             <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.cognome | highlight: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="genitori">
+            <th mat-header-cell class="center w50px" *matHeaderCellDef cdkDrag>
+                Genitori
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-chip-set>
+                    <mat-chip *ngFor="let genitore of element._Genitori" 
+                                class="chip mini-chip"
+                                [ngClass]="['colore-genitore'+ genitore.genitore.persona.genere]"
+                                (click)="openGenitore(genitore.genitore.id)"
+                                >
+                        {{ genitore.genitore.persona.nome }} {{ genitore.genitore.persona.cognome }}
+                    </mat-chip>
+                </mat-chip-set>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="dtNascita">

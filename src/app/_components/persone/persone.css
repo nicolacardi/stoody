@@ -86,3 +86,13 @@
     --mdc-chip-container-height: 20px;
 }
 /* fine chips */
+
+
+
+.mat-expansion-indicator {
+    display: block !important;
+    color: red !important;
+}
+
+
+
