@@ -29,11 +29,12 @@ export class DocentiFilterComponent {
 
   nomeFilter = new UntypedFormControl('');
   cognomeFilter = new UntypedFormControl('');
-  tipoSocioFilter= new UntypedFormControl('');
-  dataRichiestaDal = new UntypedFormControl('');
-  dataRichiestaAl = new UntypedFormControl('');
-  dataAccettazioneDal = new UntypedFormControl('');
-  dataAccettazioneAl = new UntypedFormControl('');
+  dtNascitaFilter = new UntypedFormControl('');
+  indirizzoFilter = new UntypedFormControl('');
+  comuneFilter = new UntypedFormControl('');
+  provFilter = new UntypedFormControl('');
+  emailFilter = new UntypedFormControl('');
+  telefonoFilter = new UntypedFormControl('');
   ckAttivo = new UntypedFormControl('');
 
   //obsTipiSocio$!:            Observable<PER_TipoSocio[]>;
@@ -53,11 +54,12 @@ export class DocentiFilterComponent {
     //this.obsTipiSocio$ = this.svcTipiSocio.list();
     this.nomeFilter.valueChanges.subscribe(val => {this.applyFilterDx('nome', val);})
     this.cognomeFilter.valueChanges.subscribe(val => {this.applyFilterDx('cognome', val);})
-    this.tipoSocioFilter.valueChanges.subscribe(val => {this.applyFilterDx('tipoSocioID', val);})
-    this.dataRichiestaDal.valueChanges.subscribe(val => {this.applyFilterDx('dataRichiestaDal', val);})
-    this.dataRichiestaAl.valueChanges.subscribe(val => {this.applyFilterDx('dataRichiestaAl', val);})
-    this.dataAccettazioneDal.valueChanges.subscribe(val => {this.applyFilterDx('dataAccettazioneDal', val);})
-    this.dataAccettazioneAl.valueChanges.subscribe(val => {this.applyFilterDx('dataAccettazioneAl', val);})
+    this.dtNascitaFilter.valueChanges.subscribe(val => {this.applyFilterDx('dtNascita', val);})
+    this.indirizzoFilter.valueChanges.subscribe(val => {this.applyFilterDx('indirizzo', val);})
+    this.comuneFilter.valueChanges.subscribe(val => {this.applyFilterDx('comune', val);})
+    this.provFilter.valueChanges.subscribe(val => {this.applyFilterDx('prov', val);})
+    this.emailFilter.valueChanges.subscribe(val => {this.applyFilterDx('email', val);})
+    this.telefonoFilter.valueChanges.subscribe(val => {this.applyFilterDx('telefono', val);})
     this.ckAttivo.valueChanges.subscribe(val => {this.applyFilterDx('ckAttivo', val);})
 
   }
@@ -74,12 +76,12 @@ export class DocentiFilterComponent {
     return (
       this.nomeFilter.value === '' &&
       this.cognomeFilter.value === '' &&
-      (this.tipoSocioFilter.value === null || this.tipoSocioFilter.value === '') &&
-      (this.dataRichiestaDal.value === null  || this.dataRichiestaDal.value === '') &&
-      (this.dataRichiestaAl.value === null || this.dataRichiestaAl.value === '') &&
-      (this.dataAccettazioneDal.value === null || this.dataAccettazioneDal.value === '') &&
-      (this.dataAccettazioneAl.value === null || this.dataAccettazioneAl.value === '') &&
-      !this.ckAttivo.value
+      this.dtNascitaFilter.value === '' &&
+      this.indirizzoFilter.value === '' &&
+      this.comuneFilter.value === '' &&
+      this.provFilter.value === '' &&
+      this.emailFilter.value === '' &&
+      this.telefonoFilter.value === ''
     );
   }
 //#endregion
@@ -95,21 +97,25 @@ export class DocentiFilterComponent {
   resetAllInputs() {
     this.nomeFilter.setValue('', {emitEvent:false});
     this.cognomeFilter.setValue('', {emitEvent:false});
-    this.tipoSocioFilter.setValue('', {emitEvent:false});
-    this.dataRichiestaDal.setValue('', {emitEvent:false});
-    this.dataRichiestaAl.setValue('', {emitEvent:false});
-    this.dataAccettazioneDal.setValue('', {emitEvent:false});
-    this.dataAccettazioneAl.setValue('', {emitEvent:false});
+    this.indirizzoFilter.setValue('', {emitEvent:false});
+    this.dtNascitaFilter.setValue('', {emitEvent:false});
+    this.comuneFilter.setValue('', {emitEvent:false});
+    this.provFilter.setValue('', {emitEvent:false});
+    this.emailFilter.setValue('', {emitEvent:false});
+    this.telefonoFilter.setValue('', {emitEvent:false});
+
   }
 
   resetAllInputsAndClearFilters() {
     this.nomeFilter.setValue('');
     this.cognomeFilter.setValue('')
-    this.tipoSocioFilter.setValue('')
-    this.dataRichiestaDal.setValue('');
-    this.dataRichiestaAl.setValue('');
-    this.dataAccettazioneDal.setValue('');
-    this.dataAccettazioneAl.setValue('');
+    this.indirizzoFilter.setValue('');
+    this.dtNascitaFilter.setValue('');
+    this.comuneFilter.setValue('');
+    this.provFilter.setValue('');
+    this.emailFilter.setValue('');
+    this.telefonoFilter.setValue('');
+
 
   }
 //#endregion

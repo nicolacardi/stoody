@@ -34,14 +34,71 @@
             <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.cognome | highlight: filterValue"></td>
         </ng-container>
 
+        <ng-container matColumnDef="materie">
+            <th mat-header-cell class="center w50px" *matHeaderCellDef cdkDrag>
+                Materie
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-chip-set>
+                    <mat-chip *ngFor="let materia of element._Materie" 
+                    [ngStyle]="{'background-color': materia.color}"
+                                class="chip mini-chip mb2"
+                            
+                                >
+                        {{ materia.descrizione }}
+                    </mat-chip>
+                </mat-chip-set>
+            </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="classi">
+            <th mat-header-cell class="center w50px" *matHeaderCellDef cdkDrag>
+                Classi
+            </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-chip-set>
+                    <mat-chip *ngFor="let classe of element._CSA" 
+                                class="chip mini-chip mb2"
+                            
+                                >
+                        {{ classe.classeSezione.classe.descrizioneBreve }} {{ classe.classeSezione.sezione }}
+                    </mat-chip>
+                </mat-chip-set>
+            </td>
+        </ng-container> -->
+
         <ng-container matColumnDef="cf">
+
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>C.F.<mat-icon class="iconaFilter" *ngIf="filterValues.cf">filter_alt</mat-icon></th>
+
+
             <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>C.F.</th>
             <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.cf | highlight: filterValue"></td>
         </ng-container>
 
         <ng-container matColumnDef="dtNascita">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Data di Nascita</th>
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Data di Nascita<mat-icon class="iconaFilter" *ngIf="filterValues.dtNascita">filter_alt</mat-icon></th>
             <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.dtNascita | highlightDate: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="telefono">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Telefono<mat-icon class="iconaFilter" *ngIf="filterValues.telefono">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.telefono | highlight: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="indirizzo">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Indirizzo<mat-icon class="iconaFilter" *ngIf="filterValues.indirizzo">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.indirizzo | highlight: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="comune">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Comune<mat-icon class="iconaFilter" *ngIf="filterValues.comune">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.comune | highlight: filterValue"></td>
+        </ng-container>
+
+        <ng-container matColumnDef="prov">
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Prov<mat-icon class="iconaFilter" *ngIf="filterValues.prov">filter_alt</mat-icon></th>
+            <td mat-cell *matCellDef="let element" [innerHTML]="element.persona.prov | highlight: filterValue"></td>
         </ng-container>
 
         <ng-container matColumnDef="personaID">

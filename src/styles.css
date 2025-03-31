@@ -203,6 +203,10 @@ h3 { font-family: 'Titillium Web', sans-serif !important;
     margin-bottom: 0px !important;
 }
 
+.mb2 {
+    margin-bottom: 2px !important;
+  }
+
 .mb5 {
     margin-bottom: 5px;
 }
@@ -1525,6 +1529,8 @@ in fase di creazione della Dialog addAlunno*/
     height: 30px!important;         /*FUNZIONA SOLO PER LE <table mat-table>*/
 }
 
+
+
 /* row pointer cursor usata da classi-sezioni-anni in coordinatore-dashboard come ngClass*/
 ._row-pointercursor {
     cursor: pointer;
@@ -2124,6 +2130,9 @@ text-align: center;
     background-color: lightgrey !important;
 }
 
+._backgrey{
+    background-color: grey !important;
+}
 
 
 .color-div {

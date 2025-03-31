@@ -28,6 +28,13 @@ export class DocentiService {
     //http://213.215.231.4/swappX/api/PER_Docenti/ListAttivi
   }
 
+
+  listWithMaterie(): Observable<PER_Docente[]>{
+      return this.http.get<PER_Docente[]>(environment.apiBaseUrl+'PER_Docenti/ListWithMaterie' );
+    //http://213.215.231.4/swappX/api/PER_Docenti/ListWithMaterie
+  }
+
+
   listSupplentiDisponibili(lezioneID: number, docenteID: number, dtCalendario: string, h_Ini: string, h_End: string) : Observable<PER_Docente[]>{
     return this.http.get<PER_Docente[]>(environment.apiBaseUrl+'PER_Docenti/ListSupplentiDisponibili/' + lezioneID + '/' + docenteID + '/' + Utility.formatDate(dtCalendario, FormatoData.yyyy_mm_dd) + '/' + Utility.URL_FormatHour(h_Ini) + '/' + Utility.URL_FormatHour( h_End));
     //http://213.215.231.4/SwappX/api/PER_Docenti/ListSupplentiDisponibili/160/3/2022-03-16/11%3A00%3A00/12%3A00%3A00

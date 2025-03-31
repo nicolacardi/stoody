@@ -7,9 +7,9 @@ import { MatMenuTrigger }                       from '@angular/material/menu';
 import { MatPaginator }                         from '@angular/material/paginator';
 import { MatSort }                              from '@angular/material/sort';
 import { MatTableDataSource }                   from '@angular/material/table';
-import { Observable, firstValueFrom, iif }      from 'rxjs';
+import { Observable, firstValueFrom, forkJoin, iif }      from 'rxjs';
 import { SelectionModel }                       from '@angular/cdk/collections';
-import { tap }                                  from 'rxjs/operators';
+import { map, tap }                                  from 'rxjs/operators';
 
 //components
 import { DocenteEditComponent }                 from '../docente-edit/docente-edit.component';
@@ -25,6 +25,8 @@ import { TableColsVisibleService }              from '../../utilities/toolbar/ta
 //models
 import { PER_Docente }                          from 'src/app/_models/PER_Docente';
 import { User }                                 from 'src/app/_user/Users';
+import { CLS_ClasseDocenteMateria } from 'src/app/_models/CLS_ClasseDocenteMateria';
+import { DocenzeService } from '../../docenze/docenze.service';
 
 //#endregion
 
@@ -49,15 +51,16 @@ export class DocentiListComponent  implements OnInit {
   filterValue = '';       //Filtro semplice
 
   filterValues = {
-    personaID: '',
-    tipoSocioID: '',
     nome: '',
     cognome: '',
-    dataRichiestaDal: '',
-    dataRichiestaAl: '',
-    dataAccettazioneDal: '',
-    dataAccettazioneAl: '',
-    ckAttivo: '', //non è tanto un campo del db: è attivo quando non c'è una disiscrizione
+    dtNascita: '',
+    indirizzo: '',
+    comune: '',
+    prov: '',
+    email: '',
+    telefono: '',
+    cf: '',
+    ckAttivo: '',
     filtrosx: ''
   };
   
@@ -115,11 +118,13 @@ export class DocentiListComponent  implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(private svcDocenti:                         DocentiService,
-              private _loadingService:                    LoadingService,
-              public _dialog:                             MatDialog,
-              private svcTableCols:                       TableColsService,
-              private svcTableColsVisible:                TableColsVisibleService)   { 
+  constructor(
+    private svcDocenti:                         DocentiService,
+    private svcDocenze:                         DocenzeService,
+    private _loadingService:                    LoadingService,
+    public _dialog:                             MatDialog,
+    private svcTableCols:                       TableColsService,
+    private svcTableColsVisible:                TableColsVisibleService)   { 
 
     this.currUser = Utility.getCurrentUser();
   }
@@ -148,18 +153,71 @@ export class DocentiListComponent  implements OnInit {
   loadData () {
 
     let obsDocenti$: Observable<PER_Docente[]>;
+    let obsDocenze$: Observable<CLS_ClasseDocenteMateria[]>;
     
-    obsDocenti$= this.svcDocenti.list(false);
+    obsDocenze$ = this.svcDocenze.list();
+    obsDocenti$= this.svcDocenti.list();
  
-    const loadDocenti$ =this._loadingService.showLoaderUntilCompleted(obsDocenti$);
-    loadDocenti$.subscribe( val => {
-        this.matDataSource.data = val;
-        this.matDataSource.paginator = this.paginator;
-        this.matDataSource.sort = this.sort; 
-        this.matDataSource.filterPredicate = this.filterPredicate();
-        //this.getEmailAddresses();
-      }
+
+
+    
+    const fork$ = forkJoin([obsDocenti$, obsDocenze$]).pipe(
+      map(([docenti, docenze]) => {                           //è come facesse una for each docenti
+        return docenti.map(docente => {
+          const materie = docenze
+          .filter(cdm => cdm.docenteID === docente.id)        // Filtra solo le docenze del docente corrente
+          .map(cdm => cdm.materia)                            // Estrae solo le materie
+          .filter(materia => materia !== undefined);          // Rimuove eventuali undefined
+          // Rimuove duplicati usando Set basato sull'id della materia
+          const materieUniche = Array.from(new Map(materie.map(m => [m?.id, m])).values());
+        
+          // const classiSezioneAnno = docenze
+          // .filter(cdm => cdm.docenteID === docente.id)
+          // .map(cdm => cdm.classeSezioneAnno)
+          // .filter(csa => csa !== undefined);
+
+          // // Rimuove duplicati nelle classi sezione anno
+          // const classiUniche = Array.from(new Map(classiSezioneAnno.map(c => [c?.id, c])).values());
+
+      
+          return {
+            ...docente,
+            _Materie: materieUniche,
+            //_CSA: classiUniche
+          };
+
+        });
+      })
     );
+    
+    const loadDocenti$ =this._loadingService.showLoaderUntilCompleted(fork$);
+
+    loadDocenti$.subscribe(docentiConMaterie => {
+      console.log(docentiConMaterie);
+      this.matDataSource.data = docentiConMaterie
+      this.matDataSource.paginator = this.paginator;
+      this.sortCustom();
+      this.matDataSource.sort = this.sort;
+      this.matDataSource.filterPredicate = this.filterPredicate();
+    });
+
+
+  
+      // this.matDataSource.data = docentiWithMaterie;
+      // this.matDataSource.paginator = this.paginator;
+      // this.matDataSource.sort = this.sort;
+
+
+    // const loadDocenti$ =this._loadingService.showLoaderUntilCompleted(obsDocenti$);
+    // loadDocenti$.subscribe( val => {
+    //   console.log(val);
+    //     this.matDataSource.data = val;
+    //     this.matDataSource.paginator = this.paginator;
+    //     this.matDataSource.sort = this.sort; 
+    //     this.matDataSource.filterPredicate = this.filterPredicate();
+    //     //this.getEmailAddresses();
+    //   }
+    // );
   }
 
   getEmailAddresses() {
@@ -175,6 +233,23 @@ export class DocentiListComponent  implements OnInit {
 
 //#region ----- Filtri & Sort ------------------
 
+sortCustom() {
+  this.matDataSource.sortingDataAccessor = (item:any, property) => {
+    switch(property) {
+      case 'nome':                            return item.persona.nome;
+      case 'cognome':                         return item.persona.cognome;
+      case 'dtNascita':                       return item.persona.dtNascita;
+      case 'indirizzo':                       return item.persona.indirizzo;
+      case 'comune':                          return item.persona.comune;
+      case 'cap':                             return item.persona.cap;
+      case 'cf':                              return item.persona.cf;
+      case 'prov':                            return item.persona.prov;
+      case 'telefono':                        return item.persona.telefono;
+      default: return item[property]
+    }
+  };
+}
+
   applyFilter(event: Event) {
     this.filterValue = (event.target as HTMLInputElement).value;
     this.filterValues.filtrosx = this.filterValue.toLowerCase();
@@ -187,31 +262,33 @@ export class DocentiListComponent  implements OnInit {
       let searchTerms = JSON.parse(filter);
 
       //let foundTipoSocio = (String(data.tipoSocioID).indexOf(searchTerms.tipoSocioID) !== -1); //per ricerca non numerica...
-      let foundTipoSocio = data.tipoSocioID==searchTerms.tipoSocioID;
-      if (searchTerms.tipoSocioID == null || searchTerms.tipoSocioID == '') foundTipoSocio = true;
+
 
       let ckAttivo = (searchTerms.ckAttivo && data.dtDisiscrizione == null) || !searchTerms.ckAttivo ;
-      let cfrDateRichieste = cfrDate(searchTerms.dataRichiestaDal, searchTerms.dataRichiestaAl, data.dtRichiesta);
-      if ((searchTerms.dataRichiestaDal == null || searchTerms.dataRichiestaDal == '')&& (searchTerms.dataRichiestaAl == null || searchTerms.dataRichiestaAl == ''))cfrDateRichieste = true;
-      let cfrDateAccettazione = cfrDate(searchTerms.dataAccettazioneDal, searchTerms.dataAccettazioneAl, data.dtAccettazione);
-      if ((searchTerms.dataAccettazioneDal == null || searchTerms.dataAccettazioneDal == '')&& (searchTerms.dataAccettazioneAl == null || searchTerms.dataAccettazioneAl == ''))cfrDateAccettazione = true;
 
-      let dArr = data.dtRichiesta.split("-");
-      const dtRichiestaddmmyyyy = dArr[2].substring(0,2)+ "/" +dArr[1]+"/"+dArr[0];
+  
+      let dArr = data.persona.dtNascita.split("-");
+      const dtNascitaddmmyyyy = dArr[2].substring(0,2)+ "/" +dArr[1]+"/"+dArr[0];
 
       let boolSx = String(data.persona.nome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
-                || String(dtRichiestaddmmyyyy).indexOf(searchTerms.filtrosx) !== -1
                 || String(data.persona.cognome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
-                || String(data.tipoSocio.descrizione).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
-
+                || String(dtNascitaddmmyyyy).indexOf(searchTerms.filtrosx) !== -1
+                || String(data.persona.indirizzo).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
+                || String(data.persona.comune).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
+                || String(data.persona.prov).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
+                || String(data.persona.telefono).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
+                || String(data.persona.cf).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
+                ;
 
       // i singoli argomenti dell'&& che segue sono ciascuno del tipo: "trovato valore oppure vuoto"
+      // i singoli argomenti dell'&& che segue sono ciascuno del tipo: "trovato valore oppure vuoto"
       let boolDx = String(data.persona.nome).toLowerCase().indexOf(searchTerms.nome) !== -1
-                    && String(data.persona.cognome).toLowerCase().indexOf(searchTerms.cognome) !== -1
-                    && foundTipoSocio
-                    && cfrDateRichieste
-                    && cfrDateAccettazione
-                    && ckAttivo;
+                && String(data.persona.cognome).toLowerCase().indexOf(searchTerms.cognome) !== -1
+                && String(dtNascitaddmmyyyy).indexOf(searchTerms.dtNascita) !== -1
+                && String(data.persona.indirizzo).toLowerCase().indexOf(searchTerms.indirizzo) !== -1
+                && String(data.persona.comune).toLowerCase().indexOf(searchTerms.comune) !== -1
+                && String(data.persona.prov).toLowerCase().indexOf(searchTerms.prov) !== -1
+                && String(data.persona.telefono).toLowerCase().indexOf(searchTerms.telefono) !== -1;
 
       return boolSx && boolDx;
     }
