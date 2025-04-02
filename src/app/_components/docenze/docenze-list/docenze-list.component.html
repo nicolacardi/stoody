@@ -44,7 +44,14 @@
    
         <ng-container matColumnDef="materia">
             <mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Materia</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.materia.descrizione}}</mat-cell>
+            <mat-cell *matCellDef="let element">
+                <mat-chip
+                    class="chip mini-chip mb2"
+                    [ngStyle]="{'background-color': element.materia.color}"
+                    >
+                    {{element.materia.descrizione}}
+                </mat-chip>
+            </mat-cell>
             <!-- <mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome|highlight:filterValue"></mat-cell> -->
         </ng-container>
 
@@ -57,6 +64,24 @@
         <ng-container matColumnDef="docenteCognome">
             <mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Cognome Docente</mat-header-cell>
             <mat-cell *matCellDef="let element">{{element.docente.persona.cognome}}</mat-cell>
+            <!-- <mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome|highlight:filterValue"></mat-cell> -->
+        </ng-container>
+
+        <ng-container matColumnDef="anno">
+            <mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Anno Scolastico</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.classeSezioneAnno.anno.annoscolastico}}</mat-cell>
+            <!-- <mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome|highlight:filterValue"></mat-cell> -->
+        </ng-container>
+
+        <ng-container matColumnDef="classe">
+            <mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Classe</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.classeSezioneAnno.classeSezione.classe.descrizione2}}</mat-cell>
+            <!-- <mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome|highlight:filterValue"></mat-cell> -->
+        </ng-container>
+
+        <ng-container matColumnDef="sezione">
+            <mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Sezione</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.classeSezioneAnno.classeSezione.sezione}}</mat-cell>
             <!-- <mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome|highlight:filterValue"></mat-cell> -->
         </ng-container>
 

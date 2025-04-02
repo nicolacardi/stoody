@@ -38,8 +38,8 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
   //storedFilterPredicate!:                       any;
   filterValue = '';
   classeSezioneAnno!:                           CLS_ClasseSezioneAnno;
-
-  displayedColumns:                             string[] = [
+  displayedColumns: string[] =  [];
+  displayedColumnsCoordinatore:                             string[] = [
     "select",
     "actionsColumn",
     "materia",
@@ -48,6 +48,14 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
     "ckOrario",
     "ckPagella"
   ];
+
+  displayedColumnsDocenteEdit:                             string[] = [
+    "materia",
+    "anno",
+    "classe",
+    "sezione"
+  ];
+
 
   selection = new SelectionModel<CLS_ClasseDocenteMateria>(true, []);   //rappresenta la selezione delle checkbox
 
@@ -65,11 +73,13 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
 //#endregion
 
 //#region ----- ViewChild Input Output ---------
-  @ViewChild(MatPaginator) paginator!:                        MatPaginator;
-  @ViewChild(MatSort) sort!:                                  MatSort;
-  @ViewChild(MatMenuTrigger, {static: true}) matMenuTrigger!: MatMenuTrigger; 
+  @ViewChild(MatPaginator) paginator!        : MatPaginator;
+  @ViewChild(MatSort) sort!                  : MatSort;
+  @ViewChild(MatMenuTrigger, {static         : true}) matMenuTrigger!: MatMenuTrigger;
 
-  @Input() classeSezioneAnnoID!:                                         number;
+  @Input() classeSezioneAnnoID!              : number;
+  @Input() docenteID!                        : number;
+  @Input('dove') dove! :                        string;
   @Output('openDrawer') toggleDrawer = new EventEmitter<number>();
 //#endregion
 
@@ -85,14 +95,27 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
 //#region ----- LifeCycle Hooks e simili--------
 
   ngOnChanges() {
+
+
+    switch(this.dove) {
+      case 'coordinatore-dashboard':
+        this.displayedColumns = this.displayedColumnsCoordinatore;
+        this.loadData();         
+        break;
+      case 'docente-edit':
+        this.displayedColumns = this.displayedColumnsDocenteEdit;
+        this.loadData();         
+        break;
+    }
     if (this.classeSezioneAnnoID != undefined) {
       this.loadData();
       //this.toggleChecks = false;
       //parcheggio in classeSezioneAnno i dati della classe che servono a coordinatore-dashboard (per il nome dell'export)
+      
       this.svcClasseSezioneAnno.get(this.classeSezioneAnnoID).subscribe(
         res => this.classeSezioneAnno = res
       )
-    }
+    } 
   }
 
   ngOnInit(){
@@ -103,11 +126,15 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
 
     let obsInsegnamenti$: Observable<CLS_ClasseDocenteMateria[]>;
   
-    obsInsegnamenti$= this.svcDocenze.listByClasseSezioneAnno(this.classeSezioneAnnoID);
+    if (this.classeSezioneAnnoID) {
+      obsInsegnamenti$= this.svcDocenze.listByClasseSezioneAnno(this.classeSezioneAnnoID);
+    } else {
+      obsInsegnamenti$= this.svcDocenze.listByDocente(this.docenteID);
+    }
     let loadInsegnamenti$ =this._loadingService.showLoaderUntilCompleted(obsInsegnamenti$);
 
     loadInsegnamenti$.subscribe(res =>  {
-        //console.log("docenze-list - loadData - res:", res);
+        console.log("docenze-list - loadData - res:", res);
 
         this.matDataSource.data = res;
         //this.matDataSource.paginator = this.paginator;          
@@ -128,6 +155,11 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
         case 'materia':                         return item.materia.descrizione;
         case 'docenteNome':                     return item.docente.persona.nome;
         case 'docenteCognome':                  return item.docente.persona.cognome;
+        case 'classe':                          return item.classeSezioneAnno.classeSezione.classe.descrizione2;
+        case 'sezione':                          return item.classeSezioneAnno.classeSezione.sezione;
+
+        case 'anno':                            return item.classeSezioneAnno.annoID;
+
         default: return item[property]
       }
     };

@@ -47,7 +47,9 @@
                 </button>
 
                 <div class="_table-container mt50">
-                    <app-docenze-list   [classeSezioneAnnoID]="classeSezioneAnnoID">
+                    <app-docenze-list   
+                        [dove] = "'coordinatore-dashboard'"
+                        [classeSezioneAnnoID]="classeSezioneAnnoID">
 
                     </app-docenze-list>
                 </div>

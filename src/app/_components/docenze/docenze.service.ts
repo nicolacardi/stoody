@@ -18,6 +18,11 @@ export class DocenzeService {
     //http://213.215.231.4/swappX/api/CLS_ClassiDocentiMaterie
   }
 
+  listByDocente(docenteID: number): Observable<CLS_ClasseDocenteMateria[]>{
+    return this.http.get<CLS_ClasseDocenteMateria[]>(environment.apiBaseUrl+'CLS_ClassiDocentiMaterie/ListByDocente/'+docenteID);
+    //http://213.215.231.4/swappX/api/CLS_ClassiDocentiMaterie/ListByDocente/3
+  }
+
   listByClasseSezioneAnno(classeSezioneAnnoID: number): Observable<CLS_ClasseDocenteMateria[]>{
     return this.http.get<CLS_ClasseDocenteMateria[]>(environment.apiBaseUrl+'CLS_ClassiDocentiMaterie/ListByClasseSezioneAnno/'+classeSezioneAnnoID);
     //http://213.215.231.4/swappX/api/CLS_ClassiDocentiMaterie/ListByClasseSezioneAnno/16

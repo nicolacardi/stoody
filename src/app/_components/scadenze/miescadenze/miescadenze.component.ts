@@ -112,7 +112,7 @@ export class MieScadenzeComponent implements OnInit {
     if (element.personaID == this.currUser.personaID) {
       this._dialog.open(DialogOkComponent, {
         width: '320px',
-        data: {titolo: "ATTENZIONE!", sottoTitolo: "Non è possibile Respingere un proprio invito"}
+        data: {titolo: "ATTENZIONE!", sottoTitolo: "Non è possibile<br>respingere un proprio invito"}
       });
       this.loadData();
     } 

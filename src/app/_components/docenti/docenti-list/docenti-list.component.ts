@@ -303,7 +303,7 @@ sortCustom() {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '900px',
-      height: '650px',
+      height: '750px',
       data: 0
     };
 
@@ -315,7 +315,7 @@ sortCustom() {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '900px',
-      height: '580px',
+      height: '650px',
       data: id
     };
 
