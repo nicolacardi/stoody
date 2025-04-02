@@ -8,23 +8,25 @@
             </button> -->
             <img class="iconaMenuBig" src="./assets/docente_edit_T.svg">
 
-            <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" [mat-dialog-close]="docente$|async"></button>
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" [mat-dialog-close]="docente$|async"></button>
 
-            <button *ngIf="docenteID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10" (click)="loadData()" >
-                <mat-icon>restart_alt</mat-icon>
-            </button>
+            <span [ngClass]="{'invisible': selectedTab != 0}">
+                <button *ngIf="docenteID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10" (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
 
-            <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"  [disabled] ="!isValid" (click)="save()" >
-                <mat-icon>save</mat-icon>
-            </button>
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"  [disabled] ="!isValid" (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
 
-            <button *ngIf="docenteID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10" (click)="delete()" >
-                <mat-icon>delete</mat-icon>
-            </button>
+                <button *ngIf="docenteID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10" (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </span>
         </div>
         
         <!-- ********************************       ANAGRAFICA      *********************************** -->
-        <mat-tab-group mat-align-tabs="center">
+        <mat-tab-group mat-align-tabs="center" (selectedTabChange)="selectedTabValue($event)">
             <mat-tab  label="Dati Anagrafici">
                 <div class="mt20"></div>
                 <div *ngIf="(docente$ | async) || emptyForm" class="mt10 ">

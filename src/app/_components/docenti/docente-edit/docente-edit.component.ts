@@ -43,8 +43,8 @@ export class DocenteEditComponent implements OnInit {
   public personaID!        : number;
   public userID!           : string;
 
-  docenteNomeCognome      : string = "";
-
+  docenteNomeCognome       : string = "";
+  selectedTab              : number = 0;
   personaFormisValid!      : boolean;
   docenteFormisValid!      : boolean;
   userFormisValid!         : boolean;
@@ -222,6 +222,10 @@ export class DocenteEditComponent implements OnInit {
       this.personaID = +event.option.id;
   }
 
+
+  selectedTabValue(event: any){
+    this.selectedTab = event.index;
+  }
 //#endregion
 }
 
