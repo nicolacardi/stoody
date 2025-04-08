@@ -67,7 +67,7 @@ export class VerbaliListComponent implements OnInit, OnChanges {
   filterValues = {
     nome: '',
     cognome: '',
-    tipo: '',
+    tipoVerbale: '',
     dtVerbale: '',
     classe: '',
     titolo: '',
@@ -146,6 +146,7 @@ export class VerbaliListComponent implements OnInit, OnChanges {
         console.log("verbali-list - loadData - val", val)
         this.matDataSource.data = val;
         this.matDataSource.paginator = this.paginator;
+        this.sortCustom();
         this.matDataSource.sort = this.sort; 
         this.matDataSource.filterPredicate = this.filterPredicate();
       }
@@ -155,13 +156,25 @@ export class VerbaliListComponent implements OnInit, OnChanges {
 //#endregion
 
 //#region ----- Filtri & Sort -------
+  sortCustom() {
+    this.matDataSource.sortingDataAccessor = (item:any, property) => {
+      switch(property) {
+        case 'nome':                            return item.persona.nome + ' ' + item.persona.cognome;
+        case 'tipoVerbale':                     return item.tipoVerbale.descrizione;
+        case 'dtVerbale':                       return item.dtVerbale;
+        case 'classe':                          return item.classeSezioneAnno.classeSezione.classe.descrizione2 + ' ' + item.classeSezioneAnno.classeSezione.sezione;
+        case 'titolo':                          return item.titolo;
+        case 'contenuti':                       return item.contenuti;
+        default: return item[property]
+      }
+    };
+  }
 
-
-resetSearch(){
-  this.filterInput.nativeElement.value = "";
-  this.filterValue = "";
-  this.filterValues.filtrosx = "";
-}
+  resetSearch(){
+    this.filterInput.nativeElement.value = "";
+    this.filterValue = "";
+    this.filterValues.filtrosx = "";
+  }
 
   applyFilter(event: Event) {
     this.filterValue = (event.target as HTMLInputElement).value;
@@ -188,12 +201,14 @@ resetSearch(){
                   || String(dtVerbaleddmmyyyy).indexOf(searchTerms.filtrosx) !== -1
                   || String(data.titolo).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
                   || String(data.classeSezioneAnno.classeSezione.classe.descrizione2 + ' ' + data.classeSezioneAnno.classeSezione.sezione).toLowerCase().indexOf(searchTerms.filtrosx) !== -1 ;
-      
+      //console.log (searchTerms);
+      //console.log (data.tipoVerbale.descrizione,searchTerms.tipoVerbale);
+      console.log (String(data.tipoVerbale.descrizione));
       // i singoli argomenti dell'&& che segue sono ciascuno del tipo: "trovato valore oppure vuoto"
       let boolDx = 
                     String(data.persona.nome).toLowerCase().indexOf(searchTerms.nome) !== -1
                     && String(data.persona.cognome).toLowerCase().indexOf(searchTerms.cognome) !== -1
-                    && String(data.tipoVerbale.descrizione).indexOf(searchTerms.tipo) !== -1
+                    && String(data.tipoVerbale.descrizione).toLowerCase().indexOf(searchTerms.tipoVerbale) !== -1
                     && String(dtVerbaleddmmyyyy).indexOf(searchTerms.dtVerbale) !== -1
                     && String(data.titolo).toLowerCase().indexOf(searchTerms.titolo) !== -1
                     && String(data.classeSezioneAnno.classeSezione.classe.descrizione2 + ' ' + data.classeSezioneAnno.classeSezione.sezione).toLowerCase().indexOf(searchTerms.classe) !== -1;

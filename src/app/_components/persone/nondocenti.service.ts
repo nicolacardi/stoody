@@ -41,10 +41,10 @@ export class NonDocentiService {
     return this.http.delete( environment.apiBaseUrl  + 'PER_NonDocenti/' + id);    
   }
 
-  deleteByPersona (personaID: number) {
-    return this.http.delete( environment.apiBaseUrl  + 'PER_NonDocenti/DeleteByPersona/'+personaID);
-    //http://213.215.231.4/swappX/api/PER_NonDocenti/DeletByPersona/3
-  }
+  // deleteByPersona (personaID: number) {
+  //   return this.http.delete( environment.apiBaseUrl  + 'PER_NonDocenti/DeleteByPersona/'+personaID);
+  //   //http://213.215.231.4/swappX/api/PER_NonDocenti/DeletByPersona/3
+  // }
 
 }
 

@@ -12,37 +12,37 @@
 <h3 *ngIf="dove=='impostazioni'" class="_titolo-pagina">(gestione e documentazione)</h3>
 
 
-    <form [formGroup] = "form">
-        <mat-form-field class="_pos-relative ml20 mt10 topZIndex noBottomPadding"  >
-            <mat-label>Anno Scolastico</mat-label>
-            <mat-select formControlName="selectAnnoScolastico">
-                <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
-                    {{element.annoscolastico}}
-                </mat-option>
+<form [formGroup] = "form">
+    <mat-form-field class="_pos-relative ml20 mt10 topZIndex noBottomPadding"  >
+        <mat-label>Anno Scolastico</mat-label>
+        <mat-select formControlName="selectAnnoScolastico">
+            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                {{element.annoscolastico}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <div *ngIf="showSelectDocente">
+        <mat-form-field class="ml20 topZIndex"  >
+            <mat-label>Seleziona il Docente</mat-label>
+            <mat-select formControlName="selectDocente" >
+            <!-- [disabled] = "docenteID != 0 && docenteID != null" -->
+            <!-- [compareWith]="compareObjects"  compareWith sembra la soluzione per impostare il valore correttamente -->
+            
+            <mat-option value="0" *ngIf="dove=='coordinatore-dashboard'">Tutti i docenti-</mat-option>
+            
+            <mat-option *ngFor="let element of (obsDocenti$ | async)" [value]="element.id">
+                {{element.persona.cognome + ' '+ element.persona.nome }}
+            </mat-option>
             </mat-select>
         </mat-form-field>
-
-        <div *ngIf="showSelectDocente">
-            <mat-form-field class="ml20 topZIndex"  >
-                <mat-label>Seleziona il Docente</mat-label>
-                <mat-select formControlName="selectDocente" >
-                <!-- [disabled] = "docenteID != 0 && docenteID != null" -->
-                <!-- [compareWith]="compareObjects"  compareWith sembra la soluzione per impostare il valore correttamente -->
-                
-                <mat-option value="0" *ngIf="dove=='coordinatore-dashboard'">Tutti i docenti-</mat-option>
-                
-                <mat-option *ngFor="let element of (obsDocenti$ | async)" [value]="element.id">
-                    {{element.persona.cognome + ' '+ element.persona.nome }}
-                </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
+    </div>
 <!-- **************************   FILTER   ******************* -->
-        <mat-form-field *ngIf="showTableRibbon" class="_pos-relative ml20 topZIndex">
-            <mat-label>Filtro (Classe, sezione)</mat-label>
-            <input matInput (keyup)="applyFilter($event)" #filterInput>
-        </mat-form-field>
-    </form>
+    <mat-form-field *ngIf="showTableRibbon" class="_pos-relative ml20 topZIndex">
+        <mat-label>Filtro (Classe, sezione)</mat-label>
+        <input matInput (keyup)="applyFilter($event)" #filterInput>
+    </mat-form-field>
+</form>
 
 <!-- **************************   PAGINATOR   ******************* -->
 <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="10" [pageSizeOptions]="[10, 15, 50]" showFirstLastButtons></mat-paginator>

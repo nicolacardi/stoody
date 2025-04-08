@@ -45,7 +45,7 @@
         </ng-container>
 
         <ng-container matColumnDef="tipoVerbale">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Tipo<mat-icon class="iconaFilter" *ngIf="filterValues.tipo">filter_alt</mat-icon></th>
+            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Tipo<mat-icon class="iconaFilter" *ngIf="filterValues.tipoVerbale">filter_alt</mat-icon></th>
             <td mat-cell *matCellDef="let element" [innerHTML]="(element.tipoVerbale.descrizione) | highlight:filterValue"></td>
         </ng-container>
 

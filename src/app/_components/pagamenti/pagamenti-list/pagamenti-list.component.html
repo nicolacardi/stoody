@@ -1,7 +1,7 @@
 <h1 *ngIf="show" class="_titolo-pagina">Pagamenti </h1>
 
-<!-- **************************   SELECT ANNO   ******************* -->
 <form *ngIf="obsAnni$ | async" [formGroup] = "form"> 
+    <!-- **************************   SELECT ANNO   ******************* -->
     <mat-form-field *ngIf="show" class="_pos-relative ml20 topZIndex noBottomPadding">
         <mat-select formControlName="selectAnnoScolastico" (selectionChange)="updateList()" #annoscolastico>
             <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id" >

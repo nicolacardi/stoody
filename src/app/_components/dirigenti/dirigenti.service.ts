@@ -67,9 +67,9 @@ export class DirigentiService {
     return this.http.delete( environment.apiBaseUrl  + 'PER_Dirigenti/' + docenteID);    
   }
 
-  deleteByPersona (personaID: number) {
-    return this.http.delete( environment.apiBaseUrl  + 'PER_Dirigenti/DeletByPersona/'+personaID);
-    //http://213.215.231.4/swappX/api/PER_Dirigenti/DeletByPersona/3
-  }
+  // deleteByPersona (personaID: number) {
+  //   return this.http.delete( environment.apiBaseUrl  + 'PER_Dirigenti/DeletByPersona/'+personaID);
+  //   //http://213.215.231.4/swappX/api/PER_Dirigenti/DeletByPersona/3
+  // }
 
 }

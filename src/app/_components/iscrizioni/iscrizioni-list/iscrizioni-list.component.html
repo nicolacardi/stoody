@@ -1,8 +1,9 @@
 <h1 *ngIf="showPageTitle" class="_titolo-pagina">Iscrizioni</h1>
 
+
 <form *ngIf="obsAnni$ | async" [formGroup] = "form"> 
     <!-- **************************   SELECT ANNO   ******************* -->
-    <mat-form-field  class="ml20 topZIndex">
+    <mat-form-field  class="ml20" class="_pos-relative ml20 topZIndex noBottomPadding">
         <mat-select formControlName="selectAnnoScolastico" (selectionChange)="updateList()" #annoscolastico>
             <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id" >
                 {{element.annoscolastico}}
@@ -11,139 +12,139 @@
     </mat-form-field>
 
     <!-- **************************   FILTER   ******************* -->  
-    <mat-form-field *ngIf="showTableRibbon" class="ml20 topZIndex">
+    <mat-form-field *ngIf="showTableRibbon" class="_pos-relative ml20 topZIndex">
         <mat-label>Filtro</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="" #filterInput>
     </mat-form-field>
-    <button mat-icon-button *ngIf="filterValue" (click)="resetSearch();applyFilter($event)"  class="topZIndex">
+    <button mat-icon-button *ngIf="filterValue" (click)="resetSearch();applyFilter($event)">
         <mat-icon  color="primary">clear</mat-icon>
     </button>
 </form>
 
+<!-- **************************   PAGINATOR   ******************* -->
+<mat-paginator *ngIf="showTableRibbon" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator>
+
+
+<!-- **************************   MAT-TABLE   ******************* -->
+<table mat-table class="_table-row-low transparent w100" [dataSource]="matDataSource"
+    matSort
+    cdkDropList
+    cdkDropListOrientation="horizontal"
+    (cdkDropListDropped)="drop($event)">
+
+    <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
+    <ng-container matColumnDef="actionsColumn">
+        <th mat-header-cell *matHeaderCellDef cdkDrag></th>
+        <td mat-cell  *matCellDef="let element;  let j = index;"> 
+            <img (click)="openDetail(element.alunnoID)" class="iconaMenu pointer" src="./assets/alunno_edit.svg">
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef  cdkDrag mat-sort-header>Nome<mat-icon class="iconaFilter" *ngIf="filterValues.nome">filter_alt</mat-icon></th>
+        <!-- <td mat-cell *matCellDef="let element">{{element.alunno.nome}}</td> -->
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome|highlight:filterValue"></td>
+    </ng-container>
     
-    <!-- **************************   PAGINATOR   ******************* -->
-    <!-- <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator> -->
+    <ng-container matColumnDef="cognome">
+        <th mat-header-cell *matHeaderCellDef  cdkDrag mat-sort-header>Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
+        <!-- <td mat-cell *matCellDef="let element">{{element.alunno.cognome}}</td> -->
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.cognome | highlight: filterValue"></td>
+    </ng-container>
 
-    <!-- **************************   MAT-TABLE   ******************* -->
-    <table mat-table class="_table-row-low transparent w100" [dataSource]="matDataSource"
-        matSort
-        cdkDropList
-        cdkDropListOrientation="horizontal"
-        (cdkDropListDropped)="drop($event)">
+    <ng-container matColumnDef="classesezione">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Classe<mat-icon class="iconaFilter" *ngIf="filterValues.classe || filterValues.sezione">filter_alt</mat-icon></th>
+        <td mat-cell *matCellDef="let element" 
+        [innerHTML]="element.classeSezioneAnno.classeSezione.classe!.descrizioneBreve + ' ' + element.classeSezioneAnno.classeSezione.sezione| highlight: filterValue"></td>
+    </ng-container>
 
-        <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
-        <ng-container matColumnDef="actionsColumn">
-            <th mat-header-cell *matHeaderCellDef cdkDrag></th>
-            <td mat-cell  *matCellDef="let element;  let j = index;"> 
-                <img (click)="openDetail(element.alunnoID)" class="iconaMenu pointer" src="./assets/alunno_edit.svg">
-            </td>
-        </ng-container>
-   
-        <ng-container matColumnDef="nome">
-            <th mat-header-cell *matHeaderCellDef  cdkDrag mat-sort-header>Nome<mat-icon class="iconaFilter" *ngIf="filterValues.nome">filter_alt</mat-icon></th>
-            <!-- <td mat-cell *matCellDef="let element">{{element.alunno.nome}}</td> -->
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome|highlight:filterValue"></td>
-        </ng-container>
-        
-        <ng-container matColumnDef="cognome">
-            <th mat-header-cell *matHeaderCellDef  cdkDrag mat-sort-header>Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
-            <!-- <td mat-cell *matCellDef="let element">{{element.alunno.cognome}}</td> -->
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.cognome | highlight: filterValue"></td>
-        </ng-container>
+    <!-- <ng-container matColumnDef="sezione">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Sez</th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.classeSezioneAnno.classeSezione.sezione | highlight: filterValue"></td>
+    </ng-container> -->
 
-        <ng-container matColumnDef="classesezione">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Classe<mat-icon class="iconaFilter" *ngIf="filterValues.classe || filterValues.sezione">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" 
-            [innerHTML]="element.classeSezioneAnno.classeSezione.classe!.descrizioneBreve + ' ' + element.classeSezioneAnno.classeSezione.sezione| highlight: filterValue"></td>
-        </ng-container>
+    <ng-container matColumnDef="cf">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>CF<mat-icon class="iconaFilter" *ngIf="filterValues.cf">filter_alt</mat-icon></th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.cf==null?'': element.alunno.persona.cf| highlight: filterValue"></td>
+    </ng-container>
 
-        <!-- <ng-container matColumnDef="sezione">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>Sez</th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.classeSezioneAnno.classeSezione.sezione | highlight: filterValue"></td>
-        </ng-container> -->
+    <ng-container matColumnDef="stato">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>St.Iscrizione<mat-icon class="iconaFilter" *ngIf="filterValues.stato">filter_alt</mat-icon></th>
+        <td mat-cell [ngStyle]="{'color': element.stato.color}"  class="_grey-background" *matCellDef="let element" [innerHTML]="element.stato.descrizione | highlight: filterValue"></td>
+    </ng-container>
 
-        <ng-container matColumnDef="cf">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>CF<mat-icon class="iconaFilter" *ngIf="filterValues.cf">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.cf==null?'': element.alunno.persona.cf| highlight: filterValue"></td>
-        </ng-container>
+    <ng-container matColumnDef="actionsColumn2">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header></th>
+        <td mat-cell class="_grey-background" *matCellDef="let element" >
+            <img *ngIf="element.stato.codice == '30'"
+                src="./assets/send_mail.svg"     
+                class="pointer w24px" 
+                matTooltip="invia richiesta di iscrizione ai genitori di {{element.alunno.persona.nome}} {{element.alunno.persona.cognome}}" 
+                [ngClass]="{'invisible': !element.stato.ckInvioIscrizione  }" 
+                (click)="makeScadenzaAndSendEmail(element, true)">
 
-        <ng-container matColumnDef="stato">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>St.Iscrizione<mat-icon class="iconaFilter" *ngIf="filterValues.stato">filter_alt</mat-icon></th>
-            <td mat-cell [ngStyle]="{'color': element.stato.color}"  class="_grey-background" *matCellDef="let element" [innerHTML]="element.stato.descrizione | highlight: filterValue"></td>
-        </ng-container>
+            <img *ngIf="element.stato.codice == '40'" 
+                src="./assets/send_mail2.svg"    
+                class="pointer w24px" 
+                matTooltip="invia nuovamente richiesta di iscrizione ai genitori di {{element.alunno.persona.nome}} {{element.alunno.persona.cognome}}" 
+                [ngClass]="{'invisible': !element.stato.ckInvioIscrizione  }" 
+                (click)="makeScadenzaAndSendEmail(element, false)">
+        </td>
+    </ng-container>
 
-        <ng-container matColumnDef="actionsColumn2">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header></th>
-            <td mat-cell class="_grey-background" *matCellDef="let element" >
-                <img *ngIf="element.stato.codice == '30'"
-                    src="./assets/send_mail.svg"     
-                    class="pointer w24px" 
-                    matTooltip="invia richiesta di iscrizione ai genitori di {{element.alunno.persona.nome}} {{element.alunno.persona.cognome}}" 
-                    [ngClass]="{'invisible': !element.stato.ckInvioIscrizione  }" 
-                    (click)="makeScadenzaAndSendEmail(element, true)">
+    <ng-container matColumnDef="dtNascita">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>nato il<mat-icon class="iconaFilter" *ngIf="filterValues.dtNascita">filter_alt</mat-icon></th>
+        <!-- <td mat-cell *matCellDef="let element">{{element.dtNascita | date: "dd/MM/yyyy"}}</td> -->
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.dtNascita | highlightDate: filterValue"></td>
+    </ng-container>
 
-                <img *ngIf="element.stato.codice == '40'" 
-                    src="./assets/send_mail2.svg"    
-                    class="pointer w24px" 
-                    matTooltip="invia nuovamente richiesta di iscrizione ai genitori di {{element.alunno.persona.nome}} {{element.alunno.persona.cognome}}" 
-                    [ngClass]="{'invisible': !element.stato.ckInvioIscrizione  }" 
-                    (click)="makeScadenzaAndSendEmail(element, false)">
-            </td>
-        </ng-container>
+    <ng-container matColumnDef="emailgenitori">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>email genitori<mat-icon class="iconaFilter" *ngIf="filterValues.email">filter_alt</mat-icon></th>
+        <td mat-cell *matCellDef="let element" 
+            [innerHTML]="(element.alunno._Genitori[0]? element.alunno._Genitori[0].genitore.persona.email: '') + ' ' + (element.alunno._Genitori[1]? element.alunno._Genitori[1].genitore.persona.email: '')"></td>
+    </ng-container>
 
-        <ng-container matColumnDef="dtNascita">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>nato il<mat-icon class="iconaFilter" *ngIf="filterValues.dtNascita">filter_alt</mat-icon></th>
-            <!-- <td mat-cell *matCellDef="let element">{{element.dtNascita | date: "dd/MM/yyyy"}}</td> -->
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.dtNascita | highlightDate: filterValue"></td>
-        </ng-container>
+    <ng-container matColumnDef="telefono">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>telefono<mat-icon class="iconaFilter" *ngIf="filterValues.telefono">filter_alt</mat-icon></th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.telefono==null?'': element.alunno.persona.telefono | highlight: filterValue"></td>
+    </ng-container>
 
-        <ng-container matColumnDef="emailgenitori">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>email genitori<mat-icon class="iconaFilter" *ngIf="filterValues.email">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" 
-                [innerHTML]="(element.alunno._Genitori[0]? element.alunno._Genitori[0].genitore.persona.email: '') + ' ' + (element.alunno._Genitori[1]? element.alunno._Genitori[1].genitore.persona.email: '')"></td>
-        </ng-container>
+    <ng-container matColumnDef="indirizzo">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>indirizzo<mat-icon class="iconaFilter" *ngIf="filterValues.indirizzo">filter_alt</mat-icon></th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.indirizzo | highlight: filterValue"></td>
+    </ng-container>
+    <ng-container matColumnDef="comune">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>comune<mat-icon class="iconaFilter" *ngIf="filterValues.comune">filter_alt</mat-icon></th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.comune | highlight: filterValue"></td>
+    </ng-container>
+    <ng-container matColumnDef="prov">
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>prov<mat-icon class="iconaFilter" *ngIf="filterValues.prov">filter_alt</mat-icon></th>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.prov | highlight: filterValue"></td>
+    </ng-container>
 
-        <ng-container matColumnDef="telefono">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>telefono<mat-icon class="iconaFilter" *ngIf="filterValues.telefono">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.telefono==null?'': element.alunno.persona.telefono | highlight: filterValue"></td>
-        </ng-container>
+    <!-- **************************   MAT-HEADER-ROW   ******************* -->
+    <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>  
 
-        <ng-container matColumnDef="indirizzo">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>indirizzo<mat-icon class="iconaFilter" *ngIf="filterValues.indirizzo">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.indirizzo | highlight: filterValue"></td>
-        </ng-container>
-        <ng-container matColumnDef="comune">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>comune<mat-icon class="iconaFilter" *ngIf="filterValues.comune">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.comune | highlight: filterValue"></td>
-        </ng-container>
-        <ng-container matColumnDef="prov">
-            <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>prov<mat-icon class="iconaFilter" *ngIf="filterValues.prov">filter_alt</mat-icon></th>
-            <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.prov | highlight: filterValue"></td>
-        </ng-container>
+    <!-- **************************   MAT-ROW   ******************* -->
+    <tr mat-row *matRowDef="let element;columns: displayedColumns"
+        class="element-row"
+        (contextmenu)="onRightClick($event, element)" >
+    </tr>
 
-        <!-- **************************   MAT-HEADER-ROW   ******************* -->
-        <tr mat-header-row  class="_table-title-low" *matHeaderRowDef="displayedColumns;"></tr>  
+</table>
 
-        <!-- **************************   MAT-ROW   ******************* -->
-        <tr mat-row *matRowDef="let element;columns: displayedColumns"
-            class="element-row"
-            (contextmenu)="onRightClick($event, element)" >
-        </tr>
+<!-- ***********************  MENU RIGHT CLICK ****************** -->
+<div style="visibility: hidden; position: fixed;" 
+    [style.left]="menuTopLeftPosition.x" 
+    [style.top]="menuTopLeftPosition.y" 
+    [matMenuTriggerFor]="rightMenu">
+</div> 
 
-    </table>
-
-    <!-- ***********************  MENU RIGHT CLICK ****************** -->
-    <div style="visibility: hidden; position: fixed;" 
-        [style.left]="menuTopLeftPosition.x" 
-        [style.top]="menuTopLeftPosition.y" 
-        [matMenuTriggerFor]="rightMenu">
-    </div> 
-
-    <mat-menu #rightMenu="matMenu"> 
-        <ng-template matMenuContent let-item="item"> 
-            <mat-label class="_titolo-filtri-avanzati">{{item.persona.nome | uppercase}} {{item.persona.cognome | uppercase}}</mat-label> 
-            <button mat-menu-item>Classi Frequentate</button>
-            <button mat-menu-item>Pagelle</button>
-            <button mat-menu-item (click)="openPagamenti(item.id)">Quote e Pagamenti</button>
-        </ng-template> 
-    </mat-menu> 
+<mat-menu #rightMenu="matMenu"> 
+    <ng-template matMenuContent let-item="item"> 
+        <mat-label class="_titolo-filtri-avanzati">{{item.persona.nome | uppercase}} {{item.persona.cognome | uppercase}}</mat-label> 
+        <button mat-menu-item>Classi Frequentate</button>
+        <button mat-menu-item>Pagelle</button>
+        <button mat-menu-item (click)="openPagamenti(item.id)">Quote e Pagamenti</button>
+    </ng-template> 
+</mat-menu> 

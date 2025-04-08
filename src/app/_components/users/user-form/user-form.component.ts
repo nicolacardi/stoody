@@ -138,8 +138,8 @@ export class UserFormComponent implements OnInit, OnChanges {
 
   async cambioPassword() {
 
-    console.log ("user-form - cambiopassword - userID",this.userID);
-    if (this.form.controls['password'].value == '') {
+    // console.log ("user-form - cambiopassword - userID",this.userID);
+    if (this.form.controls['password'].value == '' || this.form.controls['password'].value == null) {
       const dialogRef = this._dialog.open(DialogOkComponent, {
         width: '320px',
         data: {titolo: "CAMBIO PASSWORD", sottoTitolo: "E' necessario un valore<br>nel campo password!"}

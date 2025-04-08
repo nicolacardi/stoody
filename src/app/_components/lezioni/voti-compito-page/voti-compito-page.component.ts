@@ -44,8 +44,8 @@ constructor(public _dialogRef:                            MatDialogRef<VotiCompi
 
   ngOnInit(): void {
 
-    if (this.data.classeSezioneAnnoID != null && this.data.classeSezioneAnnoID != undefined) {
-      this.svcClasseSezioneAnno.get(this.data.classeSezioneAnnoID).subscribe(
+    if (this.data.classeDocenteMateria.classeSezioneAnnoID != null && this.data.classeDocenteMateria.classeSezioneAnnoID != undefined) {
+      this.svcClasseSezioneAnno.get(this.data.classeDocenteMateria.classeSezioneAnnoID).subscribe(
         val => this.strClasseSezioneAnno = val.classeSezione.classe!.descrizione2 + " " + val.classeSezione.sezione
       );
     }

@@ -68,19 +68,19 @@
                             </mat-checkbox>
                         </mat-grid-tile>
 
-                        <mat-grid-tile>
+                        <!-- <mat-grid-tile>
                             <mat-form-field>
                                 <mat-label>Classe - Sezione</mat-label>
                                 <input matInput type="text" placeholder="Nome e Cognome" [value]="strClasseSezioneAnno" [disabled] = "true">
                             </mat-form-field>
-                        </mat-grid-tile>
+                        </mat-grid-tile> -->
 
-                        <mat-grid-tile>
-                            <mat-form-field>
+                        <mat-grid-tile colspan="2">
+                            <mat-form-field class="w100">
                                 <mat-label>Materia</mat-label>
-                                <mat-select required formControlName="materiaID">
-                                    <mat-option *ngFor="let element of (obsClassiDocentiMaterie$ | async)" [value]="element.materiaID">
-                                        {{element.materia!.descrizione}}
+                                <mat-select required formControlName="classeDocenteMateriaID">
+                                    <mat-option *ngFor="let element of (obsClassiDocentiMaterie$ | async)" [value]="element.id">
+                                        {{element.materia!.descrizione}} - {{element.docente!.persona.nome}} {{element.docente!.persona.cognome}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
@@ -93,13 +93,13 @@
                             </mat-form-field>
                         </mat-grid-tile>
 
-                        <mat-grid-tile class="tileCk ml15">
+                        <mat-grid-tile class="tileCk ml15" colspan ="2">
                             <mat-checkbox color="primary" formControlName="ckFirma">
                                 Firma Docente
                             </mat-checkbox>
                         </mat-grid-tile>
 
-                        <mat-grid-tile>
+                        <!-- <mat-grid-tile>
                             <mat-form-field>
                                 <mat-label>Docente</mat-label>
                                 <mat-select required formControlName="docenteID">
@@ -108,7 +108,7 @@
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
-                        </mat-grid-tile>
+                        </mat-grid-tile> -->
 
                         <mat-grid-tile class="_align-top" colspan="2" rowspan ="2">
                             <mat-form-field class="w100 _border-left pl5" appearance="outline">

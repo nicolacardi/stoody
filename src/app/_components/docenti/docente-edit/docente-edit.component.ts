@@ -1,6 +1,6 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit, ViewChild }       from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild }       from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }   from '@angular/material/dialog';
 import { MatSnackBar }                                from '@angular/material/snack-bar';
@@ -78,7 +78,8 @@ export class DocenteEditComponent implements OnInit {
     private svcUser                                : UserService,
     public _dialog                                 : MatDialog,
     private _snackBar                              : MatSnackBar,
-    private _loadingService                        : LoadingService
+    private _loadingService                        : LoadingService,
+    private cdr                                    : ChangeDetectorRef
             
   ) {
 
@@ -211,7 +212,8 @@ export class DocenteEditComponent implements OnInit {
   }
 
   formDocenteValidEmitted(isValid: boolean) {
-    this.isValid = isValid;
+   this.isValid = isValid;
+   this.cdr.detectChanges();  //serve per ovviare a un ExpressionChangedAfterItHasBeenCheckedError
   }
 
   formUserValidEmitted(isValid: boolean) {

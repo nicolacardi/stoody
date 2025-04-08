@@ -67,10 +67,10 @@ export class GenitoriService {
     return this.http.delete( environment.apiBaseUrl  + 'ALU_Genitori/' + genitoreID);    
   }
 
-  deleteByPersona (personaID: number) {
-    return this.http.delete( environment.apiBaseUrl  + 'ALU_Genitori/DeleteByPersona/'+personaID);
-    //http://213.215.231.4/swappX/api/ALU_Genitori/DeletByPersona/3
-  }
+  // deleteByPersona (personaID: number) {
+  //   return this.http.delete( environment.apiBaseUrl  + 'ALU_Genitori/DeleteByPersona/'+personaID);
+  //   //http://213.215.231.4/swappX/api/ALU_Genitori/DeletByPersona/3
+  // }
 
   filterGenitori(searchstring: string): Observable<ALU_Genitore[]>{
     if (searchstring != null && (typeof searchstring === 'string')) {

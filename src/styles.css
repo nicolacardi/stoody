@@ -1242,7 +1242,7 @@ h3 { font-family: 'Titillium Web', sans-serif !important;
 ._btn-toolbar {
     z-index: 1000;
     position: absolute !important;
-    left: 10px;
+    left: 5px;
     background-color: #626262 !important;
 }
 

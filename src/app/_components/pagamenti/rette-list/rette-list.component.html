@@ -18,7 +18,7 @@
 
 <h1 class="_titolo-pagina">Rette</h1>
 <form *ngIf="obsAnni$ | async" [formGroup] = "form"> 
-    <mat-form-field class="ml20 topZIndex">
+    <mat-form-field class="_pos-relative ml20 topZIndex noBottomPadding">
         <mat-select formControlName="selectAnnoScolastico" (selectionChange)="updateList()" #annoscolastico>
             <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id" >
             {{element.annoscolastico}}
@@ -26,7 +26,7 @@
         </mat-select>
     </mat-form-field>
     <!-- **************************   FILTER   ******************* -->
-    <mat-form-field class="ml20 mt10 topZIndex">
+    <mat-form-field class="_pos-relative mt10 ml20 topZIndex">
         <mat-label>Filtro Alunno/Classe</mat-label>
         <input matInput (keyup)="applyFilter(filterInput.value)" placeholder="nome, cognome o classe" formControlName="filterControl" #filterInput>
     </mat-form-field>

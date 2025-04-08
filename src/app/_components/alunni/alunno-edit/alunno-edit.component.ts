@@ -230,7 +230,16 @@ save(){
             this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
             this._dialogRef.close();
           },
-          error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+          // error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+
+          error: err => {
+            const messaggio = err?.error || 'Errore in cancellazione';
+            this._snackBar.openFromComponent(SnackbarComponent, {
+              data: messaggio,
+              panelClass: ['red-snackbar']
+            });
+          }
+
         });
       }
     });

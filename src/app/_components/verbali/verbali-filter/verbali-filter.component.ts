@@ -37,7 +37,7 @@ export class VerbaliFilterComponent implements OnInit {
   ngOnInit() {
     this.nomeFilter.valueChanges.subscribe(val => {this.applyFilterDx('nome', val);})
     this.cognomeFilter.valueChanges.subscribe(val => {this.applyFilterDx('cognome', val);})
-    this.tipoFilter.valueChanges.subscribe(val => {this.applyFilterDx('tipo', val);})
+    this.tipoFilter.valueChanges.subscribe(val => {this.applyFilterDx('tipoVerbale', val);})
     this.dtVerbaleFilter.valueChanges.subscribe(val => {this.applyFilterDx('dtVerbale', val);})
     this.classeFilter.valueChanges.subscribe(val => {this.applyFilterDx('classe', val);})
     this.titoloFilter.valueChanges.subscribe(val => {this.applyFilterDx('titolo', val);})

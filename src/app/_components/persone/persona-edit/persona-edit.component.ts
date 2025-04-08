@@ -116,24 +116,25 @@ export class PersonaEditComponent implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(public _dialogRef: MatDialogRef<PersonaEditComponent>,
-              @Inject(MAT_DIALOG_DATA) public personaID: number,
-              private fb:                       UntypedFormBuilder, 
-              private svcPersone:               PersoneService,
-              private svcUser:                  UserService,
-              private svcAlunni:                AlunniService,
-              private svcGenitori:              GenitoriService,
-              private svcDocenti:               DocentiService,
-              private svcNonDocenti:            NonDocentiService,
-              private svcDirigenti:             DirigentiService,
+  constructor(
+    public _dialogRef                              : MatDialogRef<PersonaEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public personaID      : number,
+    private fb                                     : UntypedFormBuilder,
+    private svcPersone                             : PersoneService,
+    private svcUser                                : UserService,
+    private svcAlunni                              : AlunniService,
+    private svcGenitori                            : GenitoriService,
+    private svcDocenti                             : DocentiService,
+    private svcNonDocenti                          : NonDocentiService,
+    private svcDirigenti                           : DirigentiService,
 
-              private svcTipiPersona:           TipiPersonaService,
+    private svcTipiPersona                         : TipiPersonaService,
 
-              public _dialog:                   MatDialog,
-              private _snackBar:                MatSnackBar,
-              private _loadingService :         LoadingService,
-              private cdr: ChangeDetectorRef  
-            ) {
+    public _dialog                                 : MatDialog,
+    private _snackBar                              : MatSnackBar,
+    private _loadingService                        : LoadingService,
+    private cdr                                    : ChangeDetectorRef
+  ) {
 
     _dialogRef.disableClose = true;
     

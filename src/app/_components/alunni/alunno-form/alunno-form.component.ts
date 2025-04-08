@@ -127,7 +127,14 @@ export class AlunnoFormComponent implements OnInit, OnChanges {
         next: res=>{
           this._snackBar.openFromComponent(SnackbarComponent,{data: 'Ruolo Alunno cancellato', panelClass: ['red-snackbar']});
         },
-        error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+        // error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+        error: err => {
+          const messaggio = err?.error || 'Errore in cancellazione';
+          this._snackBar.openFromComponent(SnackbarComponent, {
+            data: 'Errore in cancellazione: ' + messaggio,
+            panelClass: ['red-snackbar']
+          });
+        }
       });
 
   }

@@ -29,10 +29,10 @@ export class DocentiService {
   }
 
 
-  listWithMaterie(): Observable<PER_Docente[]>{
-      return this.http.get<PER_Docente[]>(environment.apiBaseUrl+'PER_Docenti/ListWithMaterie' );
-    //http://213.215.231.4/swappX/api/PER_Docenti/ListWithMaterie
-  }
+  // listWithMaterie(): Observable<PER_Docente[]>{
+  //     return this.http.get<PER_Docente[]>(environment.apiBaseUrl+'PER_Docenti/ListWithMaterie' );
+  //   //http://213.215.231.4/swappX/api/PER_Docenti/ListWithMaterie
+  // }
 
 
   listSupplentiDisponibili(lezioneID: number, docenteID: number, dtCalendario: string, h_Ini: string, h_End: string) : Observable<PER_Docente[]>{
@@ -127,9 +127,9 @@ export class DocentiService {
     return this.http.delete( environment.apiBaseUrl  + 'PER_Docenti/' + docenteID);    
   }
 
-  deleteByPersona (personaID: number) {
-    return this.http.delete( environment.apiBaseUrl  + 'PER_Docenti/DeletByPersona/'+personaID);
-    //http://213.215.231.4/swappX/api/PER_Docenti/DeletByPersona/3
-  }
+  // deleteByPersona (personaID: number) {
+  //   return this.http.delete( environment.apiBaseUrl  + 'PER_Docenti/DeletByPersona/'+personaID);
+  //   //http://213.215.231.4/swappX/api/PER_Docenti/DeletByPersona/3
+  // }
 
 }

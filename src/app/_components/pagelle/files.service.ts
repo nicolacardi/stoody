@@ -357,8 +357,8 @@ export class FilesService {
     const coverTagDocument: RPT_TagDocument = {
       templateName: "CoverRegistroDiClasse",
       tagFields: [
-        { tagName: "ClasseSezione", tagValue: listalezioni[0].classeSezioneAnno.classeSezione.classe?.descrizione2 + ' ' +  listalezioni[0].classeSezioneAnno.classeSezione.sezione},
-        { tagName: "AnnoScolastico", tagValue: listalezioni[0].classeSezioneAnno.anno.annoscolastico},
+        { tagName: "ClasseSezione", tagValue: listalezioni[0].classeDocenteMateria.classeSezioneAnno!.classeSezione.classe?.descrizione2 + ' ' +  listalezioni[0].classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione},
+        { tagName: "AnnoScolastico", tagValue: listalezioni[0].classeDocenteMateria.classeSezioneAnno!.anno.annoscolastico},
         { tagName: "DataDoc", tagValue: Utility.formatDate(new Date().toISOString(), FormatoData.dd_mm_yyyy)}
       ]
     };
@@ -375,8 +375,8 @@ export class FilesService {
     const coverTagDocument: RPT_TagDocument = {
       templateName: "CoverRegistroDocente",
       tagFields: [
-        { tagName: "DocenteNomeCognome", tagValue: listalezioni[0].docente.persona.nome + ' ' +  listalezioni[0].docente.persona.cognome},
-        { tagName: "AnnoScolastico", tagValue: listalezioni[0].classeSezioneAnno.anno.annoscolastico},
+        { tagName: "DocenteNomeCognome", tagValue: listalezioni[0].classeDocenteMateria.docente!.persona.nome + ' ' +  listalezioni[0].classeDocenteMateria.docente!.persona.cognome},
+        { tagName: "AnnoScolastico", tagValue: listalezioni[0].classeDocenteMateria.classeSezioneAnno!.anno.annoscolastico},
         { tagName: "DataDoc", tagValue: Utility.formatDate(new Date().toISOString(), FormatoData.dd_mm_yyyy)}
       ]
     };
@@ -442,7 +442,7 @@ export class FilesService {
                 { tagName: "Data", tagValue: date.toLocaleDateString() },
                 { tagName: "Dalle", tagValue: lezione.h_Ini.slice(0, -3) },
                 { tagName: "Alle", tagValue: lezione.h_End.slice(0, -3) },
-                { tagName: "Docente", tagValue: `${lezione.docente.persona.nome} ${lezione.docente.persona.cognome}` },
+                { tagName: "Docente", tagValue: `${lezione.classeDocenteMateria.docente!.persona.nome} ${lezione.classeDocenteMateria.docente!.persona.cognome}` },
                 { tagName: "Materia", tagValue: lezione.title },
                 { tagName: "ArgomentoECompiti", tagValue: `${lezione.argomento} - ${lezione.compiti}` },
               ]

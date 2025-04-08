@@ -5,7 +5,7 @@ import { UntypedFormBuilder, UntypedFormGroup }               from '@angular/for
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
 import { Observable }                           from 'rxjs';
-import { take, tap }                            from 'rxjs/operators';
+import { map, take, tap }                            from 'rxjs/operators';
 
 import { registerLocaleData }                   from '@angular/common';
 import localeIt                                 from '@angular/common/locales/it';
@@ -93,7 +93,6 @@ export class LezioneComponent implements OnInit {
 
   constructor(public _dialogRef:                          MatDialogRef<LezioneComponent>,
               @Inject(MAT_DIALOG_DATA) public data:       DialogDataLezione,
-
               private fb:                                 UntypedFormBuilder, 
               private svcLezioni:                         LezioniService,
               private svcMaterie:                         MaterieService,
@@ -103,7 +102,6 @@ export class LezioneComponent implements OnInit {
               private svcIscrizioni:                      IscrizioniService,
               private svcPresenze:                        PresenzeService,
               private svcVotiCompiti:                     VotiCompitiService,
-
               public _dialog:                             MatDialog,
               private _snackBar:                          MatSnackBar,
               private _loadingService:                    LoadingService,
@@ -113,6 +111,7 @@ export class LezioneComponent implements OnInit {
 
     this.form = this.fb.group({
       id:                                       [null],
+      classeDocenteMateriaID:                   [''],
       classeSezioneAnnoID:                      [''],
       dtCalendario:                             [''],
     
@@ -146,24 +145,36 @@ export class LezioneComponent implements OnInit {
 //#region ----- LifeCycle Hooks e simili--------
 
   ngOnInit () {
-    this.form.controls['materiaID'].valueChanges.subscribe( 
-      res =>{
-        if (this.form.controls['classeSezioneAnnoID'].value != '' && this.form.controls['classeSezioneAnnoID'].value != null && this.form.controls['classeSezioneAnnoID'].value != undefined) {
-          //verifica se già non è impegnato in quest'ora o FRAZIONI DI ORA in qualche altro posto.
-          this.svcDocenze.getByClasseSezioneAnnoAndMateria(this.form.controls['classeSezioneAnnoID'].value, res).subscribe(
-            val => {
-              if (val) {
-                this.form.controls['docenteID'].setValue(val.docenteID);
-                this.docenteID = this.data.docenteID; //Serve per essere passato alle interrogazioni
-              }
-              else { 
-                this.form.controls['docenteID'].setValue("");
-                this.docenteID = this.data.docenteID; //Serve per essere passato alle interrogazioni
-              }
-            });
-        }
-      }
-    );
+    //non dovrebbe più servire aggiornare il nome del docente
+    //però ATTENZIONE ALLE INTERROGAZIONI!
+    // this.form.controls['classeDocenteMateriaID'].valueChanges.subscribe( 
+    //   res =>{
+        
+
+    //     if (this.form.controls['classeSezioneAnnoID'].value != '' && this.form.controls['classeSezioneAnnoID'].value != null && this.form.controls['classeSezioneAnnoID'].value != undefined) {
+    //       //verifica se già non è impegnato in quest'ora o FRAZIONI DI ORA in qualche altro posto.
+    //       //console.log("lezione-component ngOnIniti - getByClasseSezioneAnnoAndMateria this.form.controls['classeSezioneAnnoID'].value", this.form.controls['classeSezioneAnnoID'].value)
+
+    //       this.svcDocenze.getByClasseSezioneAnnoAndMateria(this.form.controls['classeSezioneAnnoID'].value, res)
+        
+    //         // .pipe(
+    //         //   map(docenze => docenze.sort((a, b) => a.materia.descrizione.localeCompare(b.materia.descrizione)))
+    //         // )
+    //       .subscribe(
+    //         val => {
+    //           console.log ("val", val);
+    //           if (val) {
+    //             this.form.controls['docenteID'].setValue(val.docenteID);
+    //             this.docenteID = this.data.docenteID; //Serve per essere passato alle interrogazioni
+    //           }
+    //           else { 
+    //             this.form.controls['docenteID'].setValue("");
+    //             this.docenteID = this.data.docenteID; //Serve per essere passato alle interrogazioni
+    //           }
+    //         });
+    //     }
+    //   }
+    // );
 
     this.form.controls['docenteID'].valueChanges.subscribe( 
       //ora devo estrarre i supplenti: i docenti che per l'ora selezionata NON sono già impegnati
@@ -183,8 +194,11 @@ export class LezioneComponent implements OnInit {
   loadData(): void {
 
     this.breakpoint = (window.innerWidth <= 800) ? 2 : 2;
-    
-    this.obsClassiDocentiMaterie$ = this.svcDocenze.listByClasseSezioneAnno(this.data.classeSezioneAnnoID);
+    console.log("lezione.component - loadData - this.data.classeSezioneAnnoID", this.data.classeSezioneAnnoID);
+    this.obsClassiDocentiMaterie$ = this.svcDocenze.listByClasseSezioneAnno(this.data.classeSezioneAnnoID)
+    .pipe(
+      map(docenze => docenze.sort((a, b) => a.materia!.descrizione.localeCompare(b.materia!.descrizione)))
+    );
 
     this.obsMaterie$ = this.svcMaterie.listByClasseSezioneAnno(this.data.classeSezioneAnnoID); 
 
@@ -257,9 +271,9 @@ export class LezioneComponent implements OnInit {
     this.svcLezioni.listByDocenteAndOraOverlap (this.data.lezioneID? this.data.lezioneID: 0 , this.form.controls['docenteID'].value, this.strDtStart, this.strH_Ini, this.strH_End)
     .subscribe( (val: CAL_Lezione[]) => {
       if (val.length > 0) {
-        let strMsg = "il Maestro " + val[0].docente.persona!.nome + " " + val[0].docente.persona!.cognome + " \n è già impegnato in questo slot in ";
+        let strMsg = "il Maestro " + val[0].classeDocenteMateria.docente!.persona!.nome + " " + val[0].classeDocenteMateria.docente!.persona!.cognome + " \n è già impegnato in questo slot in ";
         val.forEach (x =>
-          {strMsg = strMsg + "\n - " + x.classeSezioneAnno.classeSezione.classe!.descrizione2 + ' ' + x.classeSezioneAnno.classeSezione.sezione;}
+          {strMsg = strMsg + "\n - " + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.classe!.descrizione2 + ' ' + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione;}
         )
 
         this._dialog.open(DialogOkComponent, {
@@ -281,8 +295,8 @@ export class LezioneComponent implements OnInit {
         if (this.form.controls['ckCompito'].value == '')   this.form.controls['ckCompito'].setValue(false);     
         
         const objLezione = <CAL_Lezione>{
-          
-          classeSezioneAnnoID: this.form.controls['classeSezioneAnnoID'].value,
+          classeDocenteMateriaID: this.form.controls['classeSezioneMateriaID'].value,
+          //classeSezioneAnnoID: this.form.controls['classeSezioneAnnoID'].value,
           dtCalendario: this.form.controls['dtCalendario'].value,
           title: this.form.controls['title'].value,
           start: this.form.controls['start'].value,
@@ -292,8 +306,8 @@ export class LezioneComponent implements OnInit {
           h_Ini: this.form.controls['h_Ini'].value,
           h_End: this.form.controls['h_End'].value,
 
-          docenteID: this.form.controls['docenteID'].value,
-          materiaID: this.form.controls['materiaID'].value,
+          //docenteID: this.form.controls['docenteID'].value,
+          //materiaID: this.form.controls['materiaID'].value,
           supplenteID: this.form.controls['supplenteID'].value,
 
           ckEpoca: this.form.controls['ckEpoca'].value,

@@ -1,25 +1,25 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit }            from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA }        from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { Observable, firstValueFrom }                           from 'rxjs';
-import { tap }                                  from 'rxjs/operators';
+import { Component, Inject, OnInit }                  from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA }              from '@angular/material/dialog';
+import { MatSnackBar }                                from '@angular/material/snack-bar';
+import { Observable, firstValueFrom }                 from 'rxjs';
+import { tap }                                        from 'rxjs/operators';
 
 //models
-import { CLS_ClasseDocenteMateria }             from 'src/app/_models/CLS_ClasseDocenteMateria';
+import { CLS_ClasseDocenteMateria }                   from 'src/app/_models/CLS_ClasseDocenteMateria';
 
 //components
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
+import { SnackbarComponent }                          from '../../utilities/snackbar/snackbar.component';
 
 //services
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { DocenzeService }                       from '../docenze.service';
-import { CLS_ClasseSezioneAnno } from 'src/app/_models/CLS_ClasseSezioneAnno';
-import { ClassiSezioniAnniService } from '../../classi/classi-sezioni-anni.service';
-import { MAT_Materia } from 'src/app/_models/MAT_Materia';
-import { PER_Docente } from 'src/app/_models/PER_Docente';
+import { LoadingService }                             from '../../utilities/loading/loading.service';
+import { DocenzeService }                             from '../docenze.service';
+import { CLS_ClasseSezioneAnno }                      from 'src/app/_models/CLS_ClasseSezioneAnno';
+import { ClassiSezioniAnniService }                   from '../../classi/classi-sezioni-anni.service';
+import { MAT_Materia }                                from 'src/app/_models/MAT_Materia';
+import { PER_Docente }                                from 'src/app/_models/PER_Docente';
 
 //#endregion
 @Component({
@@ -159,7 +159,14 @@ export class DocenzaEditComponent implements OnInit {
         this._dialogRef.close();
         this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record Eliminato', panelClass: ['green-snackbar']});
       },
-      error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore durante la cancellazione', panelClass: ['red-snackbar']})
+      // error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore durante la cancellazione', panelClass: ['red-snackbar']})
+      error: err => {
+        const messaggio = err?.error || 'Errore in cancellazione';
+        this._snackBar.openFromComponent(SnackbarComponent, {
+          data: 'Errore in cancellazione: ' + messaggio,
+          panelClass: ['red-snackbar']
+        });
+      }
     });
   }
 //#endregion

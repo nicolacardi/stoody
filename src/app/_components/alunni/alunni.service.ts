@@ -65,10 +65,10 @@ export class AlunniService {
     return this.http.delete( environment.apiBaseUrl  + 'ALU_Alunni/' + alunnoID);    
   }
 
-  deleteByPersona (personaID: number) {
-    return this.http.delete( environment.apiBaseUrl  + 'ALU_Alunni/DeleteByPersona/'+personaID);
-    //http://213.215.231.4/swappX/api/ALU_Alunni/DeletByPersona/3
-  }
+  // deleteByPersona (personaID: number) {
+  //   return this.http.delete( environment.apiBaseUrl  + 'ALU_Alunni/DeleteByPersona/'+personaID);
+  //   //http://213.215.231.4/swappX/api/ALU_Alunni/DeletByPersona/3
+  // }
 
   filterAlunni(searchstring: string): Observable<ALU_Alunno[]>{
 

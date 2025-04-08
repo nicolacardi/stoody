@@ -74,7 +74,7 @@ export class CompitoEditComponent implements OnInit {
       let currUser = Utility.getCurrentUser();
       this.prof = currUser.fullname;
     } else 
-    this.prof = this.data.docente.persona!.nome + ' ' + this.data.docente.persona!.cognome;
+    this.prof = this.data.classeDocenteMateria.docente!.persona!.nome + ' ' + this.data.classeDocenteMateria.docente!.persona!.cognome;
 
   }
 
@@ -94,7 +94,7 @@ export class CompitoEditComponent implements OnInit {
     this.dateArr = [];
 
     if (this.data.id == 0) {
-      this.obsLezioni$= this.svcLezioni.listByDocenteClasseSezioneAnnoNoCompito(this.data.docenteID, this.data.classeSezioneAnnoID)
+      this.obsLezioni$= this.svcLezioni.listByDocenteClasseSezioneAnnoNoCompito(this.data.classeDocenteMateria.docenteID, this.data.classeDocenteMateria.classeSezioneAnnoID)
         .pipe(
           tap(val =>  val.forEach(x=> this.dateArr.push(x.dtCalendario)))
         );
@@ -134,7 +134,7 @@ export class CompitoEditComponent implements OnInit {
 
     if (this.data.id == 0){ //Inserimento nuovo compito
       //Prima bisogna inserire in VotiCompiti un valore per ogni alunno iscritto alla classe della lezione selezionata
-      this.svcIscrizioni.listByClasseSezioneAnno(this.lezioneSelected.classeSezioneAnnoID).subscribe(
+      this.svcIscrizioni.listByClasseSezioneAnno(this.lezioneSelected.classeDocenteMateria.classeSezioneAnnoID).subscribe(
         iscrizioni => { 
           for (let iscrizione of iscrizioni) {
             let objVoto : TST_VotoCompito =

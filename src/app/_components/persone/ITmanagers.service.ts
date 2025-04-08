@@ -41,10 +41,10 @@ export class ITManagersService {
     return this.http.delete( environment.apiBaseUrl  + 'PER_ITManagers/' + id);    
   }
 
-  deleteByPersona (personaID: number) {
-    return this.http.delete( environment.apiBaseUrl  + 'PER_ITManagers/DeleteByPersona/'+personaID);
-    //http://213.215.231.4/swappX/api/PER_ITManagers/DeletByPersona/3
-  }
+  // deleteByPersona (personaID: number) {
+  //   return this.http.delete( environment.apiBaseUrl  + 'PER_ITManagers/DeleteByPersona/'+personaID);
+  //   //http://213.215.231.4/swappX/api/PER_ITManagers/DeletByPersona/3
+  // }
 
 }
 

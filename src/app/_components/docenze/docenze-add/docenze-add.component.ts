@@ -4,7 +4,7 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { iif, Observable, of }                  from 'rxjs';
-import { concatMap, debounceTime, switchMap, tap } from 'rxjs/operators';
+import { concatMap, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
 import { MatAutocompleteSelectedEvent }         from '@angular/material/autocomplete';
 
@@ -100,8 +100,10 @@ export class DocenzeAddComponent implements OnInit {
        val=> this.materiaSelectedID = val 
     );
 
-    this.obsMaterie$ = this.svcMaterie.list();
-
+    this.obsMaterie$ = this.svcMaterie.list()
+    .pipe(
+      map(materie => materie.sort((a, b) => a.descrizione.localeCompare(b.descrizione)))
+    );
     //Vanno mostrate solo le materie che hanno un tipo di voto già espresso per questa classe...?
     //In quel caso va usato invece del precedente svcMaterie.list : svcClasseAnnoMateria.listByClasseSezioneAnno
     //Attenzione però: se una materia viene cancellata da CLS_ClasseAnnoMateria bisogna impedirlo qualora sia utilizzata in svcClasseDocenzaMateria...e non è molto facile

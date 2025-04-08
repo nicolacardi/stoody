@@ -121,8 +121,8 @@ export class LezioniCalendarioComponent implements OnInit {
             titleText.innerHTML = '[<span class="fs10">Mat: </span><b>'
                 +event.event._def.title +' '
                 + '</b>] [<span class="fs10">Doc: </span><b>'
-                + event.event._def.extendedProps['docente'].persona.nome + ' '
-                + event.event._def.extendedProps['docente'].persona.cognome + ' '
+                + event.event._def.extendedProps['classeDocenteMateria'].docente.persona.nome + ' '
+                + event.event._def.extendedProps['classeDocenteMateria'].docente.persona.cognome + ' '
                 + '</b>] [<span class="fs10">Arg: </span>'
                 + (event.event._def.extendedProps['argomento']? event.event._def.extendedProps['argomento']: "") + ' '
                 + '] [<span class="fs10">Comp: </span>'
@@ -176,8 +176,8 @@ export class LezioniCalendarioComponent implements OnInit {
             titleText.innerHTML = '[<span class="fs10">Mat: </span><b>'
                 +event.event._def.title +' '
                 + '</b>] [<span class="fs10">Doc: </span><b>'
-                + event.event._def.extendedProps['docente'].persona.nome + ' '
-                + event.event._def.extendedProps['docente'].persona.cognome + ' '
+                + event.event._def.extendedProps['classeDocenteMateria'].docente.persona.nome + ' '
+                + event.event._def.extendedProps['classeDocenteMateria'].docente.persona.cognome + ' '
                 + '</b>] [<span class="fs10">Arg: </span>'
                 + (event.event._def.extendedProps['argomento']? event.event._def.extendedProps['argomento']: "") + ' '
                 + '] [<span class="fs10">Comp: </span>'
@@ -274,17 +274,21 @@ export class LezioniCalendarioComponent implements OnInit {
     //if (this.classeSezioneAnnoID) {
       //se c'è un Docente selezionato allora filtro anche per lui
       if (this.docenteID != undefined && this.docenteID > 0) {
+        console.log("1");
         obsLezioni$= this.svcLezioni.listByDocenteClasseSezioneAnno(this.docenteID, this.classeSezioneAnnoID);
       } else {
+        console.log("2");
         //se non c'è un docente seleziono non filtro anche per lui
         obsLezioni$= this.svcLezioni.listByClasseSezioneAnno(this.classeSezioneAnnoID);
       }
     } else {
       //qui ("orario per Docente") non conta la classe ma solo il docenteID
       if (this.docenteID != undefined && this.docenteID > 0) {
+        console.log("3");
         obsLezioni$= this.svcLezioni.listByDocente(this.docenteID); //Order by dtCalendario non sembra funzionare nel WS
       } else {
         this.showWarn = true;
+        console.log("4");
         obsLezioni$= this.svcLezioni.listByDocente(0);
       }
     }
@@ -292,6 +296,7 @@ export class LezioniCalendarioComponent implements OnInit {
     const loadLezioni$ =this._loadingService.showLoaderUntilCompleted(obsLezioni$);
     loadLezioni$.subscribe(
       val =>   {
+        console.log("lezioni-calendario - loadData - elenco eventi estratti da CAL_Lezioni", val);
         this.Events = val;
         this.calendarOptions.events = this.Events;
       }
@@ -440,7 +445,7 @@ export class LezioniCalendarioComponent implements OnInit {
       //include Info aggiuntive
       let docenteText = document.createElement('i');
         docenteText.className = "fc-event-title";
-        docenteText.innerHTML = arg.event.extendedProps['docente'].persona.nome +  " " + arg.event.extendedProps['docente'].persona.cognome;
+        docenteText.innerHTML = arg.event.extendedProps['classeDocenteMateria'].docente.persona.nome +  " " + arg.event.extendedProps['classeDocenteMateria'].docente.persona.cognome;
       //Aggiungo icona firma
       let img = document.createElement('img');
       if (arg.event.extendedProps['ckFirma'] == true) 
@@ -556,7 +561,7 @@ export class LezioniCalendarioComponent implements OnInit {
           dtCalendario: clickInfo.event.extendedProps['dtCalendario'],
           h_Ini: clickInfo.event.extendedProps['h_Ini'],
           h_End: clickInfo.event.extendedProps['h_End'],
-          classeSezioneAnnoID: clickInfo.event.extendedProps['classeSezioneAnnoID'],
+          classeSezioneAnnoID: clickInfo.event.extendedProps['classeDocenteMateria'].classeSezioneAnnoID,
           dove: this.dove,
           docenteID: this.docenteID
         }
@@ -621,9 +626,9 @@ export class LezioniCalendarioComponent implements OnInit {
     .subscribe(
       (val : CAL_Lezione[])=> {
         if (val.length > 0) {
-          let strMsg = "il Maestro " + val[0].docente.persona!.nome + " " + val[0].docente.persona!.cognome + " \n è già impegnato in questo slot in ";
+          let strMsg = "il Maestro " + val[0].classeDocenteMateria.docente!.persona!.nome + " " + val[0].classeDocenteMateria.docente!.persona!.cognome + " \n è già impegnato in questo slot in ";
           val.forEach (x =>
-            { strMsg = strMsg + "\n - " + x.classeSezioneAnno.classeSezione.classe!.descrizione2 + ' ' + x.classeSezioneAnno.classeSezione.sezione;}
+            { strMsg = strMsg + "\n - " + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.classe!.descrizione2 + ' ' + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione;}
           )
           this._dialog.open(DialogOkComponent, {
             width: '320px',
@@ -658,14 +663,14 @@ export class LezioniCalendarioComponent implements OnInit {
     let strH_END =Utility.formatHour(dropInfo.event.end);
 
     let form: CAL_Lezione;
-    this.svcLezioni.listByDocenteAndOraOverlap (parseInt(dropInfo.event.id), dropInfo.event.extendedProps['docenteID'], dtCalendario, strH_INI, strH_END)
+    this.svcLezioni.listByDocenteAndOraOverlap (parseInt(dropInfo.event.id), dropInfo.event.extendedProps['classeDocenteMateria'].docenteID, dtCalendario, strH_INI, strH_END)
     .subscribe(
 
       (val: CAL_Lezione[]) => {
         if (val.length > 0) {
-          let strMsg = "il Maestro " + val[0].docente.persona!.nome + " " + val[0].docente.persona!.cognome + " \n è già impegnato in questo slot in ";
+          let strMsg = "il Maestro " + val[0].classeDocenteMateria.docente!.persona!.nome + " " + val[0].classeDocenteMateria.docente!.persona!.cognome + " \n è già impegnato in questo slot in ";
           val.forEach (x =>
-            {strMsg = strMsg + "\n - " + x.classeSezioneAnno.classeSezione.classe!.descrizione2 + ' ' + x.classeSezioneAnno.classeSezione.sezione;}
+            {strMsg = strMsg + "\n - " + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.classe!.descrizione2 + ' ' + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione;}
           )
           this._dialog.open(DialogOkComponent, {
             width: '320px',

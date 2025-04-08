@@ -6,7 +6,7 @@
             <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
         </div>
         <div class="center mt20">
-            <mat-label class="center fs14" *ngIf="data.id">Compito di:  <span class="fs18">{{data.materia.descrizione}}</span></mat-label>
+            <mat-label class="center fs14" *ngIf="data.id">Compito di:  <span class="fs18">{{data.classeDocenteMateria.materia!.descrizione}}</span></mat-label>
         </div>
         <div class="center mt10">
             <mat-label class="center fs16" *ngIf="data.id">{{strDtStart | date: 'EEEE, d MMMM, y' : '+0100' : 'it' }} - Classe: {{strClasseSezioneAnno}}</mat-label>
