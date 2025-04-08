@@ -34,7 +34,6 @@ import { VotiCompitiService }                   from '../voti-compiti.service';
 
 //models
 import { CAL_Lezione }                          from 'src/app/_models/CAL_Lezione';
-import { MAT_Materia }                          from 'src/app/_models/MAT_Materia';
 import { PER_Docente }                          from 'src/app/_models/PER_Docente';
 import { CLS_ClasseDocenteMateria }             from 'src/app/_models/CLS_ClasseDocenteMateria';
 import { CAL_Presenza }                         from 'src/app/_models/CAL_Presenza';
@@ -57,9 +56,9 @@ export class LezioneComponent implements OnInit {
   form! :                                       UntypedFormGroup;
   docenteID!:                                   number;
   lezione$!:                                    Observable<CAL_Lezione>;
-  obsMaterie$!:                                 Observable<MAT_Materia[]>;
+  // obsMaterie$!:                                 Observable<MAT_Materia[]>;
   obsClassiDocentiMaterie$!:                    Observable<CLS_ClasseDocenteMateria[]>;
-  obsDocenti$!:                                 Observable<PER_Docente[]>;
+  // obsDocenti$!:                                 Observable<PER_Docente[]>;
   obsSupplenti$!:                               Observable<PER_Docente[]>;
 
   strDtStart!:                                  string;
@@ -91,27 +90,29 @@ export class LezioneComponent implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(public _dialogRef:                          MatDialogRef<LezioneComponent>,
-              @Inject(MAT_DIALOG_DATA) public data:       DialogDataLezione,
-              private fb:                                 UntypedFormBuilder, 
-              private svcLezioni:                         LezioniService,
-              private svcMaterie:                         MaterieService,
-              private svcDocenti:                         DocentiService,
-              private svcDocenze:                         DocenzeService,
-              private svcClasseSezioneAnno:               ClassiSezioniAnniService,
-              private svcIscrizioni:                      IscrizioniService,
-              private svcPresenze:                        PresenzeService,
-              private svcVotiCompiti:                     VotiCompitiService,
-              public _dialog:                             MatDialog,
-              private _snackBar:                          MatSnackBar,
-              private _loadingService:                    LoadingService,
-              private _ngZone:                            NgZone ) {
+  constructor(
+    public _dialogRef                           : MatDialogRef<LezioneComponent>,
+    @Inject(MAT_DIALOG_DATA) public data        : DialogDataLezione,
+    private fb                                  : UntypedFormBuilder,
+    private svcLezioni                          : LezioniService,
+    private svcDocenti                          : DocentiService,
+    private svcDocenze                          : DocenzeService,
+    private svcClasseSezioneAnno                : ClassiSezioniAnniService,
+    private svcIscrizioni                       : IscrizioniService,
+    private svcPresenze                         : PresenzeService,
+    private svcVotiCompiti                      : VotiCompitiService,
+    public _dialog                              : MatDialog,
+    private _snackBar                           : MatSnackBar,
+    private _loadingService                     : LoadingService,
+    private _ngZone                             : NgZone
+  ) {
 
     _dialogRef.disableClose = true;
 
     this.form = this.fb.group({
       id:                                       [null],
       classeDocenteMateriaID:                   [''],
+      classeDocenteMateria:                     [null],
       classeSezioneAnnoID:                      [''],
       dtCalendario:                             [''],
     
@@ -194,15 +195,11 @@ export class LezioneComponent implements OnInit {
   loadData(): void {
 
     this.breakpoint = (window.innerWidth <= 800) ? 2 : 2;
-    console.log("lezione.component - loadData - this.data.classeSezioneAnnoID", this.data.classeSezioneAnnoID);
+    // console.log("lezione.component - loadData - this.data.classeSezioneAnnoID", this.data.classeSezioneAnnoID);
     this.obsClassiDocentiMaterie$ = this.svcDocenze.listByClasseSezioneAnno(this.data.classeSezioneAnnoID)
     .pipe(
       map(docenze => docenze.sort((a, b) => a.materia!.descrizione.localeCompare(b.materia!.descrizione)))
     );
-
-    this.obsMaterie$ = this.svcMaterie.listByClasseSezioneAnno(this.data.classeSezioneAnnoID); 
-
-    this.obsDocenti$ = this.svcDocenti.list();
 
     if (this.data.dove == "orario") {
       this.form.controls['ckFirma'].disable();
@@ -225,7 +222,10 @@ export class LezioneComponent implements OnInit {
       this.lezione$ = loadLezione$
       .pipe( tap(
         lezione => {
+          //console.log("lezione.component - loadData - lezione", lezione);
           this.form.patchValue(lezione)
+
+          //console.log("lezione.component - loadData - this.form.controls['classeDocenteMateria']", this.form.controls['classeDocenteMateria'].value);
           //oltre ai valori del form vanno impostate alcune variabili: una data e alcune stringhe
           this.dtStart = new Date (this.data.start);
           this.strDtStart = Utility.formatDate(this.dtStart, FormatoData.yyyy_mm_dd);
@@ -264,17 +264,16 @@ export class LezioneComponent implements OnInit {
 //#region ----- Operazioni CRUD ----------------
 
   save() {
-
     this.strH_Ini = this.form.controls['h_Ini'].value;
     this.strH_End = this.form.controls['h_End'].value;
-
-    this.svcLezioni.listByDocenteAndOraOverlap (this.data.lezioneID? this.data.lezioneID: 0 , this.form.controls['docenteID'].value, this.strDtStart, this.strH_Ini, this.strH_End)
+    // console.log("lezione.component - loadData - this.form.controls['classeDocenteMateria'].value", this.form.controls['classeDocenteMateria'].value);
+    this.svcLezioni.listByDocenteAndOraOverlap (this.data.lezioneID? this.data.lezioneID: 0 , this.form.controls['classeDocenteMateria'].value.docenteID, this.strDtStart, this.strH_Ini, this.strH_End)
     .subscribe( (val: CAL_Lezione[]) => {
+      //la listByDocenteAndOraOverlap elenca le ore sovrapposte. Se val.length >  0 ce ne sono e bisgona interrompere
       if (val.length > 0) {
+        // console.log("lezione.component - loadData - val", val);
         let strMsg = "il Maestro " + val[0].classeDocenteMateria.docente!.persona!.nome + " " + val[0].classeDocenteMateria.docente!.persona!.cognome + " \n è già impegnato in questo slot in ";
-        val.forEach (x =>
-          {strMsg = strMsg + "\n - " + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.classe!.descrizione2 + ' ' + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione;}
-        )
+        val.forEach (x => {strMsg = strMsg + "\n - " + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.classe!.descrizione2 + ' ' + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione;})
 
         this._dialog.open(DialogOkComponent, {
           width: '320px',
@@ -295,27 +294,20 @@ export class LezioneComponent implements OnInit {
         if (this.form.controls['ckCompito'].value == '')   this.form.controls['ckCompito'].setValue(false);     
         
         const objLezione = <CAL_Lezione>{
-          classeDocenteMateriaID: this.form.controls['classeSezioneMateriaID'].value,
-          //classeSezioneAnnoID: this.form.controls['classeSezioneAnnoID'].value,
+          classeDocenteMateriaID: this.form.controls['classeDocenteMateriaID'].value,
           dtCalendario: this.form.controls['dtCalendario'].value,
           title: this.form.controls['title'].value,
           start: this.form.controls['start'].value,
           end: this.form.controls['end'].value,
           colore: this.form.controls['colore'].value,
-
           h_Ini: this.form.controls['h_Ini'].value,
           h_End: this.form.controls['h_End'].value,
-
-          //docenteID: this.form.controls['docenteID'].value,
-          //materiaID: this.form.controls['materiaID'].value,
           supplenteID: this.form.controls['supplenteID'].value,
-
           ckEpoca: this.form.controls['ckEpoca'].value,
           ckFirma: this.form.controls['ckFirma'].value,
           dtFirma: this.form.controls['dtFirma'].value,
           ckAssente: this.form.controls['ckAssente'].value,
           ckAppello: this.form.controls['ckAppello'].value,
-          
           argomento: this.form.controls['argomento'].value,
           compiti: this.form.controls['compiti'].value,
           ckCompito: this.form.controls['ckCompito'].value,
@@ -323,7 +315,6 @@ export class LezioneComponent implements OnInit {
         };
 
         if (this.form.controls['id'].value == null) {   
-
           objLezione.id = 0;
           this.svcLezioni.post(objLezione).subscribe({
             next: res => {
@@ -334,7 +325,6 @@ export class LezioneComponent implements OnInit {
           });
         } 
         else  {
-          //this.svcLezioni.put(this.form.value).subscribe(
             objLezione.id = this.form.controls['id'].value;
             this.svcLezioni.put(objLezione).subscribe({
             next: res=> {
@@ -460,7 +450,7 @@ export class LezioneComponent implements OnInit {
             this.form.value[prop] = this.form.controls[prop].value;
           }
         
-          this.svcLezioni.put(this.form.value).subscribe({
+          this.svcLezioni.setAppello(this.form.controls['id'].value).subscribe({
             next: res=> {
               this.PresenzeListComponent.loadData(); //NON VA. #ERROR cannot read properties of undefined reading loadData
             },  

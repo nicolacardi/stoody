@@ -54,7 +54,7 @@ matDataSource = new MatTableDataSource<CAL_Presenza>();
     let obsPresenze$: Observable<CAL_Presenza[]>;
 
     if (this.lezioneID != undefined) {
-      console.log ("parte la loadData di presenzeList");
+      // console.log ("parte la loadData di presenzeList");
       obsPresenze$= this.svcPresenze.listByLezione(this.lezioneID);
       const loadPresenze$ =this._loadingService.showLoaderUntilCompleted(obsPresenze$);
 

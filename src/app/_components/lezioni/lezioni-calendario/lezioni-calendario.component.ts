@@ -77,11 +77,11 @@ export class LezioniCalendarioComponent implements OnInit {
     expandRows: true,                         //estende in altezza le righe per adattare alla height il calendario
     hiddenDays: [ 0 ],                        //nasconde la domenica
     
-    headerToolbar: {                          //headerToolbar di default: viene modificata a seconda della vista selezionata
-      left: 'prev,next,today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek mostraDocenti,settings,registro' //mostraDocenti e settings visibili solo in timeGridWeek
-    },  
+    // headerToolbar: {                          //headerToolbar di default: viene modificata a seconda della vista selezionata
+    //   left: 'prev,next,today',
+    //   center: 'title',
+    //   right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,mostraDocenti,settings,registro' //mostraDocenti e settings visibili solo in timeGridWeek
+    // },  
 
     views: {
       dayGridMonth: {  //impostazioni eventi nella vista MESE
@@ -227,13 +227,13 @@ export class LezioniCalendarioComponent implements OnInit {
         this.calendarOptions.headerToolbar = {
           left: 'prev,next,today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,mostraDocenti,settings,registro'
+          right: 'mostraDocenti,settings,registro dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         };
       } else {
         this.calendarOptions.headerToolbar = {
           left: 'prev,next,today',
           center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,registro'
+          right: 'registro dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         };
       }
     },
@@ -289,24 +289,20 @@ export class LezioniCalendarioComponent implements OnInit {
     //console.log ("lezioni-calendario - loadData - dove", this.dove);
     if (this.dove == "orario") {
       //se c'è un Docente selezionato allora filtro anche per lui
-      //questo serviva quando oraio-page conteneva la possibilità di selezionare il docente
+      //questo serviva quando orario-page conteneva la possibilità di selezionare il docente
       //ora SOLO in orarioDocente si può selezionare un docente e quindi avere un docenteID
       // if (this.docenteID != undefined && this.docenteID > 0) {
-      //   console.log("1");
       //   obsLezioni$= this.svcLezioni.listByDocenteClasseSezioneAnno(this.docenteID, this.classeSezioneAnnoID);
       // } else {
-        console.log("2");
         //se non c'è un docente seleziono non filtro anche per lui
         obsLezioni$= this.svcLezioni.listByClasseSezioneAnno(this.classeSezioneAnnoID);
       // }
     } else { //in questo caso dove="orarioDocente": non conta la classe ma solo il docenteID
       if (this.docenteID != undefined && this.docenteID > 0) {
-        console.log("3");
         obsLezioni$= this.svcLezioni.listByDocente(this.docenteID); //Order by dtCalendario non sembra funzionare nel WS
       } else {
         //solo se viene selezionato un docente deve funzionare
         this.showWarn = true;
-        console.log("4");
         obsLezioni$= this.svcLezioni.listByDocente(0);
       }
     }
@@ -314,7 +310,7 @@ export class LezioniCalendarioComponent implements OnInit {
     const loadLezioni$ =this._loadingService.showLoaderUntilCompleted(obsLezioni$);
     loadLezioni$.subscribe(
       val =>   {
-        console.log("lezioni-calendario - loadData - elenco eventi estratti da CAL_Lezioni", val);
+        // console.log("lezioni-calendario - loadData - elenco eventi estratti da CAL_Lezioni", val);
         this.Events = val;
         this.calendarOptions.events = this.Events;
       }
@@ -367,7 +363,7 @@ export class LezioniCalendarioComponent implements OnInit {
       this.calendarOptions.headerToolbar = {
         left: 'prev,next,today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,mostraDocenti,registro'  // 'settings' rimosso
+        right: 'mostraDocenti,settings,registro dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       };
 
       this.calendarOptions.customButtons = {
@@ -375,10 +371,10 @@ export class LezioniCalendarioComponent implements OnInit {
           text: 'Classi',
           click: this.mostraDocenti.bind(this),
         },
-        // settings: {
-        //   icon: 'settings-icon',
-        //   click: this.openLezioniUtils.bind(this)
-        // },
+        settings: {
+          icon: 'settings-icon',
+          click: this.openLezioniUtils.bind(this)
+        },
         registro: {
           icon: 'download-registro',
           hint: "registro dell'insegnante",

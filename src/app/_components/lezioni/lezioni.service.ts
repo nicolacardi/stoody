@@ -129,9 +129,9 @@ export class LezioniService {
     return this.http.put( environment.apiBaseUrl  + 'CAL_Lezioni/' + formData.id , formData);    
   }
 
-  setAppello(formData: any): Observable <any>{
-    formData.ckAppello = true;
-    return this.http.put( environment.apiBaseUrl  + 'CAL_Lezioni/' + formData.id , formData);    
+  setAppello(lezioneID: number): Observable <any>{
+    let formData = {};
+    return this.http.post( environment.apiBaseUrl  + 'CAL_Lezioni/SetAppello/' + lezioneID, formData); 
   }
 
   post(formData: any): Observable <any>{

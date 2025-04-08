@@ -1,7 +1,4 @@
 import { CLS_ClasseDocenteMateria }       from "./CLS_ClasseDocenteMateria";
-import { MAT_Materia }                    from "./MAT_Materia";
-import { PER_Docente }                    from "./PER_Docente";
-import { PER_Persona }                    from "./PER_Persone";
 
 export interface CAL_Lezione {
   id                          : number;
