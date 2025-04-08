@@ -2,7 +2,7 @@
 
 import { ApplicationRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventDropArg } from '@fullcalendar/core';
-import { FullCalendarComponent }                from '@fullcalendar/angular';//-->serve per il ViewChild
+import { FullCalendarComponent }                from '@fullcalendar/angular';
 
 import dayGridPlugin                            from '@fullcalendar/daygrid'
 import listPlugin                               from '@fullcalendar/list'
@@ -28,10 +28,8 @@ import { DialogOkComponent }                    from '../../utilities/dialog-ok/
 import { DownloadRegistroClasseComponent }      from '../download-registro-classe/download-registro-classe.component';
 import { DownloadRegistroDocenteComponent }     from '../download-registro-docente/download-registro-docente.component';
 
-
 //services
 import { LezioniService }                       from '../lezioni.service';
-import { UserService }                          from 'src/app/_user/user.service';
 import { TipiPersonaService }                   from '../../persone/tipi-persona.service';
 
 //models
@@ -53,13 +51,12 @@ export class LezioniCalendarioComponent implements OnInit {
   almenoUnRuoloEditor = false;
   toggleDocentiMaterie =                        "materie";
   Events: any[] = [];
-  
   showWarn:                                     boolean = false;
 
 
   calendarOptions: CalendarOptions = {
 
-        plugins: [                              //aggiunto con fullcalendar 6.1.4
+        plugins: [
            dayGridPlugin,
            interactionPlugin,
            listPlugin,
@@ -69,46 +66,47 @@ export class LezioniCalendarioComponent implements OnInit {
     //PROPRIETA' BASE
     initialView:  'timeGridWeek',
 
-    slotMinTime:  '08:00:00',
-    slotMaxTime:  '16:00:00',
-    height:       500,
+    slotMinTime:  '08:00:00',                 //ora di inzio del giorno
+    slotMaxTime:  '16:00:00',                 //ora di fine del giorno
+    height:       500,                        //altezza del full calendar
     allDaySlot:   false,                      //nasconde la riga degli eventi che durano il giorno intero
-    locale:       'it',
-    locales:      [itLocale],
+    locale:       'it',                       //lingua
+    locales:      [itLocale],                 //orari
     forceEventDuration : true,                //serve per attivare la defaultTimedEventDuration
     defaultTimedEventDuration : "01:00:00",   //indica che di default un evento dura un'ora
     expandRows: true,                         //estende in altezza le righe per adattare alla height il calendario
     hiddenDays: [ 0 ],                        //nasconde la domenica
     
-    headerToolbar: {
+    headerToolbar: {                          //headerToolbar di default: viene modificata a seconda della vista selezionata
       left: 'prev,next,today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek mostraDocenti,settings,registro'  //TODO bisogna togliere i settings dalla vista docente
+      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek mostraDocenti,settings,registro' //mostraDocenti e settings visibili solo in timeGridWeek
     },  
 
     views: {
-      dayGridMonth: {  //questo modifica TUTTI gli eventi in questa vista
+      dayGridMonth: {  //impostazioni eventi nella vista MESE
         eventContent: (event: any, element: any) => {
           { 
-            // console.log (event.event._def)
+            //console.log ("lezioni-calendario - calendaroOptions event._def"+event.event._def);
             //mostra l'ora
             let timeText = document.createElement('div');
             timeText.className = "fc-event-time";
             timeText.innerHTML = event.timeText;
             //include Info aggiuntive
             let titleText = document.createElement('div');
-            titleText.className = "fc-event-title";
+            titleText.className = "fc-event-title";   //sono visibili SOLO i titoli quindi non fa lo switch Materie Docenti
             titleText.innerHTML = 
             '<span class="fs30" style="color:'+event.event._def.ui.backgroundColor+'">•</span><b>'
               +event.event._def.title
             //+'</b>'
-            let arrayOfDomNodes = [ timeText, titleText];     //prepara il set di Nodes
+            //prepara il set di Nodes
+            let arrayOfDomNodes = [ timeText, titleText]; 
             return { domNodes: arrayOfDomNodes }
           }
         }
       },
 
-      timeGridDay: {  //questo modifica TUTTI gli eventi in questa vista
+      timeGridDay: {  //impostazioni eventi nella vista Giorno
         eventContent: (event: any, element: any) => {
           { 
             //mostra l'ora
@@ -157,13 +155,13 @@ export class LezioniCalendarioComponent implements OnInit {
             
             img3.className = "_iconCompito";
             img3.title='Compito in Classe';
-
-            let arrayOfDomNodes = [ timeText, titleText, img2, img, img3];     //prepara il set di Nodes
+            //prepara il set di Nodes
+            let arrayOfDomNodes = [ timeText, titleText, img2, img, img3];
             return { domNodes: arrayOfDomNodes }
         }
         }
       },
-      listWeek: {  //questo modifica TUTTI gli eventi in questa vista
+      listWeek: {  //impostazioni eventi nella vista AGENDA
         eventContent: (event: any, element: any) => {
           { 
             //mostra l'ora
@@ -212,9 +210,8 @@ export class LezioniCalendarioComponent implements OnInit {
             img3.className = "_iconCompitoListWeek tooltip";
             img3.title='Compito in Classe';
 
-            //let arrayOfDomNodes = [ timeText, titleText];     //prepara il set di Nodes
-
-            let arrayOfDomNodes = [ timeText, titleText, img2, img, img3];     //prepara il set di Nodes
+            //prepara il set di Nodes
+            let arrayOfDomNodes = [ timeText, titleText, img2, img, img3];
             return { domNodes: arrayOfDomNodes }
         }
         }
@@ -223,7 +220,23 @@ export class LezioniCalendarioComponent implements OnInit {
 
     //dayHeaderContent: { html: "<button></button>"},
     
-
+    //datesSet si scatena al cambio di vista e quindi consente di nascondere settings e mostraDocenti/Lezioni a seconda
+    datesSet: (arg) => {      
+      const currentView = arg.view.type;
+      if (currentView === 'timeGridWeek') {
+        this.calendarOptions.headerToolbar = {
+          left: 'prev,next,today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,mostraDocenti,settings,registro'
+        };
+      } else {
+        this.calendarOptions.headerToolbar = {
+          left: 'prev,next,today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,registro'
+        };
+      }
+    },
     //AZIONI
     select:       this.addEvento.bind(this),          //quando si crea un evento...
     eventClick:   this.openDetail.bind(this),         //quando si fa click su un evento esistente...
@@ -234,33 +247,33 @@ export class LezioniCalendarioComponent implements OnInit {
 //#endregion
 
 //#region ----- ViewChild Input Output --------
-  @Input() classeSezioneAnnoID!:                number;
-  @Input() annoID!:                             number;
-  @Input() docenteID!:                          number;
-  @Input() dove!:                         string;
+  @Input() classeSezioneAnnoID!        : number;
+  @Input() annoID!                     : number;
+  @Input() docenteID!                  : number;   //arriva solo in orarioDocente
+  @Input() dove!                       : string;
   @ViewChild('calendarDOM') calendarDOM!: FullCalendarComponent;
 //#endregion
 
 //#region ----- Constructor --------------------
 
-  constructor( private svcLezioni:              LezioniService,
-                private svcUser:                UserService,
-                private svcTipiPersona:         TipiPersonaService,
-                private _loadingService:        LoadingService,
-                private _snackBar:              MatSnackBar,
-                public _dialog:                 MatDialog, 
-                public appRef:                  ApplicationRef ) {
-
+  constructor( 
+    private svcLezioni        : LezioniService,
+    private svcTipiPersona    : TipiPersonaService,
+    private _loadingService   : LoadingService,
+    private _snackBar         : MatSnackBar,
+    public _dialog            : MatDialog,
+    public appRef             : ApplicationRef
+  ) {
     this.currUser = Utility.getCurrentUser();
-
   }
 //#endregion
 
 //#region ----- LifeCycle Hooks e simili--------
 
   ngOnChanges() {
-    //if (this.classeSezioneAnnoID != undefined  && this.dove != undefined) 
-    if ( (this.dove == "orario" && this.classeSezioneAnnoID != undefined) || (this.dove == "orarioDocente"  && this.docenteID != undefined)) 
+    //if (&& this.dove != undefined && this.classeSezioneAnnoID != undefined) 
+    if ( (this.dove == "orario"         && this.classeSezioneAnnoID != undefined) ||
+         (this.dove == "orarioDocente"  && this.docenteID != undefined)) 
       this.loadData();
   }
 
@@ -270,23 +283,28 @@ export class LezioniCalendarioComponent implements OnInit {
   loadData () {
     let obsLezioni$: Observable<CAL_Lezione[]>;
     this.showWarn = false;
+    //NB dove può essere 'orario', oppure 'orarioDocente'
+    //il calendario compare infatti nell'Orario di tutti e in quello filtrato per docente
+    //compare anche nella pagina scadenze che però ha una vita sua, diversa
+    //console.log ("lezioni-calendario - loadData - dove", this.dove);
     if (this.dove == "orario") {
-    //if (this.classeSezioneAnnoID) {
       //se c'è un Docente selezionato allora filtro anche per lui
-      if (this.docenteID != undefined && this.docenteID > 0) {
-        console.log("1");
-        obsLezioni$= this.svcLezioni.listByDocenteClasseSezioneAnno(this.docenteID, this.classeSezioneAnnoID);
-      } else {
+      //questo serviva quando oraio-page conteneva la possibilità di selezionare il docente
+      //ora SOLO in orarioDocente si può selezionare un docente e quindi avere un docenteID
+      // if (this.docenteID != undefined && this.docenteID > 0) {
+      //   console.log("1");
+      //   obsLezioni$= this.svcLezioni.listByDocenteClasseSezioneAnno(this.docenteID, this.classeSezioneAnnoID);
+      // } else {
         console.log("2");
         //se non c'è un docente seleziono non filtro anche per lui
         obsLezioni$= this.svcLezioni.listByClasseSezioneAnno(this.classeSezioneAnnoID);
-      }
-    } else {
-      //qui ("orario per Docente") non conta la classe ma solo il docenteID
+      // }
+    } else { //in questo caso dove="orarioDocente": non conta la classe ma solo il docenteID
       if (this.docenteID != undefined && this.docenteID > 0) {
         console.log("3");
         obsLezioni$= this.svcLezioni.listByDocente(this.docenteID); //Order by dtCalendario non sembra funzionare nel WS
       } else {
+        //solo se viene selezionato un docente deve funzionare
         this.showWarn = true;
         console.log("4");
         obsLezioni$= this.svcLezioni.listByDocente(0);
@@ -303,7 +321,6 @@ export class LezioniCalendarioComponent implements OnInit {
     );
 
     if (this.dove == "orario") {
-
       this.calendarOptions.customButtons = {
         mostraDocenti: {
           text: 'Docenti',
@@ -340,23 +357,28 @@ export class LezioniCalendarioComponent implements OnInit {
         )}
       );
 
-
       if (this.calendarOptions!.customButtons!['mostraDocenti'].text == 'Lezioni') 
         this.setEventiDocenti();
       else 
         this.setEventiLezioni();
 
-    } else {
+    } else {    //dove = 'orarioDocente'
+
+      this.calendarOptions.headerToolbar = {
+        left: 'prev,next,today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek,mostraDocenti,registro'  // 'settings' rimosso
+      };
 
       this.calendarOptions.customButtons = {
         mostraDocenti: {
           text: 'Classi',
           click: this.mostraDocenti.bind(this),
         },
-        settings: {
-          icon: 'settings-icon',
-          click: this.openLezioniUtils.bind(this)
-        },
+        // settings: {
+        //   icon: 'settings-icon',
+        //   click: this.openLezioniUtils.bind(this)
+        // },
         registro: {
           icon: 'download-registro',
           hint: "registro dell'insegnante",
@@ -500,8 +522,8 @@ export class LezioniCalendarioComponent implements OnInit {
       let classeText = document.createElement('div');
         classeText.className = "fc-event-title";
         classeText.innerHTML =  
-            arg.event.extendedProps['classeSezioneAnno'].classeSezione.classe.descrizioneBreve + ' ' + 
-            arg.event.extendedProps['classeSezioneAnno'].classeSezione.sezione;
+            arg.event.extendedProps['classeDocenteMateria'].classeSezioneAnno.classeSezione.classe.descrizioneBreve + ' ' + 
+            arg.event.extendedProps['classeDocenteMateria'].classeSezioneAnno.classeSezione.sezione;
       //Aggiungo icona firma
       let img = document.createElement('img');
       if (arg.event.extendedProps['ckFirma'] == true) 
@@ -602,7 +624,7 @@ export class LezioniCalendarioComponent implements OnInit {
         h_End: dtEnd.toLocaleString('sv').replace(' ', 'T').substring(11,19),
         classeSezioneAnnoID: this.classeSezioneAnnoID,
         dove: this.dove,
-        docenteID: this.docenteID
+        //docenteID: this.docenteID
 
       }
     };

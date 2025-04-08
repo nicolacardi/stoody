@@ -25,7 +25,7 @@ export class OrarioPageComponent implements OnInit {
 
   public classeSezioneAnnoID!:  number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
   public annoID!:               number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
-  public docenteID!:            number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
+  public docenteID!:            number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList?????
 
 //#endregion
 
@@ -58,9 +58,9 @@ export class OrarioPageComponent implements OnInit {
     this.classeSezioneAnnoID = classeSezioneAnnoID;
   }
 
-  docenteIdEmitted(docenteId: number) {
-    this.docenteID = docenteId;
-  }
+  // docenteIdEmitted(docenteId: number) {
+  //   this.docenteID = docenteId;
+  // }
 //#endregion
 
 }
