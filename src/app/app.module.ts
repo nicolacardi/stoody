@@ -36,9 +36,9 @@ import { RettepagamentiSummaryComponent }          from './_components/pagamenti
 //Persone
 import { PersonePageComponent }                    from './_components/persone/persone-page/persone-page.component';
 import { PersoneListComponent }                    from './_components/persone/persone-list/persone-list.component';
-import { PersonaEditComponent }                    from './_components/persone/persona-edit/persona-edit.component';
 import { PersoneFilterComponent }                  from './_components/persone/persone-filter/persone-filter.component';
 import { PersonaFormComponent }                    from './_components/persone/persona-form/persona-form.component';
+import { PersonaEditComponent }                    from './_components/persone/persona-edit/persona-edit.component';
 
 //Alunni
 import { AlunniPageComponent }                     from './_components/alunni/alunni-page/alunni-page.component';

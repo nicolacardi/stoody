@@ -81,7 +81,7 @@ export class GenitoreFormComponent implements OnInit {
     this.loadData();
     this.form.valueChanges.subscribe(
       res=> {
-        console.log ("genitore-form - ngOninit - emit del form valid", this.form.valid);
+        // console.log ("genitore-form - ngOninit - emit del form valid", this.form.valid);
         this.formValid.emit(this.form.valid);
         //this.formChanged.emit();
       }
@@ -91,7 +91,7 @@ export class GenitoreFormComponent implements OnInit {
 
   ngOnChanges () {
     this.loadData();
-    console.log ("genitore-form - ngOnChange - emit del form valid", this.form.valid);
+    // console.log ("genitore-form - ngOnChange - emit del form valid", this.form.valid);
 
     this.formValid.emit(this.form.valid);
   }
