@@ -174,11 +174,12 @@ export class LezioneComponent implements OnInit {
     //   }
     // );
 
-    this.form.controls['docenteID'].valueChanges.subscribe( 
-      //ora devo estrarre i supplenti: i docenti che per l'ora selezionata NON sono già impegnati
-      val => this.obsSupplenti$ = this.svcDocenti.listSupplentiDisponibili(this.data.lezioneID? this.data.lezioneID: 0, val, this.data.dtCalendario, this.data.h_Ini, this.data.h_End)
-    );
+    // this.form.controls['docenteID'].valueChanges.subscribe( 
+    //   //ora devo estrarre i supplenti: i docenti che per l'ora selezionata NON sono già impegnati
+    //   val => this.obsSupplenti$ = this.svcDocenti.listSupplentiDisponibili(this.data.lezioneID? this.data.lezioneID: 0, val, this.data.dtCalendario, this.data.h_Ini, this.data.h_End)
+    // );
 
+    
 
     if (this.data.classeSezioneAnnoID != null && this.data.classeSezioneAnnoID != undefined) {
       this.svcClasseSezioneAnno.get(this.data.classeSezioneAnnoID).subscribe(
@@ -219,9 +220,9 @@ export class LezioneComponent implements OnInit {
       this.lezione$ = loadLezione$
       .pipe( tap(
         lezione => {
-          console.log("lezione.component - loadData - lezione", lezione);
+          // console.log("lezione.component - loadData - lezione", lezione);
           this.form.patchValue(lezione)
-
+          this.docenteID = lezione.classeDocenteMateria.docenteID;  //non togliere! altrimenti non passa a voti-interr-list!
           //console.log("lezione.component - loadData - this.form.controls['classeDocenteMateria']", this.form.controls['classeDocenteMateria'].value);
           //oltre ai valori del form vanno impostate alcune variabili: una data e alcune stringhe
           this.dtStart = new Date (this.data.start);

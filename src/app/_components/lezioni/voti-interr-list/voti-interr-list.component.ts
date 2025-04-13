@@ -82,9 +82,11 @@ export class VotiInterrListComponent implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(private svcVotiInterr:                      VotiInterrService,
-              private _loadingService:                    LoadingService,
-              public _dialog:                             MatDialog ) { 
+  constructor(
+    private svcVotiInterr:                      VotiInterrService,
+    private _loadingService:                    LoadingService,
+    public _dialog:                             MatDialog 
+  ) { 
   }
 
 //#endregion
@@ -93,6 +95,7 @@ export class VotiInterrListComponent implements OnInit {
 
   ngOnChanges() {
       this.loadData();
+      console.log ("voti-interr-list, ngOnChanges - this.docenteID", this.docenteID)
   }
   ngOnInit () {
     //this.loadData();
@@ -234,7 +237,7 @@ export class VotiInterrListComponent implements OnInit {
 //#region ----- Altri metodi -------------------
 
   addRecord() {
-
+    
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '500px',
@@ -246,6 +249,8 @@ export class VotiInterrListComponent implements OnInit {
         docenteID:                              this.docenteID
       }
     };
+
+    console.log("dialogConfig.data", dialogConfig.data);
     const dialogRef = this._dialog.open(VotoInterrEditComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(
       () => this.loadData()

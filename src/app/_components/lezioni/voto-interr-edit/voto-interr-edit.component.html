@@ -35,8 +35,8 @@
                         <mat-form-field  >
                             <mat-label>Lezione</mat-label>
                             <mat-select required formControlName="lezioneID" #selectLezione (click)="setGiornoCorrente()" (selectionChange)="changeSelection()">
-                                <mat-option *ngFor="let element of (obsLezioni$ | async)" [value]="element.id">
-                                    {{element.dtCalendario| date: "dd/MM/yyyy"}} - {{element.h_Ini}}
+                                <mat-option *ngFor="let element of (obsLezioni$ | async)" class="fs14" [value]="element.id">
+                                    {{element.dtCalendario| date: "dd/MM/yyyy"}} - {{element.h_Ini| slice:0:5 }}
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>

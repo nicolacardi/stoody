@@ -1,32 +1,32 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit }            from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup }               from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { Observable }                           from 'rxjs';
-import { concatMap, tap }                       from 'rxjs/operators';
+import { Component, Inject, OnInit }                  from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }   from '@angular/material/dialog';
+import { MatSnackBar }                                from '@angular/material/snack-bar';
+import { Observable }                                 from 'rxjs';
+import { concatMap, tap }                             from 'rxjs/operators';
 
 //components
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
+import { DialogYesNoComponent }                       from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { SnackbarComponent }                          from '../../utilities/snackbar/snackbar.component';
 
 //services
-import { NoteService }                          from '../note.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { UserService }                          from 'src/app/_user/user.service';
-import { IscrizioniService }                    from '../../iscrizioni/iscrizioni.service';
-import { GenitoriService }                      from '../../genitori/genitori.service';
-import { EventiService }                      from '../../eventi/eventi.service';
-import { EventiPersoneService }               from '../../eventi/eventi-persone.service';
-import { NoteIscrizioniService }                from '../noteiscrizioni.service';
+import { NoteService }                                from '../note.service';
+import { LoadingService }                             from '../../utilities/loading/loading.service';
+import { UserService }                                from 'src/app/_user/user.service';
+import { IscrizioniService }                          from '../../iscrizioni/iscrizioni.service';
+import { GenitoriService }                            from '../../genitori/genitori.service';
+import { EventiService }                              from '../../eventi/eventi.service';
+import { EventiPersoneService }                       from '../../eventi/eventi-persone.service';
+import { NoteIscrizioniService }                      from '../noteiscrizioni.service';
 
 //models
-import { DOC_Nota }                             from 'src/app/_models/DOC_Nota';
-import { CLS_Iscrizione }                       from 'src/app/_models/CLS_Iscrizione';
-import { CAL_Evento, CAL_EventoPersone }    from 'src/app/_models/CAL_Evento';
-import { DOC_NotaIscrizione }                   from 'src/app/_models/DOC_NotaIscrizione';
-import { DialogDataNota }                       from 'src/app/_models/DialogData';
+import { DOC_Nota }                                   from 'src/app/_models/DOC_Nota';
+import { CLS_Iscrizione }                             from 'src/app/_models/CLS_Iscrizione';
+import { CAL_Evento, CAL_EventoPersone }              from 'src/app/_models/CAL_Evento';
+import { DOC_NotaIscrizione }                         from 'src/app/_models/DOC_NotaIscrizione';
+import { DialogDataNota }                             from 'src/app/_models/DialogData';
 
 //#endregion
 @Component({
@@ -62,7 +62,6 @@ export class NotaEditComponent implements OnInit {
               private svcEventi:                        EventiService,
               private svcEventiPersone:                 EventiPersoneService,
               private svcGenitori:                        GenitoriService,
-
               @Inject(MAT_DIALOG_DATA) public data:       DialogDataNota,
               private fb:                                 UntypedFormBuilder, 
               private _loadingService:                    LoadingService,
@@ -74,10 +73,8 @@ export class NotaEditComponent implements OnInit {
     this.form = this.fb.group(
     {
       id:                                       [null],
-      iscrizioneID:                             [],
       iscrizioni:                               [],
       personaID:                                [],
-      alunnoID:                                 [],
       dtNota:                                   [],
       h_Ini:                                    [],
       h_End:                                    [],
@@ -234,16 +231,18 @@ export class NotaEditComponent implements OnInit {
       })
     } 
     else {
-      //console.log ("nota esistente");     
-
+      console.log ("nota esistente");     
+      console.log (this.form.value);
         this.svcNote.put(this.form.value).subscribe({
-          //devo cancellare le noteIscrizioni e poi reinserirle
+          //devo cancellare le noteIscrizioni e poi reinserirle...per attribuirle alle persone giuste che potrebbero essere altre
+          //le tolgo tutte e rimetto quelle selezionate
           next: nota=> {
-            this.svcNoteIscrizioni.deleteByNota(nota.id)
+            //this.svcNoteIscrizioni.deleteByNota(nota.id)
+            this.svcNoteIscrizioni.deleteByNota(this.form.controls['id'].value)
             .subscribe(()=>{
               this.form.controls['iscrizioni'].value.forEach( (iscrizione: number) => {
                 const objNotaIscrizione = <DOC_NotaIscrizione>{
-                  notaID: nota.id,
+                  notaID: this.form.controls['id'].value,
                   iscrizioneID: iscrizione
                 } 
                 this.svcNoteIscrizioni.post(objNotaIscrizione).subscribe();

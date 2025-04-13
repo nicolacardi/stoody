@@ -129,7 +129,7 @@ export class DocentiDashboardComponent implements OnInit {
 
   classeSezioneAnnoIDEmitted(classeSezioneAnnoID: number) {
 
-    setTimeout(() => { window.dispatchEvent(new Event('resize'));}, 0); //questo forza il resize: senza di questo la tab alunni si vede solo parzialmente all'inizio
+    //setTimeout(() => { window.dispatchEvent(new Event('resize'));}, 500); //questo forza il resize: senza di questo la tab alunni si vede solo parzialmente all'inizio
     //this.cdr.detectChanges();
     this.tipoVoto = "";
     this.materiaID = 0;

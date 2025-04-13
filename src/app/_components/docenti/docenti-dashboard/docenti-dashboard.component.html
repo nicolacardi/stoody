@@ -50,11 +50,11 @@
                 </app-compiti-page>
             </mat-tab>
 
-            <mat-tab  *ngIf="classeSezioneAnnoID" label="Voti Interrogazioni">
-                <app-voti-interr-page
+            <mat-tab  *ngIf="classeSezioneAnnoID" label="Voti Interrogazioni" >
+                <app-voti-interr-list
                     [classeSezioneAnnoID]="classeSezioneAnnoID"
                     [docenteID] = "docenteID">
-                </app-voti-interr-page>
+                </app-voti-interr-list>
             </mat-tab>
 
             <mat-tab  *ngIf="classeSezioneAnnoID" label="Pagelle per Materia">
