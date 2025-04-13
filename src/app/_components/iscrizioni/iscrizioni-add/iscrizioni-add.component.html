@@ -11,8 +11,7 @@
                 </button>
             </div>
             <br>
-            <mat-form-field class="h120px" >
-                <!-- <mat-label >Nome e Cognome Alunno</mat-label> -->
+            <div class="chip-scroll-container">
                 <mat-chip-grid #chipList aria-label="Selezione Alunni">
                     <!-- [selectable]="selectable" -->
                     <mat-chip-row *ngFor="let alunnoSelezionato of alunniSelezionati"
@@ -23,13 +22,17 @@
                     </mat-chip-row>
                 </mat-chip-grid>
 
+            </div>
+            <mat-form-field >
+                <!-- <mat-label >Nome e Cognome Alunno</mat-label> -->
+
                 <input  placeholder = "digita qui nome o cognome alunno e seleziona"
-                        matInput
-                        cdkFocusInitial
-                        [matChipInputFor]="chipList"
-                        formControlName="nomeCognomeAlunno"
-                        [matAutocomplete]="auto" #nomeCognomeAlunno
-                        >
+                matInput
+                cdkFocusInitial
+                [matChipInputFor]="chipList"
+                formControlName="nomeCognomeAlunno"
+                [matAutocomplete]="auto" #nomeCognomeAlunno
+                >
 
                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                     <mat-progress-bar class="is-loading" *ngIf="alunniIsLoading" mode="indeterminate"></mat-progress-bar>

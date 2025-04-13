@@ -69,3 +69,10 @@ background-color: #f9f9f9;
       word-wrap: break-word;
       max-width: 200px;
   }
+
+  .chip-scroll-container {
+    max-height: 1000px; /* o qualsiasi altezza tu preferisca */
+
+    display: flex;
+    flex-wrap: wrap;
+  }

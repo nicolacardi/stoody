@@ -230,7 +230,7 @@ export class CoordinatoreDashboardComponent implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'app-full-bleed-dialog',
       width: '400px',
-      minHeight: '300px',
+      minHeight: '200px',
       data: {titolo: "Iscrivi alunno alla classe", 
               annoID:   this.annoID,
               classeSezioneAnnoID: this.classeSezioneAnnoID}

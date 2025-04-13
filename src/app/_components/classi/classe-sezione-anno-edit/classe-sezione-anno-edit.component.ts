@@ -5,8 +5,8 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
 import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { Observable, Subscription, iif, of }             from 'rxjs';
-import { concatMap, tap }                       from 'rxjs/operators';
+import { EMPTY, Observable, Subscription, iif, of }             from 'rxjs';
+import { concatMap, map, tap }                       from 'rxjs/operators';
 
 //components
 import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
@@ -99,7 +99,7 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
       
       this.classeSezioneAnno$ = loadClasseSezioneAnno$.pipe(
           tap(classe => {
-            
+            console.log ("CSA-edit - loadData classe", classe);
             //this.form.patchValue(classe); //non funziona bene, perchè ci sono dei "sotto-oggetti"
             this.form.controls['id'].setValue(classe.id); //NB in questo modo si setta il valore di un campo del formBuilder quando NON compare anche come Form-field nell'HTML
             this.form.controls['sezione'].setValue(classe.classeSezione.sezione); 
@@ -116,9 +116,9 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
               concatMap(() => this.obsClassiSezioniAnniSucc$ = this.svcClasseSezioneAnno.listByAnno(annoIDsucc))
             ).subscribe({
               next: res=> { console.log ("classesezioneanno - loadData - res", res)},
-              error: err=> this.obs.unsubscribe()  ///NC ??? serve nel caso di errore, ma qui dentro cosa accade se c'è un errore?
+              error: err=> { console.log ("errore")},
             });
-            this.form.controls['classeSezioneAnnoSuccID'].setValue(classe.ClasseSezioneAnnoSucc?.id); 
+            this.form.controls['classeSezioneAnnoSuccID'].setValue(classe.classeSezioneAnnoSuccID); 
           })
       );
     } 
@@ -129,42 +129,70 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
 
 //#region ----- Operazioni CRUD ---------------
 
-  save(){
+save() {
+  const idCorrente = this.form.controls['id'].value;
+  const classeID = this.form.controls['classeID'].value;
+  const sezione = this.form.controls['sezione'].value;
+  const annoID = this.form.controls['annoID'].value;
 
-    let classeID = this.form.controls['classeID'].value;
-    let sezione = this.form.controls['sezione'].value;
+  this.getOrCreateClasseSezione(classeID, sezione).pipe(
+    tap(classeSezione => this.form.controls['classeSezioneID'].setValue(classeSezione.id)),
+    concatMap(classeSezione =>
+      this.checkDuplicato(classeSezione.id!, annoID, idCorrente).pipe(
+        concatMap(duplicato => {
+          if (duplicato) {
+            this._snackBar.openFromComponent(SnackbarComponent, {
+              data: 'Combinazione Classe Sezione Anno già presente.',
+              panelClass: ['red-snackbar']
+            });
+            return EMPTY;
+          }
 
-    if (this.form.controls['id'].value == null){
-      this.svcClasseSezione.getByClasseSezione (classeID, sezione) 
-        .pipe (
-          concatMap(classeSezione => {
-            if (classeSezione) {
-              return of(classeSezione); // La classeSezione esiste già, restituisci direttamente l'oggetto
-            } else {
-              const newClasseSezione : CLS_ClasseSezione = { classeID: classeID, sezione: sezione }; // Creazione di una nuova classeSezione
-              return this.svcClasseSezione.post(newClasseSezione); // Esegui una richiesta POST per creare la nuova classeSezione
-            }
-          }),
-          tap ( val   =>   this.form.controls['classeSezioneID'].setValue(val.id)),
-          concatMap(() => this.svcClasseSezioneAnno.post(this.form.value))
-        ).subscribe({
-          next: () => this._dialogRef.close(),
-          error: ()=>  this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
-          }
-        );
+          // Decide se fare POST o PUT
+          return idCorrente == null
+            ? this.svcClasseSezioneAnno.post(this.form.value)
+            : this.svcClasseSezioneAnno.put(this.form.value);
+        })
+      )
+    )
+  ).subscribe({
+    next: () => {
+      this._snackBar.openFromComponent(SnackbarComponent, {
+        data: idCorrente == null ? 'Record creato' : 'Record aggiornato',
+        panelClass: ['green-snackbar']
+      });
+      this._dialogRef.close();
+    },
+    error: () => {
+      this._snackBar.openFromComponent(SnackbarComponent, {
+        data: 'Errore nel salvataggio',
+        panelClass: ['red-snackbar']
+      });
     }
-    else {
-      this.svcClasseSezione.getByClasseSezione (classeID, sezione).pipe (
-          tap ( val   =>   this.form.controls['classeSezioneID'].setValue(val.id)),
-          concatMap(() => this.svcClasseSezioneAnno.put(this.form.value))
-        ).subscribe({
-          next: () => this._dialogRef.close(),
-          error: ()=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
-          }
-        );
-    }
-    this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
-  }
+  });
+}
+
+private getOrCreateClasseSezione(classeID: number, sezione: string): Observable<CLS_ClasseSezione> {
+  return this.svcClasseSezione.getByClasseSezione(classeID, sezione).pipe(
+    concatMap(classeSezione => {
+      console.log ("classe-sezione-anno-edit - getorcreateclassesezione classeSezione", classeSezione)
+      if (classeSezione) {
+        return of(classeSezione);
+      } else {
+        const nuovo = { classeID, sezione };
+        return this.svcClasseSezione.post(nuovo);
+      }
+    })
+  );
+}
+
+private checkDuplicato(classeSezioneID: number, annoID: number, idCorrente: number): Observable<boolean> {
+  console.log("classe-sezione-anno-edit - checkDuplicato ", classeSezioneID, annoID, idCorrente); // Log dei dati restituiti
+  return this.svcClasseSezioneAnno.getByCSAndAnno(classeSezioneID, annoID).pipe(
+    map(esistente => !!esistente && esistente.id !== idCorrente)
+  );
+}
+ 
 
   delete(){
     const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
@@ -190,20 +218,24 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
 //#region ----- Altri metodi ------------------
 
   updateAnnoSucc(selectedAnno: number) {
+    let annoIDsucc = 0;
 
-    //su modifica della combo dell'anno deve cambiare l'elenco delle classi successive disponibili...e che si fa del valore eventualmente già selezionato? lo si pone a null?
-    //comunque? anche se è un valore che sarebbe valido lo perdiamo in caso di modifica dell'anno selezionato?
-    //this.obsClassiSezioniAnniSucc$= this.svcClasseSezioneAnno.loadClassiByAnnoScolastico(selectedAnno + 1); 
-    let annoIDsucc=0;
-  
-    this.obs=  this.svcAnni.getAnnoSucc(selectedAnno).pipe (
-        tap ( val   =>  annoIDsucc= val.id),
-        concatMap(() => this.obsClassiSezioniAnniSucc$= this.svcClasseSezioneAnno.listByAnno(annoIDsucc))
-      ).subscribe({
-        next: ()=> { },
-        error: ()=> this.obs.unsubscribe()
-        }
-      );
+    // Annulla eventuale subscription precedente
+    if (this.obs) {
+      this.obs.unsubscribe();
+    }
+
+    this.obs = this.svcAnni.getAnnoSucc(selectedAnno).pipe(
+      tap(val => annoIDsucc = val?.id ?? 0),
+      concatMap(() => this.svcClasseSezioneAnno.listByAnno(annoIDsucc))
+    ).subscribe({
+      next: classi => {
+        this.obsClassiSezioniAnniSucc$ = of(classi);
+      },
+      error: () => {
+        this.obsClassiSezioniAnniSucc$ = of([]); // fallback sicuro
+      }
+    });
   }
   
 //#endregion

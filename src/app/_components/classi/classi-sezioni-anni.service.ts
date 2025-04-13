@@ -21,6 +21,11 @@ export class ClassiSezioniAnniService {
     //http://213.215.231.4/swappX/api/CLS_ClassiSezioniAnni/1
   } 
 
+  getByCSAndAnno(classeSezioneID: number, annoID: number): Observable<CLS_ClasseSezioneAnno>{
+    return  this.http.get<CLS_ClasseSezioneAnno>(environment.apiBaseUrl+'CLS_ClassiSezioniAnni/getByCSAndAnno/'+classeSezioneID+"/"+annoID);
+    //http://213.215.231.4/swappX/api/getByCSAndAnno/1/2
+  } 
+
   listByAnno(annoID: any): Observable<CLS_ClasseSezioneAnno[]>{
     return this.http.get<CLS_ClasseSezioneAnno[]>(environment.apiBaseUrl+'CLS_ClassiSezioniAnni/ListByAnno/'+annoID);
     //http://213.215.231.4/swappX/api/CLS_ClassiSezioniAnni/ListByAnno/1
