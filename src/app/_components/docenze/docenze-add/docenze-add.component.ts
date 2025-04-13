@@ -4,7 +4,7 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { iif, Observable, of }                  from 'rxjs';
-import { concatMap, debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
 import { MatAutocompleteSelectedEvent }         from '@angular/material/autocomplete';
 
@@ -115,6 +115,115 @@ export class DocenzeAddComponent implements OnInit {
 //#region ----- Operazioni CRUD ----------------
 
   save() {
+    let objDocenza = {
+      DocenteID: this.docenteSelectedID,
+      MateriaID: this.materiaSelectedID,
+      ClasseSezioneAnnoID: this.data.classeSezioneAnnoID,
+      ckOrario: true,
+      ckPagella: true
+    };
+
+
+    
+    const checks$ = this.svcDocenze
+    .getByClasseSezioneAnnoAndMateriaAndDocente(this.data.classeSezioneAnnoID, this.materiaSelectedID, this.docenteSelectedID)
+    .pipe(
+      concatMap(res1 => {
+        if (res1 != null) {
+          this._dialog.open(DialogOkComponent, {
+            width: '320px',
+            data: {
+              titolo: "ATTENZIONE!",
+              sottoTitolo: "Il docente insegna già questa materia in questa classe"
+            }
+          });
+          return of(null); // blocca la catena
+        } else {
+          // Proseguo al secondo controllo
+          return this.svcDocenze.getByClasseSezioneAnnoAndMateria(this.data.classeSezioneAnnoID, this.materiaSelectedID);
+        }
+      }),
+      concatMap(res2 => {
+        if (res2 != null) {
+          this._dialog.open(DialogOkComponent, {
+            width: '320px',
+            data: {
+              titolo: "ATTENZIONE!",
+              sottoTitolo: "Questa materia ha già una docenza assegnata in questa classe"
+            }
+          });
+          return of(null); // blocca la catena
+        } else {
+          // Terzo controllo: recupero il `CLS_ClasseSezioneAnno` usando `classesezioneannoID`
+          return this.svcClasseSezioneAnno.get(this.data.classeSezioneAnnoID);
+        }
+      }),
+      concatMap(res3 => {
+        // Recupero le informazioni necessarie per il controllo successivo
+        const classeID = res3!.classeSezione.classeID;
+        const annoID = res3!.annoID;
+
+        // Eseguo il controllo per verificare se esiste un record in CLS_ClassiAnniMaterie
+        return this.svcClasseAnnoMateria.getByMateriaAndClasseAndAnno(this.materiaSelectedID, classeID, annoID).pipe(
+          catchError(error => {
+            // Se si verifica un errore (ad esempio record non trovato), gestisco l'errore
+            if (error.status === 404) {
+              // Qui, puoi gestire l'errore come "non trovato"
+              this._dialog.open(DialogOkComponent, {
+                width: '360px',
+                data: {
+                  titolo: "ATTENZIONE!",
+                  sottoTitolo: "Per questa combinazione <br>classe-anno-materia<br> non esiste un tipo voto. Prima di salvare una docenza<br>va definito nelle impostazioni."
+                }
+              });
+            } else {
+              // Gestisco altri errori (se necessario)
+              this._dialog.open(DialogOkComponent, {
+                width: '360px',
+                data: {
+                  titolo: "ERRORE!",
+                  sottoTitolo: "Si è verificato un errore durante il controllo."
+                }
+              });
+            }
+            // Restituisco un valore null per continuare il flusso
+            return of(null);
+          })
+        );
+      }),
+      concatMap(resCAM => {
+        if (resCAM == null) {
+          // Se non esiste il record in CLS_ClassiAnniMaterie, il flusso si interrompe già con il catchError sopra
+          return of(null); // blocca la catena
+        } else {
+          // Se il controllo è passato, posso procedere con il salvataggio
+          return this.svcDocenze.post(objDocenza);
+        }
+      })
+    );
+    
+    checks$.subscribe({
+      next: res => {
+        if (res) {
+          this.dialogRef.close(); // Chiude solo se è stato effettuato il salvataggio
+        }
+      },
+      error: err => {
+        // Il catchError cattura l'errore, quindi questa parte non dovrebbe mai essere eseguita.
+        this._snackBar.openFromComponent(SnackbarComponent, {
+          data: 'Errore in salvataggio',
+          panelClass: ['red-snackbar']
+        });
+      }
+    });
+  }
+    
+  
+
+
+
+
+  saveOLD() {
 
     let objDocenza = {
       DocenteID: this.docenteSelectedID,
@@ -144,7 +253,7 @@ export class DocenzeAddComponent implements OnInit {
             });
           } 
           // else {
-          //   //la materia non è già insegnata per la classe in cui sto cercando di inserirla da questo insegnante, posso procedere
+          //  la materia non è già insegnata per la classe in cui sto cercando di inserirla da questo insegnante, posso procedere
           // }
         }
       ),
@@ -160,11 +269,20 @@ export class DocenzeAddComponent implements OnInit {
           });
         } 
         // else {
-        //   //la materia non è già insegnata per la classe in cui sto cercando di inserirla, posso procedere
+        //la materia non è già insegnata da alcuno per la classe in cui sto cercando di inserirla, posso procedere
         // }
       })
     )
 
+
+    //manca un altro controllo
+    //potrei essere in fase di inserimento di una docenza (CSADocenteMateria), ma potrebbe NON esistere il corrispondente record in classiAnniMaterie
+    //si tratta della tabella che indica il tipo di voti
+    //se si procede in questa situazione finisce che una docenza non ha un tipovoto corrispondente e questo in cascata genera altri problemi, ad esempio in fase consultazione pagelle da parte di un docente
+    //dunque dovrei chiedere all'utente di fare PRIMA quello: assegnare a quella materia in quella CLASSE (non in quella CSA) un record
+    //può darsi che non serva, ma il check andrebbe fatto
+    //chi lo fa? il WS o angular?
+    
     checks$.pipe(
        concatMap( res => iif (()=> res == null, this.svcDocenze.post(objDocenza) , of() )
       )

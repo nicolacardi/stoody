@@ -2,9 +2,9 @@
     <mat-icon>construction</mat-icon>
 </button> -->
 
-<button mat-mini-fab aria-label="Nuovo voto" matTooltip="Nuovo voto" class="_btn-add _btn-pos-right-1 _btn-pos-top-0" (click)="addRecord()">
+<!-- <button mat-mini-fab aria-label="Nuovo voto" matTooltip="Nuovo voto" class="_btn-add _btn-pos-right-1 _btn-pos-top-0" (click)="addRecord()">
     <mat-icon>add</mat-icon>
-</button>
+</button> -->
 
 
 <!-- <button mat-mini-fab aria-label="Filtri Avanzati" matTooltip="Filtri Avanzati" class="_btn-add _btn-pos-right-2 _btn-pos-top-1" [ngClass]="{'_btn-add-red': !appvoti-interrfilter.formClean}"   (click)="filterSidenav.toggle();" >
@@ -35,7 +35,7 @@
 
     <mat-drawer-content class="no-overflow">
         <app-voti-interr-list
-        [lezioneID] = "lezioneID"
+                        [lezioneID] = "lezioneID"
                         [classeSezioneAnnoID]="classeSezioneAnnoID"
                         [docenteID] = "docenteID" 
                          #appvotiinterrlist >

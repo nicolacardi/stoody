@@ -7,4 +7,5 @@ export interface MAT_Materia {
 
         macroMateria:                           MAT_MacroMateria
         seq?:                                   number;
+        color?:                                 string;
 }

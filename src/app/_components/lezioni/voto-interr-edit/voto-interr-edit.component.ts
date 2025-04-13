@@ -1,30 +1,30 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnChanges, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { Observable }                           from 'rxjs';
-import { map, tap }                             from 'rxjs/operators';
-import { MatSelect }                            from '@angular/material/select';
+import { Component, Inject, OnChanges, OnInit, ViewChild }     from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }                from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }            from '@angular/material/dialog';
+import { MatSnackBar }                                         from '@angular/material/snack-bar';
+import { SnackbarComponent }                                   from '../../utilities/snackbar/snackbar.component';
+import { Observable }                                          from 'rxjs';
+import { map, tap }                                            from 'rxjs/operators';
+import { MatSelect }                                           from '@angular/material/select';
 
 //components
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { DialogYesNoComponent }                                from '../../utilities/dialog-yes-no/dialog-yes-no.component';
 
 //services
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { IscrizioniService }                    from '../../iscrizioni/iscrizioni.service';
-import { LezioniService }                       from '../lezioni.service';
+import { LoadingService }                                      from '../../utilities/loading/loading.service';
+import { IscrizioniService }                                   from '../../iscrizioni/iscrizioni.service';
+import { LezioniService }                                      from '../lezioni.service';
 
 //models
-import { CAL_Lezione }                          from 'src/app/_models/CAL_Lezione';
-import { TST_VotoInterr } from 'src/app/_models/TST_VotiInterr';
-import { DialogDataVotoInterr } from 'src/app/_models/DialogData';
-import { VotiInterrService } from '../voti-interr.service';
-import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
-import { MAT_Materia } from 'src/app/_models/MAT_Materia';
-import { MaterieService } from '../../materie/materie.service';
+import { CAL_Lezione }                                         from 'src/app/_models/CAL_Lezione';
+import { TST_VotoInterr }                                      from 'src/app/_models/TST_VotiInterr';
+import { DialogDataVotoInterr }                                from 'src/app/_models/DialogData';
+import { VotiInterrService }                                   from '../voti-interr.service';
+import { CLS_Iscrizione }                                      from 'src/app/_models/CLS_Iscrizione';
+import { MAT_Materia }                                         from 'src/app/_models/MAT_Materia';
+import { MaterieService }                                      from '../../materie/materie.service';
 
 //#endregion
 @Component({
@@ -132,7 +132,9 @@ export class VotoInterrEditComponent implements OnInit {
 
     //********************* POPOLAMENTO COMBO MATERIE DELLA CLASSE E DEL DOCENTE *******************
 
-    //popolo la combo delle lezioni disponibili per il docente in questa classeSezioneAnno
+    //popolo la combo delle materie disponibili per il docente in questa classeSezioneAnno
+    //l'insegnante potrebbe fare lezione di Psicologia ma interrogare in antropologia se è una sua materia
+    //o forse di default bosognerbbe mettere la materia della lezione in corso??
     this.obsMaterie$= this.svcMaterie.listByClasseSezioneAnnoANDDocente(this.data.classeSezioneAnnoID, this.data.docenteID);
 
     //********************* POPOLAMENTO COMBO ALUNNI *******************

@@ -237,18 +237,26 @@
 <!-- ********************************    MAT TAB ASSENZE ************************************** -->
                 <mat-tab label="Assenze">
 
-                    <app-presenze-alunno-list
+                    <br>  
+                    <mat-label class="frameLabel t10">Assenze di {{alunnoNomeCognome}} </mat-label>
+                    <div class="_documenti-container _cell-bordered mt10">
+                        <app-presenze-alunno-list
                         [alunnoID]="alunnoID">
-                    </app-presenze-alunno-list>
+                        </app-presenze-alunno-list>
+                    </div>
 
                 </mat-tab>
 <!-- ********************************    MAT TAB NOTE ************************************** -->
                 <mat-tab label="Note">
 
-                    <app-note-list
+                    <br>  
+                    <mat-label class="frameLabel t10">Note di {{alunnoNomeCognome}} </mat-label>
+                    <div class="_documenti-container _cell-bordered mt10">
+                        <app-note-list
                         [alunnoID] = "alunnoID"
                         [dove] = "'alunno-edit'">
-                    </app-note-list>
+                        </app-note-list>
+                    </div>
 
                 </mat-tab>
             </mat-tab-group>    

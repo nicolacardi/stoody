@@ -8,7 +8,7 @@ import { CompitiListComponent }                 from '../compiti-list/compiti-li
   templateUrl: './compiti-page.component.html',
   styleUrls: ['../lezioni.css']
 })
-export class CompitiPageComponent {
+export class CompitiPageComponent{
 
 //#region ----- ViewChild Input Output ---------
   @Input() classeSezioneAnnoID!:                number;

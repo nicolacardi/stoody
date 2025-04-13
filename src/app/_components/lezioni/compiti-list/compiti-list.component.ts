@@ -70,6 +70,8 @@ export class CompitiListComponent implements OnInit {
 
   ngOnChanges() {
     this.loadData();
+    // console.log("compiti-list - ngOnChanges - arrivato classeSezioneAnnoID", this.classeSezioneAnnoID)
+    // console.log("compiti-list - ngOnChanges - arrivato docenteID", this.docenteID)
   }
 
   ngOnInit () {
@@ -85,6 +87,7 @@ export class CompitiListComponent implements OnInit {
 
       loadLezioni$.subscribe(
         res =>  {
+          // console.log("compiti-list - loadData - res", res);
           this.matDataSource.data = res;
           this.sortCustom(); 
           this.matDataSource.sort = this.sort; 

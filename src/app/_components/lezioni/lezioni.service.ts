@@ -1,12 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable }      from '@angular/core';
+import { HttpClient }      from '@angular/common/http';
+import { Observable }      from 'rxjs';
 
-import { environment } from 'src/environments/environment';
-import { Utility } from '../utilities/utility.component';
+import { environment }     from 'src/environments/environment';
+import { Utility }         from '../utilities/utility.component';
 
-import { CAL_Lezione } from 'src/app/_models/CAL_Lezione';
-import { map } from 'rxjs/operators';
+import { CAL_Lezione }     from 'src/app/_models/CAL_Lezione';
+import { map }             from 'rxjs/operators';
 
 
 @Injectable({
@@ -52,7 +52,7 @@ export class LezioniService {
     .pipe(
       map(compiti=> compiti.sort((a,b) => { return a.dtCalendario < b.dtCalendario ? 1 : -1;})) //dal compito più recente al meno recente
     )
-    //http://213.215.231.4/swappX/api/CAL_Lezioni/listCompiti/16/1005
+    //http://213.215.231.4/swappX/api/CAL_Lezioni/listCompiti/21/1010
   }
 
   listByDocente(docenteID: number): Observable<CAL_Lezione[]>{
@@ -131,7 +131,9 @@ export class LezioniService {
 
   setAppello(lezioneID: number): Observable <any>{
     let formData = {};
+    console.log("lezioni.service setAppello, lezioneID",lezioneID);
     return this.http.post( environment.apiBaseUrl  + 'CAL_Lezioni/SetAppello/' + lezioneID, formData); 
+
   }
 
   post(formData: any): Observable <any>{

@@ -1,6 +1,6 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit,  }          from '@angular/core';
+import { Component, Inject, Input, OnInit,  }          from '@angular/core';
 import { UntypedFormGroup }                     from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA }        from '@angular/material/dialog';
 import { FormatoData, Utility }                 from '../../utilities/utility.component';
@@ -29,6 +29,7 @@ export class VotiCompitoPageComponent implements OnInit {
   strDtStart!:                                  string;
   strArgomento!:                                string;
 //#endregion
+
 
 //#region ----- Constructor --------------------
 

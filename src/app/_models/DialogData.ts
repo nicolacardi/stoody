@@ -88,7 +88,6 @@ export interface DialogDataVotoInterr {
         classeSezioneAnnoID:                    number;
         docenteID:                              number;
         lezioneID:                              number;  //se undefined serve a capire che ci troviamo in orario-docenti!
-
       }
 
 export interface DialogDataMateriaEdit {

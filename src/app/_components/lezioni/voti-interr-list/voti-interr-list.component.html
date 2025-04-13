@@ -1,5 +1,4 @@
 
-<!-- <h1 [ngClass]="{'invisible': !showPageTitle}" class="_titolo-pagina">Voti Interrogazioni</h1> -->
 <h1 *ngIf="showPageTitle" class="_titolo-pagina">Voti Interrogazioni<</h1>
 
 <button mat-mini-fab aria-label="Nuova interrogazione" matTooltip="Nuova interrogazione" class="_btn-add _btn-pos-right-1 _btn-pos-top-0" (click)="addRecord()">
@@ -15,7 +14,7 @@
     <!-- <mat-paginator *ngIf="showTableRibbon" class="transparent" [pageSize]="15" [pageSizeOptions]="[15, 50]" showFirstLastButtons></mat-paginator> -->
 
     <!-- **************************   MAT-TABLE   ******************* -->
-    <table mat-table class="_table-row-low transparent w100" [dataSource]="matDataSource"  matSort>
+    <table mat-table class="_table-row-low transparent w100 mt40" [dataSource]="matDataSource"  matSort>
 
         <!-- **************************   NG-CONTAINERs: COLONNE   ******************* -->
 

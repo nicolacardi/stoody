@@ -125,7 +125,8 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
   loadData () {
 
     let obsInsegnamenti$: Observable<CLS_ClasseDocenteMateria[]>;
-  
+    console.log("docenze-list - loadData", this.classeSezioneAnnoID);
+    console.log("docenze-list - loadData", this.docenteID);
     if (this.classeSezioneAnnoID) {
       obsInsegnamenti$= this.svcDocenze.listByClasseSezioneAnno(this.classeSezioneAnnoID);
     } else {

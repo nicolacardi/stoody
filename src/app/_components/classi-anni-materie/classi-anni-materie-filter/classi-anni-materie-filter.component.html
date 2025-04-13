@@ -9,21 +9,30 @@
             Pulisci Filtri
         </button>
     </div>
-
-    <mat-form-field class="ml12">
-        <mat-label>Classe</mat-label>
-        <input matInput [formControl]="classeFilter">
-    </mat-form-field>
-
-    <mat-form-field class="ml12">
-        <mat-label>Materia</mat-label>
-        <input matInput [formControl]="materiaFilter">
-    </mat-form-field>
-
-    <mat-form-field class="ml12">
-        <mat-label>TipoVoto</mat-label>
-        <input matInput [formControl]="tipoVotoFilter">
-    </mat-form-field>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field class="ml12">
+                <mat-label>Classe</mat-label>
+                <input matInput [formControl]="classeFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field class="ml12">
+                <mat-label>Materia</mat-label>
+                <input matInput [formControl]="materiaFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list class="_low-list-row no-overflowx" [cols]="1" rowHeight="60px">
+        <mat-grid-tile>
+            <mat-form-field class="ml12">
+                <mat-label>TipoVoto</mat-label>
+                <input matInput [formControl]="tipoVotoFilter">
+            </mat-form-field>
+        </mat-grid-tile>
+    </mat-grid-list>
 
 
 </div>

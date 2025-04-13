@@ -63,16 +63,17 @@ export class DocentiDashboardComponent implements OnInit {
   @ViewChild(MatTabGroup) tabGroup!: MatTabGroup;
 //#endregion
 
-  constructor(private svcDocenti:               DocentiService,
-              private svcClassiSezioniAnni:     ClassiSezioniAnniService,
-              public _dialog:                   MatDialog,
-              private actRoute:                 ActivatedRoute,
-              private svcDocenze:               DocenzeService,
-              private fb:                       UntypedFormBuilder, 
-              private svcClasseAnnoMateria:     ClasseAnnoMateriaService  ) {
-
+  constructor(
+    private svcDocenti:               DocentiService,
+    private svcClassiSezioniAnni:     ClassiSezioniAnniService,
+    public _dialog:                   MatDialog,
+    private actRoute:                 ActivatedRoute,
+    private svcDocenze:               DocenzeService,
+    private fb:                       UntypedFormBuilder, 
+    private svcClasseAnnoMateria:     ClasseAnnoMateriaService
+  ) {
     this.form = this.fb.group( {
-      selectMaterieDocenteClasse: 0
+      selectClasseDocenteMaterie: 0
     });
   }
 
@@ -102,10 +103,17 @@ export class DocentiDashboardComponent implements OnInit {
       )
     }
 
-    this.form.controls['selectMaterieDocenteClasse'].valueChanges.pipe(
-      tap(res => this.materiaID = res),
-      concatMap(res=> this.svcClasseAnnoMateria.getByMateriaAndClasseSezioneAnno(this.materiaID, this.classeSezioneAnnoID))
-    ).subscribe(res => this.tipoVoto = res.tipoVoto!.descrizione);
+    this.form.controls['selectClasseDocenteMaterie'].valueChanges.pipe(
+      tap(val => this.materiaID = val),
+      concatMap(()=> this.svcClasseAnnoMateria.getByMateriaAndClasseSezioneAnno(this.materiaID, this.classeSezioneAnnoID))
+    ).subscribe(res => 
+    {
+      // console.log("docenti-dashboard - ngOnInit - this.materiaID", this.materiaID);
+      // console.log("docenti-dashboard - ngOnInit - this.classeSezioneAnnoID", this.classeSezioneAnnoID);
+      // console.log("docenti-dashboard - ngOnInit - res", res);
+      this.tipoVoto = res.tipoVoto!.descrizione
+    }
+    );
   }
 
 //#endregion
@@ -121,6 +129,8 @@ export class DocentiDashboardComponent implements OnInit {
 
   classeSezioneAnnoIDEmitted(classeSezioneAnnoID: number) {
 
+    setTimeout(() => { window.dispatchEvent(new Event('resize'));}, 0); //questo forza il resize: senza di questo la tab alunni si vede solo parzialmente all'inizio
+    //this.cdr.detectChanges();
     this.tipoVoto = "";
     this.materiaID = 0;
     this.classeSezioneAnnoID = classeSezioneAnnoID;
@@ -138,9 +148,10 @@ export class DocentiDashboardComponent implements OnInit {
       // Estraggo le materie di questo docente in questa classe e le metto nella combo
       this.svcDocenze.listByClasseSezioneAnnoDocente(classeSezioneAnnoID, this.docenteID).subscribe(
         materie=> {
+          
           if(materie != null && materie.length>0){
             this.arrMaterie = materie;
-            this.form.controls['selectMaterieDocenteClasse'].setValue(materie[0].materiaID);
+            this.form.controls['selectClasseDocenteMaterie'].setValue(materie[0].materiaID);
           }
         }
       )

@@ -58,12 +58,10 @@
             </mat-tab>
 
             <mat-tab  *ngIf="classeSezioneAnnoID" label="Pagelle per Materia">
-                <!-- <h1 class="_titolo-pagina">Pagelle per materia</h1> -->
-                    <!-- combo materie del docente -->
                 <form [formGroup] = "form">
                     <mat-form-field  class="_pos-relative ml20 mt10 topZIndex noBottomPadding"  #materia>
                         <mat-label>Materie</mat-label>
-                        <mat-select formControlName="selectMaterieDocenteClasse">
+                        <mat-select formControlName="selectClasseDocenteMaterie">
                             <mat-option *ngFor="let element of arrMaterie" [value]="element.materiaID">
                                 {{element.materia!.descrizione}}
                             </mat-option>
@@ -76,6 +74,11 @@
                     </app-pagelle-classe-edit>
                 </form>
             </mat-tab>
+
+
+
+
+
 
             <!-- <mat-tab  *ngIf="classeSezioneAnnoID" label="Cert. Competenze">
                 <table>

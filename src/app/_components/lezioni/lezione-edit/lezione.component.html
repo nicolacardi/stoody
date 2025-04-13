@@ -163,15 +163,18 @@
                 <mat-tab  *ngIf="ckCompito && data.dove!='orario'" label="Voti Compito">
                     <app-voti-compito-list 
                         [lezioneID] = "data.lezioneID"
-                    > </app-voti-compito-list>
+                    >
+                    </app-voti-compito-list>
                 </mat-tab>
 
                 <mat-tab  *ngIf="data.dove!='orario'" label="Voti Interrogazioni">
-                    <app-voti-interr-page 
+
+                    <app-voti-interr-list 
                         [lezioneID] = "data.lezioneID"
                         [docenteID] = "docenteID"
                         [classeSezioneAnnoID] = "data.classeSezioneAnnoID"
-                    > </app-voti-interr-page>
+                    >
+                    </app-voti-interr-list>
                 </mat-tab>
             </mat-tab-group>
         </form>

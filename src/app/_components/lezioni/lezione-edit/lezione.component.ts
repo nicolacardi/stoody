@@ -1,44 +1,43 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup }               from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { Observable }                           from 'rxjs';
-import { map, take, tap }                            from 'rxjs/operators';
+import { Component, Inject, NgZone, OnInit, ViewChild }     from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }             from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }         from '@angular/material/dialog';
+import { MatSnackBar }                                      from '@angular/material/snack-bar';
+import { Observable }                                       from 'rxjs';
+import { map, take, tap }                                   from 'rxjs/operators';
 
-import { registerLocaleData }                   from '@angular/common';
-import localeIt                                 from '@angular/common/locales/it';
+import { registerLocaleData }                               from '@angular/common';
+import localeIt                                             from '@angular/common/locales/it';
 registerLocaleData(localeIt, 'it');
 
-import { CdkTextareaAutosize }                  from '@angular/cdk/text-field';
+import { CdkTextareaAutosize }                              from '@angular/cdk/text-field';
 
 //components
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { FormatoData, Utility }                 from '../../utilities/utility.component';
-import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
-import { VotiCompitoListComponent }             from '../voti-compito-list/voti-compito-list.component';
-import { PresenzeListComponent }                from '../presenze-list/presenze-list.component';
+import { DialogYesNoComponent }                             from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { SnackbarComponent }                                from '../../utilities/snackbar/snackbar.component';
+import { FormatoData, Utility }                             from '../../utilities/utility.component';
+import { DialogOkComponent }                                from '../../utilities/dialog-ok/dialog-ok.component';
+import { VotiCompitoListComponent }                         from '../voti-compito-list/voti-compito-list.component';
+import { PresenzeListComponent }                            from '../presenze-list/presenze-list.component';
 
 //services
-import { MaterieService }                       from 'src/app/_components/materie/materie.service';
-import { DocenzeService }                       from '../../docenze/docenze.service';
-import { ClassiSezioniAnniService }             from '../../classi/classi-sezioni-anni.service';
-import { DocentiService }                       from '../../docenti/docenti.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { LezioniService }                       from '../lezioni.service';
-import { PresenzeService }                      from '../presenze.service';
-import { IscrizioniService }                    from '../../iscrizioni/iscrizioni.service';
-import { VotiCompitiService }                   from '../voti-compiti.service';
+import { DocenzeService }                                   from '../../docenze/docenze.service';
+import { ClassiSezioniAnniService }                         from '../../classi/classi-sezioni-anni.service';
+import { DocentiService }                                   from '../../docenti/docenti.service';
+import { LoadingService }                                   from '../../utilities/loading/loading.service';
+import { LezioniService }                                   from '../lezioni.service';
+import { PresenzeService }                                  from '../presenze.service';
+import { IscrizioniService }                                from '../../iscrizioni/iscrizioni.service';
+import { VotiCompitiService }                               from '../voti-compiti.service';
 
 //models
-import { CAL_Lezione }                          from 'src/app/_models/CAL_Lezione';
-import { PER_Docente }                          from 'src/app/_models/PER_Docente';
-import { CLS_ClasseDocenteMateria }             from 'src/app/_models/CLS_ClasseDocenteMateria';
-import { CAL_Presenza }                         from 'src/app/_models/CAL_Presenza';
-import { TST_VotoCompito }                      from 'src/app/_models/TST_VotiCompiti';
-import { DialogDataLezione }                    from 'src/app/_models/DialogData';
+import { CAL_Lezione }                                      from 'src/app/_models/CAL_Lezione';
+import { PER_Docente }                                      from 'src/app/_models/PER_Docente';
+import { CLS_ClasseDocenteMateria }                         from 'src/app/_models/CLS_ClasseDocenteMateria';
+import { CAL_Presenza }                                     from 'src/app/_models/CAL_Presenza';
+import { TST_VotoCompito }                                  from 'src/app/_models/TST_VotiCompiti';
+import { DialogDataLezione }                                from 'src/app/_models/DialogData';
 
 //#endregion
 
@@ -56,9 +55,7 @@ export class LezioneComponent implements OnInit {
   form! :                                       UntypedFormGroup;
   docenteID!:                                   number;
   lezione$!:                                    Observable<CAL_Lezione>;
-  // obsMaterie$!:                                 Observable<MAT_Materia[]>;
   obsClassiDocentiMaterie$!:                    Observable<CLS_ClasseDocenteMateria[]>;
-  // obsDocenti$!:                                 Observable<PER_Docente[]>;
   obsSupplenti$!:                               Observable<PER_Docente[]>;
 
   strDtStart!:                                  string;
@@ -222,7 +219,7 @@ export class LezioneComponent implements OnInit {
       this.lezione$ = loadLezione$
       .pipe( tap(
         lezione => {
-          //console.log("lezione.component - loadData - lezione", lezione);
+          console.log("lezione.component - loadData - lezione", lezione);
           this.form.patchValue(lezione)
 
           //console.log("lezione.component - loadData - this.form.controls['classeDocenteMateria']", this.form.controls['classeDocenteMateria'].value);
@@ -449,10 +446,10 @@ export class LezioneComponent implements OnInit {
           for (const prop in this.form.controls) {
             this.form.value[prop] = this.form.controls[prop].value;
           }
-        
+          
           this.svcLezioni.setAppello(this.form.controls['id'].value).subscribe({
             next: res=> {
-              this.PresenzeListComponent.loadData(); //NON VA. #ERROR cannot read properties of undefined reading loadData
+              this.PresenzeListComponent.loadData();
             },  
             error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
           });

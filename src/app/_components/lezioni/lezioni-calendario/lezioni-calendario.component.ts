@@ -310,8 +310,14 @@ export class LezioniCalendarioComponent implements OnInit {
     const loadLezioni$ =this._loadingService.showLoaderUntilCompleted(obsLezioni$);
     loadLezioni$.subscribe(
       val =>   {
-        // console.log("lezioni-calendario - loadData - elenco eventi estratti da CAL_Lezioni", val);
-        this.Events = val;
+        console.log("lezioni-calendario - loadData - elenco eventi estratti da CAL_Lezioni", val);
+
+        this.Events = val.map(lezione => ({
+          ...lezione, 
+          title: lezione.classeDocenteMateria?.materia?.descrizione ?? '',
+          color: lezione.classeDocenteMateria?.materia?.color ?? ''
+        }));
+
         this.calendarOptions.events = this.Events;
       }
     );
