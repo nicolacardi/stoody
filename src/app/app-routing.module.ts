@@ -26,7 +26,7 @@ import { UsersPageComponent }                   from './_components/users/users-
 import { IscrizioniPageComponent }              from './_components/iscrizioni/iscrizioni-page/iscrizioni-page.component';
 import { DocentiDashboardComponent }            from './_components/docenti/docenti-dashboard/docenti-dashboard.component';
 import { OrarioDocentePageComponent }           from './_components/lezioni/orario-docente-page/orario-docente-page.component';
-import { ScadenzeCalendarioComponent }          from './_components/scadenze/scadenze-calendario/scadenze-calendario.component';
+import { EventiCalendarioComponent }          from './_components/eventi/eventi-calendario/eventi-calendario.component';
 import { VerbaliPageComponent }                 from './_components/verbali/verbali-page/verbali-page.component';
 import { OrarioPageComponent }                  from './_components/lezioni/orario-page/orario-page.component';
 import { ProceduraIscrizioneComponent }         from './_components/procedura-iscrizione/procedura-iscrizione.component';
@@ -51,7 +51,7 @@ const routes: Routes = [
 
   { path:'home',                                component: HomeComponent, canActivate:[AuthGuard]  },
 
-  { path: "calendario",                         component: ScadenzeCalendarioComponent, canActivate:[AuthGuard]},
+  { path: "calendario",                         component: EventiCalendarioComponent, canActivate:[AuthGuard]},
 
   { path: "orario-page",                        component: OrarioPageComponent, canActivate:[AuthGuard]},
 

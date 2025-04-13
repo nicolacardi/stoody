@@ -40,10 +40,10 @@ export class ImpostazioniComponent implements OnInit {
   public parQuoteRidotteFratelli!:              _UT_Parametro;
 
   private arrElab = [true, false, false];
-  hMinStartScadenza!:                           _UT_Parametro;
-  hMaxStartScadenza!:                           _UT_Parametro;
-  hMinEndScadenza!:                             _UT_Parametro;
-  hMaxEndScadenza!:                             _UT_Parametro;
+  hMinStartEvento!:                           _UT_Parametro;
+  hMaxStartEvento!:                           _UT_Parametro;
+  hMinEndEvento!:                             _UT_Parametro;
+  hMaxEndEvento!:                             _UT_Parametro;
 //#endregion
 
   @ViewChildren('QuoteListElement') QuoteList!: QueryList<any>;
@@ -82,10 +82,10 @@ export class ImpostazioniComponent implements OnInit {
     //   }
     // );
 
-    // this.svcParametri.getByParName('hMinStartScadenza') .subscribe(par=>{   this.hMinStartScadenza = par;  this.form.controls['hMinStartScadenza'].setValue(JSON.parse(par.parValue));});
-    // this.svcParametri.getByParName('hMaxStartScadenza') .subscribe(par=>{   this.hMaxStartScadenza = par;  this.form.controls['hMaxStartScadenza'].setValue(JSON.parse(par.parValue));});
-    // this.svcParametri.getByParName('hMinEndScadenza')   .subscribe(par=>{   this.hMinEndScadenza = par;    this.form.controls['hMinEndScadenza'].setValue(JSON.parse(par.parValue));});
-    // this.svcParametri.getByParName('hMaxEndScadenza')   .subscribe(par=>{   this.hMaxEndScadenza = par;    this.form.controls['hMaxEndScadenza'].setValue(JSON.parse(par.parValue));});
+    // this.svcParametri.getByParName('hMinStartEvento') .subscribe(par=>{   this.hMinStartEvento = par;  this.form.controls['hMinStartEvento'].setValue(JSON.parse(par.parValue));});
+    // this.svcParametri.getByParName('hMaxStartEvento') .subscribe(par=>{   this.hMaxStartEvento = par;  this.form.controls['hMaxStartEvento'].setValue(JSON.parse(par.parValue));});
+    // this.svcParametri.getByParName('hMinEndEvento')   .subscribe(par=>{   this.hMinEndEvento = par;    this.form.controls['hMinEndEvento'].setValue(JSON.parse(par.parValue));});
+    // this.svcParametri.getByParName('hMaxEndEvento')   .subscribe(par=>{   this.hMaxEndEvento = par;    this.form.controls['hMaxEndEvento'].setValue(JSON.parse(par.parValue));});
   }
 //#endregion
 

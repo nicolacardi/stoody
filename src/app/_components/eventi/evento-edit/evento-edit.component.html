@@ -1,6 +1,6 @@
 <mat-card appearance="outlined" class="form-card">
     <mat-card-content>
-        <form *ngIf="(scadenza$ | async) || emptyForm " class="data-form flex-form" [formGroup] = "form">
+        <form *ngIf="(evento$ | async) || emptyForm " class="data-form flex-form" [formGroup] = "form">
 
             <!-- ********************************    BOTTONI     ************************************* -->
             <div class="center">
@@ -9,7 +9,7 @@
 
                 <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
                 <span [ngClass]="{'invisible': selectedTab != 0}">
-                <button *ngIf="data.scadenzaID " mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
+                <button *ngIf="data.eventoID " mat-mini-fab aria-label="Back" matTooltip="Ricarica" class="btn ml10"
                         [disabled]= "!form.valid" 
                         (click)="loadData()" >
                     <mat-icon>restart_alt</mat-icon>
@@ -21,7 +21,7 @@
                     <mat-icon>save</mat-icon>
                 </button>
 
-                <button *ngIf="data.scadenzaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                <button *ngIf="data.eventoID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
                         [disabled]= "!form.valid" 
                         (click)="delete()" >
                     <mat-icon>delete</mat-icon>
@@ -30,8 +30,8 @@
             </div>
 
             <!-- In questo modo si fa il setting della data locale timezone fuso orario (keywords per trovarlo) -->
-            <mat-label class="center mt10 fs16" *ngIf="data.scadenzaID || emptyForm">{{strDtStart | date: 'EEEE, d MMMM, y' : '+0100' : 'it' }}</mat-label>
-                    <!-- <mat-label class="center" *ngIf="data.scadenzaID || emptyForm">dalle  {{strH_Ini}} - alle {{strH_end}}</mat-label> -->
+            <mat-label class="center mt10 fs16" *ngIf="data.eventoID || emptyForm">{{strDtStart | date: 'EEEE, d MMMM, y' : '+0100' : 'it' }}</mat-label>
+                    <!-- <mat-label class="center" *ngIf="data.eventoID || emptyForm">dalle  {{strH_Ini}} - alle {{strH_end}}</mat-label> -->
             <mat-grid-list class="no-overflowx mt10" [cols]="8" rowHeight="60px">
                 <mat-grid-tile>
                 </mat-grid-tile>
@@ -73,11 +73,11 @@
                     <mat-form-field>
                         <mat-label>Tipo Evento</mat-label>
                         
-                        <mat-select required formControlName="tipoScadenzaID" #tipoScadenzaID (selectionChange)="changeColor()">
+                        <mat-select required formControlName="tipoEventoID" #tipoEventoID (selectionChange)="changeColor()">
                             <!-- <mat-select-trigger>
-                                <span class="fs40 _pos-absolute r5 t10" [ngStyle]="{'color': tipoScadenzaID.value.color}">●</span>{{tipoScadenzaID.value.descrizione}}
+                                <span class="fs40 _pos-absolute r5 t10" [ngStyle]="{'color': tipoEventoID.value.color}">●</span>{{tipoEventoID.value.descrizione}}
                             </mat-select-trigger> -->
-                            <mat-option *ngFor="let element of (obsTipiScadenza$ | async)" [value]="element.id">
+                            <mat-option *ngFor="let element of (obsTipiEvento$ | async)" [value]="element.id">
                                 
                                 {{element.descrizione}} 
                                 <!-- PROBLEMA: qui non valorizzo più l'ID -->
@@ -218,7 +218,7 @@
                             <span class="ml10">{{element.persona!.nome}} {{element.persona!.cognome}}</span>
                             <!-- <span class="ml10 cgrey _pos-absolute l200">{{element.persona!.tipoPersona!.descrizione}}</span> -->
 
-                            <!-- [ngClass]="{'invisible': element.ckLetto}" serve prima passare qui lo scadenzapersona-->
+                            <!-- [ngClass]="{'invisible': element.ckLetto}" serve prima passare qui lo eventopersona-->
                             <mat-icon matTooltip="letto" *ngIf="element.ckLetto" style="position:absolute; right: 10px; top: 0px">done</mat-icon> 
                             <mat-icon matTooltip="Accettato" *ngIf="element.ckAccettato" style="color: green;  transform: scale(0.8); position:absolute; right: 10px; top: 0px">thumb_up</mat-icon> 
                             <mat-icon matTooltip="Rifiutato" *ngIf="element.ckRespinto" style="color: red;  transform: scale(0.8); position:absolute; right: 10px; top: 0px">thumb_down</mat-icon> 

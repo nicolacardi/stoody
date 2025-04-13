@@ -23,8 +23,8 @@ export interface DialogDataLezione {
         docenteID:                              number;
       }
 
-export interface DialogDataScadenza {
-        scadenzaID:                              number;
+export interface DialogDataEvento {
+        eventoID:                              number;
         start:                                  string;
         end:                                    string;
         dtCalendario:                           string;
@@ -113,8 +113,8 @@ export interface DialogDataAnnoEdit {
       annoID:                                   number;
       }
 
-export interface DialogDataTipoScadenzaEdit {
-      tipoScadenzaID:                           number;
+export interface DialogDataTipoEventoEdit {
+      tipoEventoID:                           number;
       maxSeq:                                   number;
 
       }

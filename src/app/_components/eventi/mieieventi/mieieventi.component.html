@@ -11,19 +11,19 @@
         </mat-checkbox>
 
 
-    <mat-card appearance="outlined" *ngFor="let element of (obsMieScadenze$ | async)" class="mt10 ml10 mr10">
+    <mat-card appearance="outlined" *ngFor="let element of (obsMieiEventi$ | async)" class="mt10 ml10 mr10">
  
         <mat-card-content>
-            <span class="fs14">{{element.scadenza!.dtCalendario| date: "dd/MM/yy"}}</span> <span class="fs12">  - h.{{element.scadenza!.h_Ini}} </span><br>
-            <span class="fs16">{{element.scadenza!.title}}</span>
+            <span class="fs14">{{element.evento!.dtCalendario| date: "dd/MM/yy"}}</span> <span class="fs12">  - h.{{element.evento!.h_Ini}} </span><br>
+            <span class="fs16">{{element.evento!.title}}</span>
             <div *ngIf="element.link">
                 <a routerLink="/procedura-iscrizione" [queryParams]="{ iscrizioneID: element.link }">link a iscrizione</a>
             </div>
                     
-            <span class="fs40 _pos-absolute r10 t10" [ngStyle]="{'color': element.scadenza!.tipoScadenza!.color}">●</span>
+            <span class="fs40 _pos-absolute r10 t10" [ngStyle]="{'color': element.evento!.tipoEvento!.color}">●</span>
         </mat-card-content>
 
-        <mat-button-toggle-group *ngIf="element.scadenza!.ckRisposta" class="_noborder _pos-absolute l10 mb5 mt5" name="risposta" aria-label="risposta" >
+        <mat-button-toggle-group *ngIf="element.evento!.ckRisposta" class="_noborder _pos-absolute l10 mb5 mt5" name="risposta" aria-label="risposta" >
             <mat-button-toggle [checked]="element.ckAccettato" matTooltip="Invito Accettato" (click)="setAccettato(element)">
                 <mat-icon style="color: green;  transform: scale(0.8)">thumb_up</mat-icon> 
             </mat-button-toggle>
@@ -32,8 +32,8 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
         <div class="mb5 mt5 ml10">
-            <mat-icon class="pointer" *ngIf="!element.ckLetto && !element.scadenza!.ckRisposta" matTooltip="Conferma di lettura" (click)="setLetto(element)">check_box_outline_blank</mat-icon>
-            <mat-icon class="defaultcursor" *ngIf="element.ckLetto && !element.scadenza!.ckRisposta" matTooltip="Conferma di lettura">check_box</mat-icon>
+            <mat-icon class="pointer" *ngIf="!element.ckLetto && !element.evento!.ckRisposta" matTooltip="Conferma di lettura" (click)="setLetto(element)">check_box_outline_blank</mat-icon>
+            <mat-icon class="defaultcursor" *ngIf="element.ckLetto && !element.evento!.ckRisposta" matTooltip="Conferma di lettura">check_box</mat-icon>
         </div>
     </mat-card>
 </mat-card>
@@ -43,13 +43,13 @@
 
         <ng-container matColumnDef="message">
             <mat-header-cell *matHeaderCellDef ></mat-header-cell>
-            <mat-cell *matCellDef="let element" [ngClass]="{'stroked': element.closed}">{{element.scadenza.title}}</mat-cell>
+            <mat-cell *matCellDef="let element" [ngClass]="{'stroked': element.closed}">{{element.evento.title}}</mat-cell>
             <mat-footer-cell class="bold" *matFooterCellDef> </mat-footer-cell>
         </ng-container>
 
         <ng-container matColumnDef="actionsColumn">
             <mat-header-cell *matHeaderCellDef>Letto</mat-header-cell>
-            <mat-cell  *matCellDef="let element" matTooltip="Segna Scadenza come letta" (click)="closeMsg(element)"> 
+            <mat-cell  *matCellDef="let element" matTooltip="Segna Evento come letta" (click)="closeMsg(element)"> 
                 <mat-icon class="pointer" *ngIf="!element.ckLetto">check_box_outline_blank</mat-icon>
                 <mat-icon class="defaultcursor" *ngIf="element.ckLetto">check_box</mat-icon>
             </mat-cell>

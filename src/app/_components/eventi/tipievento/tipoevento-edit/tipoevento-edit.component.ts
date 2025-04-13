@@ -14,23 +14,23 @@ import { ColorPickerComponent }                 from '../../../utilities/color-p
 
 //services
 import { LoadingService }                       from '../../../utilities/loading/loading.service';
-import { TipiScadenzaService }                  from '../../tipiscadenza.service';
+import { TipiEventoService }                  from '../../tipievento.service';
 
 //classes
-import { CAL_TipoScadenza }                     from 'src/app/_models/CAL_TipoScadenza';
-import { DialogDataTipoScadenzaEdit }               from 'src/app/_models/DialogData';
+import { CAL_TipoEvento }                     from 'src/app/_models/CAL_TipoEvento';
+import { DialogDataTipoEventoEdit }               from 'src/app/_models/DialogData';
 
 //#endregion
 @Component({
-  selector: 'app-tiposcadenza-edit',
-  templateUrl: './tiposcadenza-edit.component.html',
-  styleUrls: ['../../scadenze.css']
+  selector: 'app-tipoevento-edit',
+  templateUrl: './tipoevento-edit.component.html',
+  styleUrls: ['../../eventi.css']
 })
-export class TipoScadenzaEditComponent implements OnInit {
+export class TipoEventoEditComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
 
-  tiposcadenza$!:                               Observable<CAL_TipoScadenza>;
+  tipoevento$!:                               Observable<CAL_TipoEvento>;
 
   form! :                                       UntypedFormGroup;
   emptyForm :                                   boolean = false;
@@ -38,9 +38,9 @@ export class TipoScadenzaEditComponent implements OnInit {
 //#endregion
 
 //#region ----- Constructor --------------------
-  constructor(public _dialogRef: MatDialogRef<TipoScadenzaEditComponent>,
-            @Inject(MAT_DIALOG_DATA) public data: DialogDataTipoScadenzaEdit,
-            private svcTipiScadenza:            TipiScadenzaService,
+  constructor(public _dialogRef: MatDialogRef<TipoEventoEditComponent>,
+            @Inject(MAT_DIALOG_DATA) public data: DialogDataTipoEventoEdit,
+            private svcTipiEvento:            TipiEventoService,
             private _loadingService :           LoadingService,
             private fb:                         UntypedFormBuilder, 
             public _dialog:                     MatDialog,
@@ -67,17 +67,17 @@ export class TipoScadenzaEditComponent implements OnInit {
 
   loadData(){
 
-    if (this.data.tipoScadenzaID && this.data.tipoScadenzaID + '' != "0") {
+    if (this.data.tipoEventoID && this.data.tipoEventoID + '' != "0") {
 
-      const obsTiposcadenza$: Observable<CAL_TipoScadenza> = this.svcTipiScadenza.get(this.data.tipoScadenzaID);
-      const loadTiposcadenza$ = this._loadingService.showLoaderUntilCompleted(obsTiposcadenza$);
+      const obsTipoevento$: Observable<CAL_TipoEvento> = this.svcTipiEvento.get(this.data.tipoEventoID);
+      const loadTipoevento$ = this._loadingService.showLoaderUntilCompleted(obsTipoevento$);
       //TODO: capire perchè serve sia alunno | async e sia il popolamento di form
-      this.tiposcadenza$ = loadTiposcadenza$
+      this.tipoevento$ = loadTipoevento$
       .pipe(
           tap(
-            tiposcadenza => {
-              // console.log(tiposcadenza);
-              this.form.patchValue(tiposcadenza)
+            tipoevento => {
+              // console.log(tipoevento);
+              this.form.patchValue(tipoevento)
             }
           )
       );
@@ -94,8 +94,8 @@ export class TipoScadenzaEditComponent implements OnInit {
 
     if (this.form.controls['id'].value == null) {
       this.form.controls['seq'].setValue(this.data.maxSeq +1);
-      // console.log("tiposcadenza-edit - save - ",this.data.maxSeq, this.form.value);
-      this.svcTipiScadenza.post(this.form.value).subscribe({
+      // console.log("tipoevento-edit - save - ",this.data.maxSeq, this.form.value);
+      this.svcTipiEvento.post(this.form.value).subscribe({
           next: res=> {
             this._dialogRef.close();
             this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
@@ -105,7 +105,7 @@ export class TipoScadenzaEditComponent implements OnInit {
         });
     }
     else 
-      this.svcTipiScadenza.put(this.form.value).subscribe({
+      this.svcTipiEvento.put(this.form.value).subscribe({
           next: res=> {
             this._dialogRef.close();
             this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
@@ -123,10 +123,10 @@ export class TipoScadenzaEditComponent implements OnInit {
     dialogRef.afterClosed().subscribe(
       result => {
         if(result){
-          this.svcTipiScadenza.delete(Number(this.data.tipoScadenzaID)).subscribe({
+          this.svcTipiEvento.delete(Number(this.data.tipoEventoID)).subscribe({
             next: res=>{
               this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record cancellato', panelClass: ['red-snackbar']});
-              this.svcTipiScadenza.renumberSeq().subscribe();
+              this.svcTipiEvento.renumberSeq().subscribe();
               this._dialogRef.close();
             },
             error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})

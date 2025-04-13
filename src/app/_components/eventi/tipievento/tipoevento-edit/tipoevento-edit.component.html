@@ -1,13 +1,13 @@
 <mat-card appearance="outlined" class="form-card">
     <mat-card-content>
-        <form *ngIf="(tiposcadenza$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
+        <form *ngIf="(tipoevento$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">
             <div class="center">
 
                 <img class="iconaMenuBig" src="./assets/evento_edit.svg">
 
                 <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
 
-                <button *ngIf="data.tipoScadenzaID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                <button *ngIf="data.tipoEventoID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
                         [disabled]= "!form.valid" 
                         (click)="loadData()" >
                     <mat-icon>restart_alt</mat-icon>
@@ -19,7 +19,7 @@
                     <mat-icon>save</mat-icon>
                 </button>
 
-                <button *ngIf="data.tipoScadenzaID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                <button *ngIf="data.tipoEventoID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
                         [disabled]= "!form.valid" 
                         (click)="delete()" >
                     <mat-icon>delete</mat-icon>
@@ -46,7 +46,7 @@
 
                 <mat-grid-tile>
                     <mat-checkbox color="primary" formControlName="ckNota" matTooltip="Il comportamento degli eventi così flaggati è differente">
-                        Tipo Scadenza per nota
+                        Tipo Evento per nota
                     </mat-checkbox>
                 </mat-grid-tile>
             </mat-grid-list>

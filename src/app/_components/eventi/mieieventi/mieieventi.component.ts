@@ -14,32 +14,32 @@ import { SnackbarComponent }                    from '../../utilities/snackbar/s
 
 //services
 import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { ScadenzePersoneService }               from '../scadenze-persone.service';
+import { EventiPersoneService }               from '../eventi-persone.service';
 
 //models
 import { User }                                 from 'src/app/_user/Users';
-import { CAL_ScadenzaPersone }                  from 'src/app/_models/CAL_Scadenza';
+import { CAL_EventoPersone }                  from 'src/app/_models/CAL_Evento';
 
 //#endregion
 
 @Component({
-  selector: 'app-mie-scadenze',
-  templateUrl: './miescadenze.component.html',
-  styleUrls: ['../scadenze.css']
+  selector: 'app-miei-eventi',
+  templateUrl: './mieieventi.component.html',
+  styleUrls: ['../eventi.css']
 })
 
-export class MieScadenzeComponent implements OnInit {
+export class MieiEventiComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
 
   //public userID: string;
   public currUser!:                             User;
-  public obsMieScadenze$!:                      Observable<CAL_ScadenzaPersone[]>
+  public obsMieiEventi$!:                      Observable<CAL_EventoPersone[]>
   public iscrizioneID:                          number = 43;
-  public ckMostraScadenzeLette :                   boolean = false;
+  public ckMostraEventiLette :                   boolean = false;
 
 
-  matDataSource = new MatTableDataSource<CAL_ScadenzaPersone>();
+  matDataSource = new MatTableDataSource<CAL_EventoPersone>();
   displayedColumns: string[] = [
     "message",
     "actionsColumn",
@@ -50,7 +50,7 @@ export class MieScadenzeComponent implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(private svcScadenzePersone:                 ScadenzePersoneService,
+  constructor(private svcEventiPersone:                 EventiPersoneService,
               private _loadingService:                    LoadingService,
               private _snackBar:                          MatSnackBar, 
               public _dialog:                             MatDialog  ) {
@@ -67,48 +67,48 @@ export class MieScadenzeComponent implements OnInit {
   }
 
   loadData(){
-    let scadenze$: Observable<CAL_ScadenzaPersone[]>;
+    let eventi$: Observable<CAL_EventoPersone[]>;
 
-    if(this.ckMostraScadenzeLette){
-      scadenze$ = this.svcScadenzePersone.listByPersona(this.currUser.personaID)
+    if(this.ckMostraEventiLette){
+      eventi$ = this.svcEventiPersone.listByPersona(this.currUser.personaID)
     }
     else  
-    scadenze$ = this.svcScadenzePersone.listByPersona(this.currUser.personaID)
+    eventi$ = this.svcEventiPersone.listByPersona(this.currUser.personaID)
     .pipe(map(
       res=> res.filter((x) => x.ckLetto == false))
     );;
     
 
-    scadenze$.subscribe();
-    this.obsMieScadenze$ =this._loadingService.showLoaderUntilCompleted(scadenze$);
+    eventi$.subscribe();
+    this.obsMieiEventi$ =this._loadingService.showLoaderUntilCompleted(eventi$);
   }
 
 //#endregion
 
 //#region ----- Altri metodi -------------------
 
-  setLetto(element: CAL_ScadenzaPersone) {
+  setLetto(element: CAL_EventoPersone) {
 
     //element.ckLetto = !element.ckLetto;
     element.ckLetto = true;
 
-    this.svcScadenzePersone.put(element).subscribe({
+    this.svcEventiPersone.put(element).subscribe({
       next: res=> this.loadData(),
-      error: err=> this._snackBar.openFromComponent(SnackbarComponent, { data: 'Errore nella chuisura della scadenza ', panelClass: ['red-snackbar']})
+      error: err=> this._snackBar.openFromComponent(SnackbarComponent, { data: 'Errore nella chuisura della evento ', panelClass: ['red-snackbar']})
     });
   }
 
-  setAccettato(element: CAL_ScadenzaPersone) {
+  setAccettato(element: CAL_EventoPersone) {
     element.ckAccettato = true;
-    element.ckLetto = true; //una scadenza accettata si dà anche per letta (il flag ckLetto non compare quando si tratta di accettare o respingere)
+    element.ckLetto = true; //una evento accettata si dà anche per letta (il flag ckLetto non compare quando si tratta di accettare o respingere)
     element.ckRespinto = false;
-    this.svcScadenzePersone.put(element).subscribe({
+    this.svcEventiPersone.put(element).subscribe({
       next: res=> {},
-      error: err=> this._snackBar.openFromComponent(SnackbarComponent, { data: 'Errore nella chuisura della scadenza ', panelClass: ['red-snackbar']})
+      error: err=> this._snackBar.openFromComponent(SnackbarComponent, { data: 'Errore nella chuisura della evento ', panelClass: ['red-snackbar']})
     });
   }
 
-  setRespinto(element: CAL_ScadenzaPersone) {
+  setRespinto(element: CAL_EventoPersone) {
     if (element.personaID == this.currUser.personaID) {
       this._dialog.open(DialogOkComponent, {
         width: '320px',
@@ -119,9 +119,9 @@ export class MieScadenzeComponent implements OnInit {
     else {
       element.ckAccettato = false;
       element.ckRespinto = true;
-      this.svcScadenzePersone.put(element).subscribe({
+      this.svcEventiPersone.put(element).subscribe({
         next: res=> {},
-        error: err=> this._snackBar.openFromComponent(SnackbarComponent, { data: 'Errore nella chuisura della scadenza ', panelClass: ['red-snackbar']})
+        error: err=> this._snackBar.openFromComponent(SnackbarComponent, { data: 'Errore nella chuisura della evento ', panelClass: ['red-snackbar']})
       });
     }
   }
@@ -131,14 +131,14 @@ export class MieScadenzeComponent implements OnInit {
   deleteMsg(id: number) {
     //TODO??
     //da decidere cosa fare
-    // this.svcScadenze.delete(id).subscribe(
+    // this.svcEventi.delete(id).subscribe(
     //   res=> this.loadData(),
     //   err=> this._snackBar.openFromComponent(SnackbarComponent, { data: 'Errore nella cancellazione  del messaggio ', panelClass: ['red-snackbar']})
     // );
   }
 
   toggleAttivi(){
-    this.ckMostraScadenzeLette = !this.ckMostraScadenzeLette;
+    this.ckMostraEventiLette = !this.ckMostraEventiLette;
     this.loadData();
   }
 }

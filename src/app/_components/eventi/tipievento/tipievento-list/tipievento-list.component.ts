@@ -7,30 +7,30 @@ import { MatSort }                              from '@angular/material/sort';
 import { MatDialog, MatDialogConfig }           from '@angular/material/dialog';
 
 //components
-import { TipoScadenzaEditComponent }            from '../tiposcadenza-edit/tiposcadenza-edit.component';
+import { TipoEventoEditComponent }            from '../tipoevento-edit/tipoevento-edit.component';
 
 //services
 import { LoadingService }                       from '../../../utilities/loading/loading.service';
-import { TipiScadenzaService }                  from '../../tipiscadenza.service';
+import { TipiEventoService }                  from '../../tipievento.service';
 
 //models
-import { CAL_TipoScadenza }                     from 'src/app/_models/CAL_TipoScadenza';
+import { CAL_TipoEvento }                     from 'src/app/_models/CAL_TipoEvento';
 
 //#endregion
 @Component({
-  selector: 'app-tipiscadenza-list',
-  templateUrl: './tipiscadenza-list.component.html',
-  styleUrls: ['../../scadenze.css']
+  selector: 'app-tipievento-list',
+  templateUrl: './tipievento-list.component.html',
+  styleUrls: ['../../eventi.css']
 })
-export class TipiScadenzaListComponent implements OnInit {
+export class TipiEventoListComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
 
   maxSeq!:                                       number;
 
-  matDataSource = new MatTableDataSource<CAL_TipoScadenza>();
+  matDataSource = new MatTableDataSource<CAL_TipoEvento>();
 
-  obsTipiscadenza$!:                                 Observable<CAL_TipoScadenza[]>;
+  obsTipievento$!:                                 Observable<CAL_TipoEvento[]>;
 
   displayedColumns: string[] = [
       "actionsColumn", 
@@ -39,8 +39,8 @@ export class TipiScadenzaListComponent implements OnInit {
       "color"
   ];
 
-  rptTitle = 'Lista Tipi Scadenza';
-  rptFileName = 'ListaTipiScadenza';
+  rptTitle = 'Lista Tipi Evento';
+  rptFileName = 'ListaTipiEvento';
   rptFieldsToKeep  = [
     "descrizione"
   ];
@@ -63,7 +63,7 @@ export class TipiScadenzaListComponent implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(private svcTipiscadenza:          TipiScadenzaService,
+  constructor(private svcTipievento:          TipiEventoService,
               private _loadingService:          LoadingService,
               public _dialog:                   MatDialog) { 
           
@@ -79,10 +79,10 @@ export class TipiScadenzaListComponent implements OnInit {
 
   loadData() {
     
-    this.obsTipiscadenza$ = this.svcTipiscadenza.list();  
-    const loadTipiscadenza$ =this._loadingService.showLoaderUntilCompleted(this.obsTipiscadenza$);
+    this.obsTipievento$ = this.svcTipievento.list();  
+    const loadTipievento$ =this._loadingService.showLoaderUntilCompleted(this.obsTipievento$);
 
-    loadTipiscadenza$.subscribe(
+    loadTipievento$.subscribe(
       val =>   {
         this.matDataSource.data = val;
         this.sortCustom(); 
@@ -91,7 +91,7 @@ export class TipiScadenzaListComponent implements OnInit {
         this.maxSeq = val.reduce((max, item) => {
           return item.seq! > max ? item.seq! : max;
         }, 0);
-        // console.log ("tipiscadenza-list - loadData - maxseq", this.maxSeq);
+        // console.log ("tipievento-list - loadData - maxseq", this.maxSeq);
       }
     );
   }
@@ -104,25 +104,25 @@ export class TipiScadenzaListComponent implements OnInit {
       panelClass: 'add-DetailDialog',
       width: '400px',
       height: '400px',
-      data: { tipoScadenzaID:  0, maxSeq: this.maxSeq}
+      data: { tipoEventoID:  0, maxSeq: this.maxSeq}
     };
-    const dialogRef = this._dialog.open(TipoScadenzaEditComponent, dialogConfig);
+    const dialogRef = this._dialog.open(TipoEventoEditComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(() => this.loadData());
   }
 
-  openDetail(tipoScadenzaID:any){
+  openDetail(tipoEventoID:any){
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '400px',
       height: '400px',
-      data: { tipoScadenzaID: tipoScadenzaID, maxSeq: this.maxSeq }
+      data: { tipoEventoID: tipoEventoID, maxSeq: this.maxSeq }
     };
-    const dialogRef = this._dialog.open(TipoScadenzaEditComponent, dialogConfig);
+    const dialogRef = this._dialog.open(TipoEventoEditComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(() => this.loadData());
   }
 
   drop(event: any){
-    this.svcTipiscadenza.updateSeq(event.previousIndex+1, event.currentIndex+1 )
+    this.svcTipievento.updateSeq(event.previousIndex+1, event.currentIndex+1 )
     .subscribe(res=> this.loadData());
   }
 //#endregion

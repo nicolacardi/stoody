@@ -17,14 +17,14 @@ import { LoadingService }                       from '../../utilities/loading/lo
 import { UserService }                          from 'src/app/_user/user.service';
 import { IscrizioniService }                    from '../../iscrizioni/iscrizioni.service';
 import { GenitoriService }                      from '../../genitori/genitori.service';
-import { ScadenzeService }                      from '../../scadenze/scadenze.service';
-import { ScadenzePersoneService }               from '../../scadenze/scadenze-persone.service';
+import { EventiService }                      from '../../eventi/eventi.service';
+import { EventiPersoneService }               from '../../eventi/eventi-persone.service';
 import { NoteIscrizioniService }                from '../noteiscrizioni.service';
 
 //models
 import { DOC_Nota }                             from 'src/app/_models/DOC_Nota';
 import { CLS_Iscrizione }                       from 'src/app/_models/CLS_Iscrizione';
-import { CAL_Scadenza, CAL_ScadenzaPersone }    from 'src/app/_models/CAL_Scadenza';
+import { CAL_Evento, CAL_EventoPersone }    from 'src/app/_models/CAL_Evento';
 import { DOC_NotaIscrizione }                   from 'src/app/_models/DOC_NotaIscrizione';
 import { DialogDataNota }                       from 'src/app/_models/DialogData';
 
@@ -59,8 +59,8 @@ export class NotaEditComponent implements OnInit {
               private svcNote:                            NoteService,
               private svcIscrizioni:                      IscrizioniService,
               private svcNoteIscrizioni:                  NoteIscrizioniService,
-              private svcScadenze:                        ScadenzeService,
-              private svcScadenzePersone:                 ScadenzePersoneService,
+              private svcEventi:                        EventiService,
+              private svcEventiPersone:                 EventiPersoneService,
               private svcGenitori:                        GenitoriService,
 
               @Inject(MAT_DIALOG_DATA) public data:       DialogDataNota,
@@ -203,8 +203,8 @@ export class NotaEditComponent implements OnInit {
               this.svcIscrizioni.get(iscrizione).subscribe(
                 (iscrizione:CLS_Iscrizione) => {
                   //console.log ("iscrizione estratta:", iscrizione)
-                  //inserisco la scadenza
-                  const objScadenza = <CAL_Scadenza>{
+                  //inserisco la evento
+                  const objEvento = <CAL_Evento>{
                     dtCalendario: this.form.controls['dtNota'].value,
                     title: "NOTA DISCIPLINARE PER " + iscrizione.alunno!.persona.nome + ' ' + iscrizione.alunno!.persona.cognome +"-" + this.form.controls['nota'].value,
                     start: this.form.controls['dtNota'].value,
@@ -215,13 +215,13 @@ export class NotaEditComponent implements OnInit {
                     h_Ini: this.form.controls['h_Ini'].value,
                     h_End: this.form.controls['h_End'].value,
                     PersonaID: this.personaID,
-                    TipoScadenzaID: 6,  //Fa schifetto  TODO
+                    TipoEventoID: 6,  //Fa schifetto  TODO
                     NotaID: nota.id
                   }
-                  //console.log ("objScadenza", objScadenza);
-                  this.svcScadenze.post(objScadenza).subscribe(
+                  //console.log ("objEvento", objEvento);
+                  this.svcEventi.post(objEvento).subscribe(
                     scad => {
-                      //inserisco i genitori nella tabella ScadenzaPersone
+                      //inserisco i genitori nella tabella EventoPersone
                       this.insertGenitori(iscrizione.alunnoID, scad.id)
                     }
                   )
@@ -253,8 +253,8 @@ export class NotaEditComponent implements OnInit {
             })
 
             if(this.form.controls['ckInvioMsg'].value) {
-              //è certamente il PRIMO inserimento di un invioMsg, non è possibile che ci siano altre scadenze vecchie, perchè poi viene inibito tutto
-              //quindi non serve togliere prima tutte le scadenze e poi ripristinarle
+              //è certamente il PRIMO inserimento di un invioMsg, non è possibile che ci siano altre eventi vecchie, perchè poi viene inibito tutto
+              //quindi non serve togliere prima tutte le eventi e poi ripristinarle
 
               //DEVO INSERIRE TANTE SCADENZE QUANTE LE ISCRIZIONI
               //serve notaID appena inserito
@@ -262,8 +262,8 @@ export class NotaEditComponent implements OnInit {
                 this.svcIscrizioni.get(iscrizione).subscribe(
                   (iscrizione:CLS_Iscrizione) => {
                     //console.log ("iscrizione estratta:", iscrizione)
-                    //inserisco la scadenza
-                    const objScadenza = <CAL_Scadenza>{
+                    //inserisco la evento
+                    const objEvento = <CAL_Evento>{
                       dtCalendario: this.form.controls['dtNota'].value,
                       title: "NOTA DISCIPLINARE PER " + iscrizione.alunno!.persona.nome + ' ' + iscrizione.alunno!.persona.cognome +"-" + this.form.controls['nota'].value,
                       start: this.form.controls['dtNota'].value,
@@ -274,13 +274,13 @@ export class NotaEditComponent implements OnInit {
                       h_Ini: this.form.controls['h_Ini'].value,
                       h_End: this.form.controls['h_End'].value,
                       PersonaID: this.personaID,
-                      TipoScadenzaID: 6,  //Fa schifetto  TODO
+                      TipoEventoID: 6,  //Fa schifetto  TODO
                       NotaID: nota.id
                     }
-                    //console.log ("objScadenza", objScadenza);
-                    this.svcScadenze.post(objScadenza).subscribe(
+                    //console.log ("objEvento", objEvento);
+                    this.svcEventi.post(objEvento).subscribe(
                       scad => {
-                        //inserisco i genitori nella tabella ScadenzaPersone
+                        //inserisco i genitori nella tabella EventoPersone
                         this.insertGenitori(iscrizione.alunnoID, scad.id)
                       }
                     )
@@ -297,34 +297,34 @@ export class NotaEditComponent implements OnInit {
 
 //#region ----- Altri metodi -------------------
 
-  insertGenitori(alunnoID: number, scadenzaID: number) {
+  insertGenitori(alunnoID: number, eventoID: number) {
 
     //Se si volesse inserire il maestro tra coloro che lo ricevono...
-    let objScadenzaPersona: CAL_ScadenzaPersone = {
+    let objEventoPersona: CAL_EventoPersone = {
       personaID: this.form.controls['personaID'].value,
-      scadenzaID : scadenzaID,
+      eventoID : eventoID,
       ckLetto: false,
       ckAccettato: false,
       ckRespinto: false,
     }
-    this.svcScadenzePersone.post(objScadenzaPersona).subscribe();
+    this.svcEventiPersone.post(objEventoPersona).subscribe();
 
     //estraggo i personaID dei genitori
-    //console.log ("nota-edit - insertpersone - alunnoID", alunnoID, "scadenzaID", scadenzaID);
+    //console.log ("nota-edit - insertpersone - alunnoID", alunnoID, "eventoID", eventoID);
 
     this.svcGenitori.listByAlunno(alunnoID).subscribe({
       next: res=> {
         if (res.length != 0) {
           res.forEach( genitore => {
-            let objScadenzaPersona: CAL_ScadenzaPersone = {
+            let objEventoPersona: CAL_EventoPersone = {
               personaID: genitore.persona.id,
-              scadenzaID : scadenzaID,
+              eventoID : eventoID,
               ckLetto: false,
               ckAccettato: false,
               ckRespinto: false,
             }
             //console.log ("nota-edit - insertpersone - genitore", genitore);
-            this.svcScadenzePersone.post(objScadenzaPersona).subscribe();
+            this.svcEventiPersone.post(objEventoPersona).subscribe();
           })
         } 
         else 
@@ -338,7 +338,7 @@ export class NotaEditComponent implements OnInit {
 
     delete() {
 
-    //Vengono anche cancellate le scadenze (e le scadenzePersone) che eventualmente fossero presenti nel record
+    //Vengono anche cancellate le eventi (e le eventiPersone) che eventualmente fossero presenti nel record
     const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
       width: '320px',
       data: {titolo: "ATTENZIONE", sottoTitolo: "Si conferma la cancellazione del record ?"}
@@ -347,20 +347,20 @@ export class NotaEditComponent implements OnInit {
       result => {
         if(result){
 
-          //bisogna prima cancellare eventuali scadenze con notaID dentro e prima di queste, eventuali scadenzePersone che contengano quelle scadenzeID
+          //bisogna prima cancellare eventuali eventi con notaID dentro e prima di queste, eventuali eventiPersone che contengano quelle eventiID
           //nell'ordine quindi
-            //1. cancellare da ScadenzePersone
-            //2. cancellare da Scadenze
+            //1. cancellare da EventiPersone
+            //2. cancellare da Eventi
             //3. cancellare da NoteIscrizioni
             //4. cancellare da Note
 
-          this.svcScadenze.listByNota(this.data.notaID).subscribe(
-            scadenze => {
+          this.svcEventi.listByNota(this.data.notaID).subscribe(
+            eventi => {
               //un foreach non funzionerebbe: non aspetta le subscribe: la for of sembra invece attenderle
-              for (let scadenza of scadenze) {
-                this.svcScadenzePersone.deleteByScadenza(scadenza.id)
+              for (let evento of eventi) {
+                this.svcEventiPersone.deleteByEvento(evento.id)
                 .pipe(
-                  concatMap(res => this.svcScadenze.delete(scadenza.id)),
+                  concatMap(res => this.svcEventi.delete(evento.id)),
                 ).subscribe()
               }
 

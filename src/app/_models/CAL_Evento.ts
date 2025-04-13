@@ -1,7 +1,7 @@
-import { CAL_TipoScadenza } from "./CAL_TipoScadenza";
+import { CAL_TipoEvento } from "./CAL_TipoEvento";
 import { PER_Persona } from "./PER_Persone";
 
-export interface CAL_Scadenza {
+export interface CAL_Evento {
   id:                                           number;
 
   dtCalendario:                                 string;
@@ -9,7 +9,7 @@ export interface CAL_Scadenza {
   ckRisposta:                                   boolean;
   PersonaID:                                    number;
   NotaID?:                                       number;
-  TipoScadenzaID:                               number;
+  TipoEventoID:                               number;
   //campi di FullCalendar
 
   start:                                        string;     //YYYY-MM-DDTHH:MM:SS
@@ -29,25 +29,25 @@ export interface CAL_Scadenza {
 //   userIns:              number;
 //   userUpd:              number;
 
-  _ScadenzaPersone?:                            CAL_ScadenzaPersone[];
+  _EventoPersone?:                            CAL_EventoPersone[];
 
-  tipoScadenza?:                                CAL_TipoScadenza;
+  tipoEvento?:                                CAL_TipoEvento;
 
 
 
 }
 
-export interface CAL_ScadenzaPersone {
+export interface CAL_EventoPersone {
   id?:                                          number;
   
   personaID:                                    number;
-  scadenzaID:                                   number;
+  eventoID:                                   number;
   ckLetto:                                      boolean;
   ckAccettato:                                  boolean;
   ckRespinto:                                   boolean;
 
   link?:                                         string;
 
-  scadenza?:                                    CAL_Scadenza;   
+  evento?:                                    CAL_Evento;   
   persona?:                                     PER_Persona;
 }

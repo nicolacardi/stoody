@@ -285,7 +285,7 @@ export class LezioniCalendarioComponent implements OnInit {
     this.showWarn = false;
     //NB dove può essere 'orario', oppure 'orarioDocente'
     //il calendario compare infatti nell'Orario di tutti e in quello filtrato per docente
-    //compare anche nella pagina scadenze che però ha una vita sua, diversa
+    //compare anche nella pagina eventi che però ha una vita sua, diversa
     //console.log ("lezioni-calendario - loadData - dove", this.dove);
     if (this.dove == "orario") {
       //se c'è un Docente selezionato allora filtro anche per lui

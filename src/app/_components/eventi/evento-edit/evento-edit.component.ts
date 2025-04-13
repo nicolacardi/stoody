@@ -21,29 +21,29 @@ import { DialogOkComponent }                    from '../../utilities/dialog-ok/
 
 //services
 import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { ScadenzeService }                      from '../scadenze.service';
-import { ScadenzePersoneService }               from '../scadenze-persone.service';
+import { EventiService }                      from '../eventi.service';
+import { EventiPersoneService }               from '../eventi-persone.service';
 import { PersoneService }                       from '../../persone/persone.service';
 import { TipiPersonaService }                   from '../../persone/tipi-persona.service';
-import { TipiScadenzaService }                  from '../tipiscadenza.service';
+import { TipiEventoService }                  from '../tipievento.service';
 
 //models
-import { CAL_Scadenza, CAL_ScadenzaPersone }                          from 'src/app/_models/CAL_Scadenza';
-import { DialogDataScadenza }                   from 'src/app/_models/DialogData';
+import { CAL_Evento, CAL_EventoPersone }                          from 'src/app/_models/CAL_Evento';
+import { DialogDataEvento }                   from 'src/app/_models/DialogData';
 import { PER_Persona, PER_TipoPersona }         from 'src/app/_models/PER_Persone';
 import { User }                                 from 'src/app/_user/Users';
-import { CAL_TipoScadenza }                     from 'src/app/_models/CAL_TipoScadenza';
+import { CAL_TipoEvento }                     from 'src/app/_models/CAL_TipoEvento';
 import { ParametriService } from 'src/app/_components/impostazioni/parametri/parametri.service';
 
 //#endregion
 @Component({
-  selector: 'app-scadenza-edit',
-  templateUrl: './scadenza-edit.component.html',
-  styleUrls: ['../scadenze.css'],
+  selector: 'app-evento-edit',
+  templateUrl: './evento-edit.component.html',
+  styleUrls: ['../eventi.css'],
   standalone: false
 
 })
-export class ScadenzaEditComponent implements OnInit {
+export class EventoEditComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
   currUser!:                                    User;
@@ -54,15 +54,15 @@ export class ScadenzaEditComponent implements OnInit {
   personeListArrFiltered!:                      PER_Persona[];
 
 
-  personeListSelArr!:                           CAL_ScadenzaPersone[];
+  personeListSelArr!:                           CAL_EventoPersone[];
 
   filterValue!:                                  string;
   tipoPersonaIDArr!:                            number[];
 
-  scadenza$!:                                   Observable<CAL_Scadenza>;
+  evento$!:                                   Observable<CAL_Evento>;
   obsPersone$!:                                 Observable<PER_Persona[]>;
   obsTipiPersone$!:                             Observable<PER_TipoPersona[]>;
-  obsTipiScadenza$!:                            Observable<CAL_TipoScadenza[]>;
+  obsTipiEvento$!:                            Observable<CAL_TipoEvento[]>;
 
   strDtStart!:                                  string;
   strDtEnd!:                                    string;
@@ -82,10 +82,10 @@ export class ScadenzaEditComponent implements OnInit {
   breakpoint!:                                  number;
   selectedTab:                                  number = 0;
 
-  hMinStartScadenza!:                           string;
-  hMaxStartScadenza!:                           string;
-  hMinEndScadenza!:                             string;
-  hMaxEndScadenza!:                             string;
+  hMinStartEvento!:                           string;
+  hMaxStartEvento!:                           string;
+  hMinEndEvento!:                             string;
+  hMaxEndEvento!:                             string;
 
   @ViewChild('autosize') autosize!:             CdkTextareaAutosize;
 
@@ -97,16 +97,16 @@ export class ScadenzaEditComponent implements OnInit {
 
 //#region ----- Constructor --------------------
 
-  constructor(public _dialogRef:                MatDialogRef<ScadenzaEditComponent>,
-              @Inject(MAT_DIALOG_DATA) public data:       DialogDataScadenza,
+  constructor(public _dialogRef:                MatDialogRef<EventoEditComponent>,
+              @Inject(MAT_DIALOG_DATA) public data:       DialogDataEvento,
 
               private fb:                       UntypedFormBuilder, 
-              private svcScadenze:              ScadenzeService,
+              private svcEventi:              EventiService,
               private svcPersone:               PersoneService,
               private svcTipiPersona:           TipiPersonaService,
 
-              private svcScadenzePersone:       ScadenzePersoneService,
-              private svcTipiScadenza:          TipiScadenzaService,
+              private svcEventiPersone:       EventiPersoneService,
+              private svcTipiEvento:          TipiEventoService,
               private svcParametri:             ParametriService,
 
               private svcTipiPersone:           TipiPersonaService,
@@ -124,7 +124,7 @@ export class ScadenzaEditComponent implements OnInit {
       gruppi:                                   [''],
       ckPromemoria:                             [false],
       ckRisposta:                               [false],
-      tipoScadenzaID:                           [''],
+      tipoEventoID:                           [''],
       personaID:                                [''],
       personeList:                              [[]],
       personeListSel:                           [[]],
@@ -152,16 +152,16 @@ export class ScadenzaEditComponent implements OnInit {
 
     this.tipoPersonaIDArr = [];
 
-    this.setArrayBase(); //imposta la lista delle persone di destra (da listbyScadenza(this.data.scadenzaID)) e quella di destra togliendone le persone che sono già a destra
+    this.setArrayBase(); //imposta la lista delle persone di destra (da listbyEvento(this.data.eventoID)) e quella di destra togliendone le persone che sono già a destra
 
     this.obsTipiPersone$ = this.svcTipiPersone.list();
-    this.obsTipiScadenza$ = this.svcTipiScadenza.list();
+    this.obsTipiEvento$ = this.svcTipiEvento.list();
 
 
-    this.svcParametri.getByParName('hMinStartScadenza').subscribe(par=>{this.hMinStartScadenza = par.parValue;});
-    this.svcParametri.getByParName('hMaxStartScadenza').subscribe(par=>{this.hMaxStartScadenza = par.parValue;});
-    this.svcParametri.getByParName('hMinEndScadenza').subscribe(par=>{this.hMinEndScadenza = par.parValue;});
-    this.svcParametri.getByParName('hMaxEndScadenza').subscribe(par=>{this.hMaxEndScadenza = par.parValue;});
+    this.svcParametri.getByParName('hMinStartEvento').subscribe(par=>{this.hMinStartEvento = par.parValue;});
+    this.svcParametri.getByParName('hMaxStartEvento').subscribe(par=>{this.hMaxStartEvento = par.parValue;});
+    this.svcParametri.getByParName('hMinEndEvento').subscribe(par=>{this.hMinEndEvento = par.parValue;});
+    this.svcParametri.getByParName('hMaxEndEvento').subscribe(par=>{this.hMaxEndEvento = par.parValue;});
 
 
 
@@ -170,10 +170,10 @@ export class ScadenzaEditComponent implements OnInit {
   setArrayBase () {
     //estraggo le persone da selezionare, le metto in personeListArr che poi popoleranno la lista di sinsitra
     //poi inserisco le persone nella personeListArr e per ciascuna vado a vedere se già c'è l'id in personeListArr, per toglierlo
-    this.svcScadenzePersone.listByScadenza(this.data.scadenzaID)
+    this.svcEventiPersone.listByEvento(this.data.eventoID)
     .pipe(
       tap( sel=>{     
-        //sel è l'elenco delle persone selezionate (viene da listByScadenza(this.data.scadenzaID))   
+        //sel è l'elenco delle persone selezionate (viene da listByEvento(this.data.eventoID))   
         this.personeListSelArr = sel;
         this.personeListSelArr.sort((a,b) => (a.persona!.cognome > b.persona!.cognome)?1:((b.persona!.cognome > a.persona!.cognome) ? -1 : 0) );
         }
@@ -211,15 +211,15 @@ export class ScadenzaEditComponent implements OnInit {
   addMyself(i: number){
     //devo SEMPRE aggiungere me stesso se l'i-esimo sono io allora lo/mi aggiungo e mi tolgo da personeListArr
     if (this.personeListArr[i].id === this.currUser.personaID) {
-      let objScadenzaPersona: CAL_ScadenzaPersone = {
+      let objEventoPersona: CAL_EventoPersone = {
         personaID: this.personeListArr[i].id,
-        scadenzaID : this.data.scadenzaID,
+        eventoID : this.data.eventoID,
         ckLetto: false,
         ckAccettato: false,
         ckRespinto: false,
         persona:  this.personeListArr[i]
       }
-      this.personeListSelArr.push(objScadenzaPersona);
+      this.personeListSelArr.push(objEventoPersona);
       this.personeListArr.splice(i, 1);
     }
   }
@@ -228,8 +228,8 @@ export class ScadenzaEditComponent implements OnInit {
 
     this.breakpoint = (window.innerWidth <= 800) ? 2 : 2;
     
-    if (!this.data.scadenzaID || this.data.scadenzaID + '' == "0") {
-      // //caso nuova Scadenza
+    if (!this.data.eventoID || this.data.eventoID + '' == "0") {
+      // //caso nuova Evento
 
       this.emptyForm = true;
 
@@ -237,7 +237,7 @@ export class ScadenzaEditComponent implements OnInit {
       this.strDtStart = Utility.formatDate(this.dtStart,  FormatoData.yyyy_mm_dd);
       this.strH_Ini = Utility.formatHour(this.dtStart);
 
-       //in caso di nuova scadenza per default impostiamo la durata a un'ora
+       //in caso di nuova evento per default impostiamo la durata a un'ora
       this.dtEnd = new Date (this.dtStart.setHours(this.dtStart.getHours() + 1)); 
       this.strDtEnd = Utility.formatDate(this.dtEnd, FormatoData.yyyy_mm_dd);
       this.strH_End = Utility.formatHour(this.dtEnd);
@@ -247,21 +247,21 @@ export class ScadenzaEditComponent implements OnInit {
       this.form.controls['h_End'].setValue(this.strH_End);
     } 
     else {
-      //caso Scadenza esistente
-      const obsScadenza$: Observable<CAL_Scadenza> = this.svcScadenze.get(this.data.scadenzaID);
-      const loadScadenza$ = this._loadingService.showLoaderUntilCompleted(obsScadenza$);
-      this.scadenza$ = loadScadenza$
+      //caso Evento esistente
+      const obsEvento$: Observable<CAL_Evento> = this.svcEventi.get(this.data.eventoID);
+      const loadEvento$ = this._loadingService.showLoaderUntilCompleted(obsEvento$);
+      this.evento$ = loadEvento$
       .pipe( tap(
-        scadenza => {
-          //console.log ("scadenza-edit - loadData - scadenza", scadenza)
-          this.form.patchValue(scadenza)
+        evento => {
+          //console.log ("evento-edit - loadData - evento", evento)
+          this.form.patchValue(evento)
 
-          if (scadenza.tipoScadenza!.ckNota) {
-            this.form.controls['tipoScadenzaID'].disable();
+          if (evento.tipoEvento!.ckNota) {
+            this.form.controls['tipoEventoID'].disable();
             this.form.controls['h_Ini'].disable();
             this.form.controls['h_End'].disable();
           }
-          this.colorSample = scadenza.tipoScadenza!.color;
+          this.colorSample = evento.tipoEvento!.color;
           
           //oltre ai valori del form (patchValue) vanno impostate alcune variabili: una data e alcune stringhe
           this.dtStart = new Date (this.data.start);
@@ -292,26 +292,26 @@ export class ScadenzaEditComponent implements OnInit {
     //   this.form.value[prop] = this.form.controls[prop].value;
     // }
 
-    const objScadenza = <CAL_Scadenza>{
+    const objEvento = <CAL_Evento>{
       dtCalendario: this.form.controls['dtCalendario'].value,
       title: this.form.controls['title'].value,
       start: this.form.controls['start'].value,
       end: this.form.controls['end'].value,
-      color: this.form.controls['tipoScadenzaID'].value,
+      color: this.form.controls['tipoEventoID'].value,
       ckPromemoria: this.form.controls['ckPromemoria'].value,
       ckRisposta: this.form.controls['ckRisposta'].value,
       h_Ini: this.form.controls['h_Ini'].value,
       h_End: this.form.controls['h_End'].value,
       PersonaID: this.currUser.personaID,
-      TipoScadenzaID: this.form.controls['tipoScadenzaID'].value
+      TipoEventoID: this.form.controls['tipoEventoID'].value
     }
 
-    //qualcosa non funziona nel valorizzare form.controls['end'] e form.controls['start'] ma solo su nuova scadenza
+    //qualcosa non funziona nel valorizzare form.controls['end'] e form.controls['start'] ma solo su nuova evento
     if (this.form.controls['id'].value == null) {   
       
-      objScadenza.id = 0;
+      objEvento.id = 0;
 
-      this.svcScadenze.post(objScadenza).subscribe({
+      this.svcEventi.post(objEvento).subscribe({
         next: res => {
           this.insertPersone(res.id);
           this._dialogRef.close();
@@ -321,11 +321,11 @@ export class ScadenzaEditComponent implements OnInit {
       });
     } 
     else  {
-      //se viene MODIFICATA una scadenza si cancellano e si ripristinano le scadenze persone
-      //in questo modo se p.e. fosse stata inserita una nuova persona anche questa riceverebbe la scadenza.
+      //se viene MODIFICATA una evento si cancellano e si ripristinano le eventi persone
+      //in questo modo se p.e. fosse stata inserita una nuova persona anche questa riceverebbe la evento.
       //tuttavia in questo modo uno che l'ha già ricevuta, se gli cambiano qualcosa (il testo, la data ecc) non se ne accorge!
 
-      let cancellaeRipristinaPersone = this.svcScadenzePersone.deleteByScadenza(this.form.controls['id'].value)
+      let cancellaeRipristinaPersone = this.svcEventiPersone.deleteByEvento(this.form.controls['id'].value)
       .pipe(
         finalize(()=>{
           this.insertPersone(this.form.controls['id'].value);
@@ -333,8 +333,8 @@ export class ScadenzaEditComponent implements OnInit {
       );
 
       //this.svcLezioni.put(this.form.value).subscribe(
-        objScadenza.id = this.form.controls['id'].value;
-        this.svcScadenze.put(objScadenza)
+        objEvento.id = this.form.controls['id'].value;
+        this.svcEventi.put(objEvento)
         .pipe(
           concatMap(()=>cancellaeRipristinaPersone)
         )
@@ -350,7 +350,7 @@ export class ScadenzaEditComponent implements OnInit {
 
   delete() {
 
-    //vanno cancellate tutte le scadenze persone!
+    //vanno cancellate tutte le eventi persone!
     const dialogYesNo = this._dialog.open(DialogYesNoComponent, {
       width: '320px',
       data: {titolo: "ATTENZIONE", sottoTitolo: "Si conferma la cancellazione del record ?"}
@@ -358,9 +358,9 @@ export class ScadenzaEditComponent implements OnInit {
     dialogYesNo.afterClosed().subscribe(
       result => {
         if(result){
-          this.svcScadenzePersone.deleteByScadenza(this.form.controls['id'].value)
+          this.svcEventiPersone.deleteByEvento(this.form.controls['id'].value)
           .pipe(
-            concatMap(()=>this.svcScadenze.delete (this.data.scadenzaID)
+            concatMap(()=>this.svcEventi.delete (this.data.eventoID)
             )
           )
           .subscribe({
@@ -382,8 +382,8 @@ export class ScadenzaEditComponent implements OnInit {
   dp1Change() {
 
     // //verifico anzitutto se l'ora che sto scrivendo è entro i limiti 8-15.30 altrimenti sistemo
-    if (this.form.controls['h_Ini'].value < this.hMinStartScadenza) {this.form.controls['h_Ini'].setValue (this.hMinStartScadenza) }   //ora min di inizio 08:00:  parametrica
-    if (this.form.controls['h_Ini'].value > this.hMaxStartScadenza) {this.form.controls['h_Ini'].setValue (this.hMaxStartScadenza) }   //ora max di inizio 15:30:  parametrica
+    if (this.form.controls['h_Ini'].value < this.hMinStartEvento) {this.form.controls['h_Ini'].setValue (this.hMinStartEvento) }   //ora min di inizio 08:00:  parametrica
+    if (this.form.controls['h_Ini'].value > this.hMaxStartEvento) {this.form.controls['h_Ini'].setValue (this.hMaxStartEvento) }   //ora max di inizio 15:30:  parametrica
     this.checkDurata();
 
   }
@@ -391,8 +391,8 @@ export class ScadenzaEditComponent implements OnInit {
   dp2Change() {
 
     // //verifico anzitutto se l'ora che sto scrivendo è entro i limiti 8-15.30 altrimenti sistemo
-    if (this.form.controls['h_End'].value < this.hMinEndScadenza) {this.form.controls['h_End'].setValue (this.hMinEndScadenza) } //ora min di fine 08:30:   parametrica
-    if (this.form.controls['h_End'].value > this.hMaxEndScadenza) {this.form.controls['h_End'].setValue (this.hMaxEndScadenza) } //ora max di fine 16:00:   parametrica
+    if (this.form.controls['h_End'].value < this.hMinEndEvento) {this.form.controls['h_End'].setValue (this.hMinEndEvento) } //ora min di fine 08:30:   parametrica
+    if (this.form.controls['h_End'].value > this.hMaxEndEvento) {this.form.controls['h_End'].setValue (this.hMaxEndEvento) } //ora max di fine 16:00:   parametrica
     this.checkDurata();
 
   }
@@ -474,15 +474,15 @@ export class ScadenzaEditComponent implements OnInit {
             if (this.personeListArr[i]._LstRoles!.includes(descrTipo)  || this.personeListArr[i].id === this.currUser.personaID) { 
 
               count++; 
-              let objScadenzaPersona: CAL_ScadenzaPersone = {
+              let objEventoPersona: CAL_EventoPersone = {
                 personaID: this.personeListArr[i].id,
-                scadenzaID : this.data.scadenzaID,
+                eventoID : this.data.eventoID,
                 ckLetto: false,
                 ckAccettato: false,
                 ckRespinto: false,
                 persona:  this.personeListArr[i]
               }
-              this.personeListSelArr.push(objScadenzaPersona);
+              this.personeListSelArr.push(objEventoPersona);
               this.personeListArr.splice(i, 1);
 
               this.filtraPersoneListArr();
@@ -497,15 +497,15 @@ export class ScadenzaEditComponent implements OnInit {
           //se trovo me stesso lo aggiungo
           if (this.personeListArr[i].id === this.currUser.personaID) { 
             count++; 
-            let objScadenzaPersona: CAL_ScadenzaPersone = {
+            let objEventoPersona: CAL_EventoPersone = {
               personaID: this.personeListArr[i].id,
-              scadenzaID : this.data.scadenzaID,
+              eventoID : this.data.eventoID,
               ckLetto: false,
               ckAccettato: false,
               ckRespinto: false,
               persona:  this.personeListArr[i]
             }
-            this.personeListSelArr.push(objScadenzaPersona);
+            this.personeListSelArr.push(objEventoPersona);
             this.personeListArr.splice(i, 1);
             this.filtraPersoneListArr();
           }
@@ -518,37 +518,37 @@ export class ScadenzaEditComponent implements OnInit {
     this.personeListArr.sort((a,b) => (a.cognome > b.cognome)?1:((b.cognome > a.cognome) ? -1 : 0) );
   }
 
-  insertPersone(scadenzaID: number) {
+  insertPersone(eventoID: number) {
     for (let i = 0; i<this.personeListSelArr.length; i++) {
-      let objScadenzaPersona: CAL_ScadenzaPersone = {
+      let objEventoPersona: CAL_EventoPersone = {
         personaID: this.personeListSelArr[i].persona!.id,
-        scadenzaID : scadenzaID,
+        eventoID : eventoID,
         ckLetto: false,
         ckAccettato: false,
         ckRespinto: false,
       }
-      this.svcScadenzePersone.post(objScadenzaPersona).subscribe();
+      this.svcEventiPersone.post(objEventoPersona).subscribe();
     }
   }
 
   addToSel(element: PER_Persona) {
     //console.log (element);
-    let objScadenzaPersona: CAL_ScadenzaPersone = {
+    let objEventoPersona: CAL_EventoPersone = {
       personaID: element.id,
-      scadenzaID : this.data.scadenzaID,
+      eventoID : this.data.eventoID,
       ckLetto: false,
       ckAccettato: false,
       ckRespinto: false,
       persona: element
     }
-    this.personeListSelArr.push(objScadenzaPersona);
+    this.personeListSelArr.push(objEventoPersona);
     const index = this.personeListArr.indexOf(element);
     this.personeListArr.splice(index, 1);
     this.personeListSelArr.sort((a,b) => (a.persona!.cognome > b.persona!.cognome)?1:((b.persona!.cognome > a.persona!.cognome) ? -1 : 0) );
     this.filtraPersoneListArr();
   }
 
-  removeFromSel(element: CAL_ScadenzaPersone) {
+  removeFromSel(element: CAL_EventoPersone) {
     if (element.personaID == this.currUser.personaID) {
       this._dialog.open(DialogOkComponent, {
         width: '320px',
@@ -566,7 +566,7 @@ export class ScadenzaEditComponent implements OnInit {
   }
 
   changeColor() {
-    this.svcTipiScadenza.get(this.form.controls['tipoScadenzaID'].value)
+    this.svcTipiEvento.get(this.form.controls['tipoEventoID'].value)
     .subscribe(
       val=> this.colorSample = val.color
     );

@@ -192,14 +192,14 @@ import { VotiCompitoListComponent }                from './_components/lezioni/v
 import { VotiInterrListComponent }                 from './_components/lezioni/voti-interr-list/voti-interr-list.component';
 import { VotoInterrEditComponent }                 from './_components/lezioni/voto-interr-edit/voto-interr-edit.component';
 
-//Scadenze
-import { ScadenzeCalendarioComponent }             from './_components/scadenze/scadenze-calendario/scadenze-calendario.component';
-import { ScadenzaEditComponent }                   from './_components/scadenze/scadenza-edit/scadenza-edit.component';
-import { MieScadenzeComponent }                    from './_components/scadenze/miescadenze/miescadenze.component';
+//Eventi
+import { EventiCalendarioComponent }             from './_components/eventi/eventi-calendario/eventi-calendario.component';
+import { EventoEditComponent }                   from './_components/eventi/evento-edit/evento-edit.component';
+import { MieiEventiComponent }                    from './_components/eventi/mieieventi/mieieventi.component';
 
-import { TipiScadenzaListComponent }               from './_components/scadenze/tipiscadenza/tipiscadenza-list/tipiscadenza-list.component';
-import { TipiScadenzaPageComponent }               from './_components/scadenze/tipiscadenza/tipiscadenza-page/tipiscadenza-page.component';
-import { TipoScadenzaEditComponent }               from './_components/scadenze/tipiscadenza/tiposcadenza-edit/tiposcadenza-edit.component';
+import { TipiEventoListComponent }               from './_components/eventi/tipievento/tipievento-list/tipievento-list.component';
+import { TipiEventoPageComponent }               from './_components/eventi/tipievento/tipievento-page/tipievento-page.component';
+import { TipoEventoEditComponent }               from './_components/eventi/tipievento/tipoevento-edit/tipoevento-edit.component';
 
 //Verbali
 import { VerbaliListComponent }                    from './_components/verbali/verbali-list/verbali-list.component';
@@ -347,18 +347,18 @@ import { DirigenteFormComponent }                  from './_components/dirigenti
     LezioniCalendarioComponent,
     LezioneComponent,
 
-    ScadenzeCalendarioComponent,
-    ScadenzaEditComponent,
-    MieScadenzeComponent,
+    EventiCalendarioComponent,
+    EventoEditComponent,
+    MieiEventiComponent,
     LezioniUtilsComponent,
     DownloadRegistroClasseComponent,
     DownloadRegistroDocenteComponent,
 
     OrarioDocentePageComponent,
 
-    TipiScadenzaListComponent,
-    TipiScadenzaPageComponent,
-    TipoScadenzaEditComponent,
+    TipiEventoListComponent,
+    TipiEventoPageComponent,
+    TipoEventoEditComponent,
 
     PresenzeListComponent,
     PresenzeAlunnoListComponent,

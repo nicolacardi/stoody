@@ -23,8 +23,8 @@ import { DialogOkComponent }                    from '../../utilities/dialog-ok/
 //services
 import { IscrizioniService }                    from '../iscrizioni.service';
 import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { ScadenzeService }                      from '../../scadenze/scadenze.service';
-import { ScadenzePersoneService }               from '../../scadenze/scadenze-persone.service';
+import { EventiService }                      from '../../eventi/eventi.service';
+import { EventiPersoneService }               from '../../eventi/eventi-persone.service';
 import { ParametriService }                     from 'src/app/_components/impostazioni/parametri/parametri.service';
 import { MailService }                          from '../../utilities/mail/mail.service';
 import { UserService }                          from 'src/app/_user/user.service';
@@ -35,7 +35,7 @@ import { CLS_Iscrizione }                       from 'src/app/_models/CLS_Iscriz
 import { AnniScolasticiService }                from 'src/app/_components/anni-scolastici/anni-scolastici.service';
 import { ASC_AnnoScolastico }                   from 'src/app/_models/ASC_AnnoScolastico';
 import { _UT_Parametro }                        from 'src/app/_models/_UT_Parametro';
-import { CAL_Scadenza, CAL_ScadenzaPersone }    from 'src/app/_models/CAL_Scadenza';
+import { CAL_Evento, CAL_EventoPersone }    from 'src/app/_models/CAL_Evento';
 import { User }                                 from 'src/app/_user/Users';
 import { _UT_MailMessage }                      from 'src/app/_models/_UT_MailMessage';
 import { PER_Persona } from 'src/app/_models/PER_Persone';
@@ -155,13 +155,13 @@ export class IscrizioniListComponent implements OnInit {
 
   constructor(private svcIscrizioni:                      IscrizioniService,
               private svcAnni:                            AnniScolasticiService,
-              private svcScadenze:                        ScadenzeService,
+              private svcEventi:                        EventiService,
               private svcParametri:                       ParametriService,
               private svcMail:                            MailService,
               private svcUser:                            UserService,
               private svcPersone:                         PersoneService,
 
-              private svcScadenzePersone:                 ScadenzePersoneService,
+              private svcEventiPersone:                 EventiPersoneService,
               private fb:                                 UntypedFormBuilder, 
               public _dialog:                             MatDialog, 
               private _loadingService:                    LoadingService, 
@@ -428,9 +428,9 @@ export class IscrizioniListComponent implements OnInit {
 
 
 
-  makeScadenzaAndSendEmail (iscrizione: CLS_Iscrizione, setScadenza: boolean) {
+  makeEventoAndSendEmail (iscrizione: CLS_Iscrizione, setEvento: boolean) {
 
-    //console.log ("iscrizioni-list - makeScadenzaAndSendEmail - iscrizione:", iscrizione);
+    //console.log ("iscrizioni-list - makeEventoAndSendEmail - iscrizione:", iscrizione);
 
     let Genitori = iscrizione.alunno._Genitori!;
     if (Genitori.length == 0) {
@@ -455,18 +455,18 @@ export class IscrizioniListComponent implements OnInit {
         });
       } 
       else {
-        if (setScadenza) this.makeScadenza(iscrizione);  //viene impostata la scadenza SOLO al primo invio, ai successivi il parametro setScadenza è impostato a false
+        if (setEvento) this.makeEvento(iscrizione);  //viene impostata la evento SOLO al primo invio, ai successivi il parametro setEvento è impostato a false
         this.inviaMailGenitori(iscrizione);
       }
     }
   }
 
-  makeScadenza(iscrizione: CLS_Iscrizione) {
+  makeEvento(iscrizione: CLS_Iscrizione) {
     //questa routine 
-    //- crea la Scadenza nell'elenco scadenze (svcSacdenze.post)
-    //- chiama insertScadenzaGenitori, che inserisce i nomi dei genitori in ScadenzaPersone onde mostrare loro la scadenza
+    //- crea la Evento nell'elenco eventi (svcSacdenze.post)
+    //- chiama insertEventoGenitori, che inserisce i nomi dei genitori in EventoPersone onde mostrare loro la evento
     //- aggiorna lo stato dell'iscrizione al valore successivo (svcIscrizioni.updateStato)
-    //console.log ("iscrizioni-list - makeScadenza - iscrizione:", iscrizione);
+    //console.log ("iscrizioni-list - makeEvento - iscrizione:", iscrizione);
 
     //prendo la data corrente
     let dtTMP = new Date ();
@@ -481,23 +481,23 @@ export class IscrizioniListComponent implements OnInit {
     let dtTMP2 = new Date (dtTMP.setHours(setHours));
     dtTMP2.setMinutes(setMinutes);
 
-    let dtScadenza = dtTMP.toLocaleString('sv').replace(' ', 'T').substring(0,10)
+    let dtEvento = dtTMP.toLocaleString('sv').replace(' ', 'T').substring(0,10)
     let h_Ini = dtTMP.toLocaleString('sv').replace(' ', 'T').substring(11,19)
     let h_End = dtTMP2.toLocaleString('sv').replace(' ', 'T').substring(11,19)
 
-    //inserisco la scadenza
-    const objScadenza = <CAL_Scadenza>{
-      dtCalendario: dtScadenza,
+    //inserisco la evento
+    const objEvento = <CAL_Evento>{
+      dtCalendario: dtEvento,
       title: "RICHIESTA DI ISCRIZIONE PER " + iscrizione.alunno!.persona.nome + ' ' + iscrizione.alunno!.persona.cognome,
-      start: dtScadenza,
-      end: dtScadenza,
+      start: dtEvento,
+      end: dtEvento,
       color: "#FF0000", //fa schifetto TODO
       ckPromemoria: true,
       ckRisposta: false,
       h_Ini: h_Ini,
       h_End: h_End,
       PersonaID: this.currUser.personaID,
-      TipoScadenzaID: 6,  //fa schifetto  TODO
+      TipoEventoID: 6,  //fa schifetto  TODO
     }
 
     let formData = {
@@ -505,10 +505,10 @@ export class IscrizioniListComponent implements OnInit {
       codiceStato: iscrizione.stato.codiceSucc  
     }
 
-    this.svcScadenze.post(objScadenza)
+    this.svcEventi.post(objEvento)
     .subscribe({
       next: scad => {
-        this.insertScadenzaGenitori(iscrizione, scad.id); 
+        this.insertEventoGenitori(iscrizione, scad.id); 
         this.svcIscrizioni.updateStato(formData).subscribe(res=>this.loadData());
         this._snackBar.openFromComponent(SnackbarComponent, {data: 'Richiesta inviata', panelClass: ['green-snackbar']});
       },
@@ -516,20 +516,20 @@ export class IscrizioniListComponent implements OnInit {
     })
   }
 
-  insertScadenzaGenitori(iscrizione: CLS_Iscrizione, scadenzaID: number) {
+  insertEventoGenitori(iscrizione: CLS_Iscrizione, eventoID: number) {
     //iscrizione è un oggetto complesso che dentro _Genitori contiene già gli eventuali genitori (almeno 1 sennò qui non ci si arriva)
-    //console.log ("iscrizioni-list - insertScadenzaGenitori - iscrizione", iscrizione, "scadenzaID", scadenzaID);
+    //console.log ("iscrizioni-list - insertEventoGenitori - iscrizione", iscrizione, "eventoID", eventoID);
     iscrizione.alunno._Genitori!.forEach (genitori => {
-      let objScadenzaPersona: CAL_ScadenzaPersone = {
+      let objEventoPersona: CAL_EventoPersone = {
         personaID: genitori.genitore!.persona.id,
-        scadenzaID : scadenzaID,
+        eventoID : eventoID,
         ckLetto: false,
         ckAccettato: false,
         ckRespinto: false,
         link: iscrizione.id.toString()
       }
-      //console.log ("iscrizioni-list - insertScadenzaGenitori - objScadenzaPersona", objScadenzaPersona);
-      this.svcScadenzePersone.post(objScadenzaPersona).subscribe();
+      //console.log ("iscrizioni-list - insertEventoGenitori - objEventoPersona", objEventoPersona);
+      this.svcEventiPersone.post(objEventoPersona).subscribe();
     });
    }
 

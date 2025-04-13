@@ -23,23 +23,23 @@ import { MatSnackBar }                          from '@angular/material/snack-ba
 import { LoadingService }                       from '../../utilities/loading/loading.service';
 import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
 import { FormatoData, Utility }                 from '../../utilities/utility.component';
-import { ScadenzaEditComponent }                from '../scadenza-edit/scadenza-edit.component';
+import { EventoEditComponent }                from '../evento-edit/evento-edit.component';
 import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
 
 //services
-import { ScadenzeService }                      from '../scadenze.service';
+import { EventiService }                      from '../eventi.service';
 
 //models
-import { CAL_Scadenza }                         from 'src/app/_models/CAL_Scadenza';
+import { CAL_Evento }                         from 'src/app/_models/CAL_Evento';
 import { User }                                 from 'src/app/_user/Users';
 
 //#endregion
 @Component({
-  selector: 'app-scadenze-calendario',
-  templateUrl: './scadenze-calendario.component.html',
-  styleUrls: ['../scadenze.css']
+  selector: 'app-eventi-calendario',
+  templateUrl: './eventi-calendario.component.html',
+  styleUrls: ['../eventi.css']
 })
-export class ScadenzeCalendarioComponent implements OnInit {
+export class EventiCalendarioComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
   currUser!:                                    User;
@@ -186,7 +186,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
 //#region ----- Constructor --------------------
 
   constructor( 
-    private svcScadenze:                        ScadenzeService,
+    private svcEventi:                        EventiService,
     private _loadingService:                    LoadingService,
     private _snackBar:                          MatSnackBar,
     public _dialog:                             MatDialog, 
@@ -206,25 +206,25 @@ export class ScadenzeCalendarioComponent implements OnInit {
   }
 
   loadData () {
-    let obsScadenze$: Observable<CAL_Scadenza[]>;
-    obsScadenze$= this.svcScadenze.list()
+    let obsEventi$: Observable<CAL_Evento[]>;
+    obsEventi$= this.svcEventi.list()
 
     .pipe(
-      map(scadenze => 
-        scadenze.filter(scadenza => 
-          scadenza._ScadenzaPersone?.some(sp => sp.personaID === this.currUser.personaID)
+      map(eventi => 
+        eventi.filter(evento => 
+          evento._EventoPersone?.some(sp => sp.personaID === this.currUser.personaID)
         )
       )
     );
 
 
-    const loadScadenze$ =this._loadingService.showLoaderUntilCompleted(obsScadenze$);
-    loadScadenze$.subscribe(
+    const loadEventi$ =this._loadingService.showLoaderUntilCompleted(obsEventi$);
+    loadEventi$.subscribe(
       val =>   {
-        console.log ("scadenze-calendario - loadData - val", val);
+        console.log ("eventi-calendario - loadData - val", val);
         for (let i = 0; i< val.length; i++) {
-          //console.log ("scadenze-calendario - loadData - val[i].tipoScadenza!.color", val[i].tipoScadenza!.color);
-          val[i].color = val[i].tipoScadenza!.color;
+          //console.log ("eventi-calendario - loadData - val[i].tipoEvento!.color", val[i].tipoEvento!.color);
+          val[i].color = val[i].tipoEvento!.color;
         }
 
 
@@ -427,7 +427,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
 //#region ----- Add & Edit Eventi --------------
 
   openDetail(clickInfo: EventClickArg) {
-    // if (clickInfo.event.extendedProps['tipoScadenza'].ckNota) {
+    // if (clickInfo.event.extendedProps['tipoEvento'].ckNota) {
     //   this._dialog.open(DialogOkComponent, {
     //     width: '320px',
     //     data: {titolo: "ATTENZIONE!", sottoTitolo: "Le note vanno gestite dalla console Maestro"}
@@ -438,7 +438,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
         width: '800px',
         height: '700px',
         data: {
-          scadenzaID: clickInfo.event.id,
+          eventoID: clickInfo.event.id,
           start: clickInfo.event.start,
           end: clickInfo.event.end,
           dtCalendario: clickInfo.event.extendedProps['dtCalendario'],
@@ -448,7 +448,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
       };
 
 
-        const dialogRef = this._dialog.open(ScadenzaEditComponent, dialogConfig);
+        const dialogRef = this._dialog.open(EventoEditComponent, dialogConfig);
         dialogRef.afterClosed().subscribe(  () => this.loadData() );
     // }
   }
@@ -469,7 +469,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
       width: '800px',
       height: '700px',
       data: {
-        scadenzaID: 0,
+        eventoID: 0,
         start: dtStart.toLocaleString('sv').replace(' ', 'T'),
         end: dtEnd.toLocaleString('sv').replace(' ', 'T'),
         dtCalendario: dtStart.toLocaleString('sv').replace(' ', 'T').substring(0,10),
@@ -479,7 +479,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
 
       }
     };
-    const dialogRef = this._dialog.open(ScadenzaEditComponent, dialogConfig);
+    const dialogRef = this._dialog.open(EventoEditComponent, dialogConfig);
     dialogRef.afterClosed().subscribe( () => this.loadData() );
 
     const calendarApi = selectInfo.view.calendar;
@@ -531,7 +531,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
 
 
     handleResize (resizeInfo: EventResizeDoneArg) {
-      if (resizeInfo.event.extendedProps['tipoScadenza'].ckNota) {
+      if (resizeInfo.event.extendedProps['tipoEvento'].ckNota) {
         this._dialog.open(DialogOkComponent, {
           width: '320px',
           data: {titolo: "ATTENZIONE!", sottoTitolo: "Le note vanno gestite dalla console Maestro"}
@@ -542,15 +542,15 @@ export class ScadenzeCalendarioComponent implements OnInit {
       // let dtCalendario =Utility.formatDate(resizeInfo.event.start, FormatoData.yyyy_mm_dd);
       // let strH_INI =Utility.formatHour(resizeInfo.event.start);
       // let strH_END =Utility.formatHour(resizeInfo.event.end);
-        let form: CAL_Scadenza;
+        let form: CAL_Evento;
 
-        this.svcScadenze.get(resizeInfo.event.id)
+        this.svcEventi.get(resizeInfo.event.id)
         .pipe ( tap ( val  =>  {
             form = val;
             let dtISOLocaleEnd = resizeInfo.event.end!.toLocaleString('sv').replace(' ', 'T');
             form.h_End = dtISOLocaleEnd.substring(11,19);
           }),
-          concatMap(() => this.svcScadenze.put(form))
+          concatMap(() => this.svcEventi.put(form))
         ).subscribe({
           next: res=>{//this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
           },
@@ -562,7 +562,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
     }
 
   handleDrop (dropInfo: EventDropArg) {
-    if (dropInfo.event.extendedProps['tipoScadenza'].ckNota) {
+    if (dropInfo.event.extendedProps['tipoEvento'].ckNota) {
       this._dialog.open(DialogOkComponent, {
         width: '320px',
         data: {titolo: "ATTENZIONE!", sottoTitolo: "Le note vanno gestite dalla console Maestro"}
@@ -574,8 +574,8 @@ export class ScadenzeCalendarioComponent implements OnInit {
       let strH_INI =Utility.formatHour(dropInfo.event.start);
       let strH_END =Utility.formatHour(dropInfo.event.end);
 
-      let form: CAL_Scadenza;
-      this.svcScadenze.get(dropInfo.event.id).pipe (
+      let form: CAL_Evento;
+      this.svcEventi.get(dropInfo.event.id).pipe (
         tap ( val   =>  {
           form = val;
           form.dtCalendario = dtCalendario;
@@ -584,7 +584,7 @@ export class ScadenzeCalendarioComponent implements OnInit {
 
 
         }),
-        concatMap(() => this.svcScadenze.put(form))
+        concatMap(() => this.svcEventi.put(form))
       ).subscribe({
         next: res=>{
           //this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
