@@ -95,7 +95,8 @@ export class ClassiSezioniAnniListComponent implements OnInit {
     "descrizione",
     "sezione",
     "numAlunni",
-    "numStato20Highlight",
+    //"numStato20Highlight",
+    "numStato30Highlight",
     "importo",
     "importo2",
     "select",
@@ -542,7 +543,9 @@ export class ClassiSezioniAnniListComponent implements OnInit {
 
     if (this.toggleChecks) {
       const visibleData = this.matDataSource.filteredData || this.matDataSource.data;
-      this.selection.select(...visibleData.filter(x=> (x.numAlunni != 0 && x.numAlunni != x.numStato20))); //YUHUUU!
+      //this.selection.select(...visibleData.filter(x=> (x.numAlunni != 0 && x.numAlunni != x.numStato20))); //YUHUUU!
+      this.selection.select(...visibleData.filter(x=> (x.numAlunni != 0 && x.numAlunni > x.numStato30))); //YUHUUU!
+
     } else 
       this.resetSelections();
   }

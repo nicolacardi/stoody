@@ -1,12 +1,56 @@
 <mat-card appearance="outlined" class="form-card">
     <mat-card-content>
-        <form class="data-form flex-form" [formGroup]="form1">
+
             <img class="iconaMenuBig" src="./assets/classeannomateria_duplica.svg">
 
             <div>
                 <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close"
                     mat-dialog-close></button>
             </div>
+        <form class="data-form flex-form" [formGroup]="form4">
+            <mat-label class="center mt10">INSERISCI TUTTE LE MATERIE PER LA CLASSE DELL'ANNO</mat-label>
+
+            <mat-grid-list class="mt10" [cols]="3" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Anno</mat-label>
+                        <mat-select required formControlName="selectAnno">
+                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                                {{element.annoscolastico}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <!-- queste sono tutte le classi dell'anno scelto-->
+                    <mat-form-field>
+                        <mat-label>Classe</mat-label>
+                        <mat-select required formControlName="selectClasse">
+                            <mat-option *ngFor="let element of (obsClassi$ | async)" [value]="element.id">
+                                {{element.descrizione2}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Tipo di Voto</mat-label>
+                        <mat-select required formControlName="selectTipo">
+                            <mat-option *ngFor="let element of (obsTipiVoto$ | async)" [value]="element.id">
+                                {{element.descrizione}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
+            </mat-grid-list>
+
+            <mat-label class="center mt10">Tutte le materie dell'elenco Materie verranno inserite per questa classe!</mat-label>
+            <div mat-dialog-actions class="_btn-text-container mat-dialog-buttonsContainer">
+                <button class="_btn-text" mat-button cdkFocusInitial [disabled]="!form4.valid" (click)="inserisciMaterieClasseAnnoTipo()">Procedi</button>
+            </div>
+        </form>
+        <mat-divider></mat-divider>
+        <form class="data-form flex-form" [formGroup]="form1">
             <mat-label class="center mt10">COPIA TUTTI I TIPI DI VOTO DA UN ANNO SCOLASTICO AD UN ALTRO</mat-label>
 
             <mat-grid-list class="mt10" [cols]="2" rowHeight="60px">
@@ -34,10 +78,6 @@
             </mat-grid-list>
 
             <mat-label class="center mt10">La copia sostituirà eventuali Tipi Voto presenti per l'anno di destinazione</mat-label>
-
-            
-        
-
             <div mat-dialog-actions class="_btn-text-container mat-dialog-buttonsContainer">
                 <button class="_btn-text" mat-button cdkFocusInitial [disabled]="!form1.valid" (click)="duplicaAnno()">Procedi</button>
             </div>

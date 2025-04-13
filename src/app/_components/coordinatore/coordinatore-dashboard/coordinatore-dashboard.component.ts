@@ -392,6 +392,8 @@ export class CoordinatoreDashboardComponent implements OnInit {
 
   classeSezioneAnnoIDEmitted(classeSezioneAnnoID: number) {
 
+
+    setTimeout(() => { window.dispatchEvent(new Event('resize'));}, 0);
     this.classeSezioneAnnoID = classeSezioneAnnoID;
     
     if(this.classeSezioneAnnoID >0){

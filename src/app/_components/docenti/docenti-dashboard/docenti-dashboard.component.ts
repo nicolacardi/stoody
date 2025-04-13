@@ -1,6 +1,6 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, OnInit, ViewChild }         from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild }         from '@angular/core';
 import { MatDialog }                            from '@angular/material/dialog';
 import { MatTabGroup }                          from '@angular/material/tabs';
 import { ActivatedRoute }                       from '@angular/router';
@@ -79,6 +79,8 @@ export class DocentiDashboardComponent implements OnInit {
 
 //#region ----- LifeCycle Hooks e simili--------
 
+
+
   ngOnInit() {
 
     this.actRoute.queryParams.subscribe(
@@ -116,6 +118,8 @@ export class DocentiDashboardComponent implements OnInit {
     );
   }
 
+
+
 //#endregion
 
 //#region ----- ricezione emit -------
@@ -129,11 +133,15 @@ export class DocentiDashboardComponent implements OnInit {
 
   classeSezioneAnnoIDEmitted(classeSezioneAnnoID: number) {
 
-    //setTimeout(() => { window.dispatchEvent(new Event('resize'));}, 500); //questo forza il resize: senza di questo la tab alunni si vede solo parzialmente all'inizio
+    setTimeout(() => { window.dispatchEvent(new Event('resize'));}, 0); //questo forza il resize: senza di questo la tab alunni si vede solo parzialmente all'inizio
     //this.cdr.detectChanges();
     this.tipoVoto = "";
     this.materiaID = 0;
     this.classeSezioneAnnoID = classeSezioneAnnoID;
+
+
+
+
 
     if(this.classeSezioneAnnoID >0){
       //per poter mostrare il docente e la classe...

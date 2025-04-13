@@ -4,8 +4,8 @@ import { Component, Inject, OnInit }            from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators }   from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { Observable, firstValueFrom }                           from 'rxjs';
-import { tap }                                  from 'rxjs/operators';
+import { Observable }                           from 'rxjs';
+import { map, tap }                                  from 'rxjs/operators';
 
 //components
 import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
@@ -25,9 +25,7 @@ import { CLS_Classe }                           from 'src/app/_models/CLS_Classe
 import { CLS_ClasseAnnoMateria }                from 'src/app/_models/CLS_ClasseAnnoMateria';
 import { CLS_TipoVoto }                         from 'src/app/_models/CLS_TipoVoto';
 import { MAT_Materia }                          from 'src/app/_models/MAT_Materia';
-import { ClassiSezioniAnniService } from '../../classi/classi-sezioni-anni.service';
-import { DocenzeService } from '../../docenze/docenze.service';
-import { DialogOkComponent } from '../../utilities/dialog-ok/dialog-ok.component';
+
 
 //#endregion
 @Component({
@@ -88,7 +86,9 @@ export class ClasseAnnoMateriaEditComponent implements OnInit {
   
     this.obsClassi$ = this.svcClassi.list();
     this.obsAnni$= this.svcAnni.list();
-    this.obsMaterie$ = this.svcMaterie.list();
+    this.obsMaterie$ = this.svcMaterie.list().pipe(
+      map(materie => materie.sort((a, b) => a.descrizione.localeCompare(b.descrizione)))
+    );
     this.obsTipiVoto$ = this.svcTipiVoto.list();
   
     if (this.classeAnnoMateriaID && this.classeAnnoMateriaID + '' != "0") {

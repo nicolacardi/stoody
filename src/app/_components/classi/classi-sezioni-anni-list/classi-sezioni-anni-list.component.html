@@ -69,6 +69,8 @@
         </th>
 
         <td mat-cell *matCellDef="let element; let i = index" class="w100px" >
+                <!-- Sono disabilitate le righe che hanno 0 alunni oppure che hanno tanti alunni quanti sono in stato 20??? -->
+                <!-- non ha senso se l'operazione di inserire le quote li porta in stato 30 (quote inserite) -->
                 <mat-checkbox class="w40px _pos-relative _floatleft"
                               (click)="$event.stopPropagation()"
                               (change) = "$event ? selectedRow(element) : null"
@@ -76,8 +78,9 @@
                               [aria-label]="checkboxLabel(element)"
                               color="warn" #ckSelected
                               style="vertical-align: middle"
-                              [disabled]="element.numAlunni == element.numStato20 || element.numAlunni == 0">
+                              [disabled]="element.numAlunni < element.numStato30 || element.numAlunni == 0">
                 </mat-checkbox>
+                <!-- [disabled]="element.numAlunni == element.numStato20 || element.numAlunni == 0"> -->
 
             <mat-icon #endedIcons 
                       [attr.id]="'endedIcon_'+element.id" 
@@ -165,6 +168,11 @@
     <ng-container matColumnDef="numStato20" >
         <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>St.20</th>
         <td mat-cell class="center" *matCellDef="let element">{{element.numStato20}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="numStato30Highlight" >
+        <th class="center" mat-header-cell *matHeaderCellDef  mat-sort-header>Rette Inserite</th>
+        <td mat-cell class="center" [ngClass]="{'_highlightStato': element.numStato30 < element.numAlunni}" *matCellDef="let element">{{element.numStato30}}</td>
     </ng-container>
 
     <ng-container matColumnDef="numStato30" >

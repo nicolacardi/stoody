@@ -47,7 +47,7 @@ export class ClassiAnniMateriePageComponent implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '800px',
-      height: '630px',
+      height: '750px',
       data: 0
     };
     const dialogRef = this._dialog.open(ClassiAnniMaterieDuplicaComponent, dialogConfig);

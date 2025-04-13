@@ -38,6 +38,7 @@ export class ClassiAnniMaterieDuplicaComponent implements OnInit {
   form1!:              UntypedFormGroup;
   form2!:              UntypedFormGroup;
   form3!:              UntypedFormGroup;
+  form4!:              UntypedFormGroup;
 
 //#endregion
 
@@ -68,6 +69,12 @@ export class ClassiAnniMaterieDuplicaComponent implements OnInit {
 
     this.form3 = this.fb.group({
       selectAnnoClasse: [null],
+      selectClasse: [null],
+      selectTipo: [null],
+    })
+
+    this.form4 = this.fb.group({
+      selectAnno: [null],
       selectClasse: [null],
       selectTipo: [null],
     })
@@ -135,9 +142,9 @@ export class ClassiAnniMaterieDuplicaComponent implements OnInit {
 
   cambiaTipo() {
     this.svcClassiAnniMaterie.CambiaTipoByAnnoAndClasse(this.form3.controls['selectAnnoClasse']
-.value, this.form3.controls['selectClasse']
-.value, this.form3.controls['selectTipo']
-.value).subscribe(
+      .value, this.form3.controls['selectClasse']
+      .value, this.form3.controls['selectTipo']
+      .value).subscribe(
       res => {
         this._dialogRef.close();
         this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record modificati', panelClass: ['green-snackbar']});
@@ -145,5 +152,13 @@ export class ClassiAnniMaterieDuplicaComponent implements OnInit {
     );
   }
 
+
+  inserisciMaterieClasseAnnoTipo() {
+    this.svcClassiAnniMaterie.inserisciMaterieClasseAnnoTipo(this.form4.controls['selectClasse'].value, this.form4.controls['selectAnno'].value, this.form4.controls['selectTipo'].value).subscribe(
+      res => {
+        this._dialogRef.close();
+        this._snackBar.openFromComponent(SnackbarComponent, {data: 'Materie e tipi Voto inseriti per la classe e anno selezionato', panelClass: ['green-snackbar']});
+      });
+  }
 //#endregion
 }

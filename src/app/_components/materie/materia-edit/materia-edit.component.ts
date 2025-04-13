@@ -137,7 +137,13 @@ export class MateriaEditComponent implements OnInit {
               this.svcMaterie.renumberSeq().subscribe();
               this._dialogRef.close();
             },
-            error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
+            error: err => {
+              const messaggio = err?.error || 'Errore in cancellazione';
+              this._snackBar.openFromComponent(SnackbarComponent, {
+                data: messaggio,
+                panelClass: ['red-snackbar']
+              });
+            }
           });
         }
     });

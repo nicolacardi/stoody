@@ -63,6 +63,12 @@ export class ClasseAnnoMateriaService {
   //http://213.215.231.4/swappX/api/CLS_ClassiAnniMaterie/GetByMateriaAndClasseSezioneAnno/1002/16
   }
 
+  inserisciMaterieClasseAnnoTipo (classeID: number, annoID: number, tipoVotoID: number): Observable<any> {
+    const formData = {}
+    return this.http.post( environment.apiBaseUrl  + 'CLS_ClassiAnniMaterie/inserisciMaterieClasseAnnoTipo/' + classeID + '/' + annoID+'/' + tipoVotoID, formData);  
+  //http://213.215.231.4/swappX/api/CLS_ClassiAnniMaterie/inserisciMaterieClasseAnnoTipo/9/8/1
+  }
+
 
   put(formData: any): Observable <any>{
     return this.http.put( environment.apiBaseUrl  + 'CLS_ClassiAnniMaterie/' + formData.id , formData);  
