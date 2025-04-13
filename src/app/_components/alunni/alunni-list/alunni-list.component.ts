@@ -232,7 +232,7 @@ export class AlunniListComponent implements OnInit {
   loadLayout(){
     this.svcTableColsVisible.listByUserIDAndTable(this.currUser.userID, this.tableName).subscribe( 
       colonne => {
-        console.log(colonne);
+        // console.log(colonne);
         if (colonne.length != 0) this.displayedColumns = colonne.map(a => a.tableCol!.colName)
         else this.svcTableCols.listByTable(this.tableName).subscribe( colonne => {
           this.displayedColumns = colonne.filter(colonna=> colonna.defaultShown == true).map(a => a.colName)
@@ -256,7 +256,7 @@ export class AlunniListComponent implements OnInit {
 
       loadAlunni$.subscribe(
         res =>   {
-          console.log(res);
+          console.log("alunni.list - loadData - res", res);
           this.matDataSource.data = res;
           this.matDataSource.paginator = this.paginator;
           this.sortCustom();

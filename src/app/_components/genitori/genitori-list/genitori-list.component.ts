@@ -232,6 +232,8 @@ export class GenitoriListComponent implements OnInit {
 
     loadGenitori$.subscribe(
       val =>   {
+        console.log("alunni.list - loadData - val", val);
+
         this.matDataSource.data = val;
         this.matDataSource.paginator = this.paginator;
         this.sortCustom();
