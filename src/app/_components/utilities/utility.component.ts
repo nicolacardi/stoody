@@ -44,6 +44,26 @@ export abstract class Utility {
     return retDate;
   }
 
+
+  // Funzione per convertire "8:10am" o "12 PM" in "08:10"
+  public static normalizeTime = (text: string): string => {
+    const regex = /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM|am|pm)?$/;
+    const match = text.match(regex);
+    if (!match) return text; // fallback, non lo tocchiamo
+
+    let hour = parseInt(match[1]);
+    const minutes = match[2] ? parseInt(match[2]) : 0;
+    const ampm = match[3]?.toLowerCase();
+
+    if (ampm === 'pm' && hour < 12) hour += 12;
+    if (ampm === 'am' && hour === 12) hour = 0;
+
+    const hh = hour.toString().padStart(2, '0');
+    const mm = minutes.toString().padStart(2, '0');
+    return `${hh}:${mm}`;
+  };
+
+
   //Utility per comprimere le dimensioni dell'immagine del profilo (o dell'alunno)
   public static compressImage(src: any, newX: number, newY: number) {
 

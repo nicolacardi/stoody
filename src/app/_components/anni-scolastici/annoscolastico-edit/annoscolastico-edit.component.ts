@@ -1,28 +1,28 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit }            from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { Observable }                           from 'rxjs';
-import { concatMap, map, tap }                                  from 'rxjs/operators';
+import { Component, Inject, OnInit }                                       from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators }                from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA }       from '@angular/material/dialog';
+import { MatSnackBar }                                                     from '@angular/material/snack-bar';
+import { Observable }                                                      from 'rxjs';
+import { concatMap, map, tap }                                             from 'rxjs/operators';
 
 //components
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { SnackbarComponent }                                               from '../../utilities/snackbar/snackbar.component';
+import { DialogYesNoComponent }                                            from '../../utilities/dialog-yes-no/dialog-yes-no.component';
 
 //services
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { AnniScolasticiService }                from '../anni-scolastici.service';
+import { LoadingService }                                                  from '../../utilities/loading/loading.service';
+import { AnniScolasticiService }                                           from '../anni-scolastici.service';
 
 //classes
-import { ASC_AnnoScolastico }                   from 'src/app/_models/ASC_AnnoScolastico';
-import { DialogDataAnnoEdit }                   from 'src/app/_models/DialogData';
-import { FormatoData, Utility }                 from '../../utilities/utility.component';
-import { IscrizioniService } from '../../iscrizioni/iscrizioni.service';
-import { PagelleService } from '../../pagelle/pagelle.service';
-import { ParametriService } from '../../impostazioni/parametri/parametri.service';
-import { _UT_Parametro } from 'src/app/_models/_UT_Parametro';
+import { ASC_AnnoScolastico }                                              from 'src/app/_models/ASC_AnnoScolastico';
+import { DialogDataAnnoEdit }                                              from 'src/app/_models/DialogData';
+import { FormatoData, Utility }                                            from '../../utilities/utility.component';
+import { IscrizioniService }                                               from '../../iscrizioni/iscrizioni.service';
+import { PagelleService }                                                  from '../../pagelle/pagelle.service';
+import { ParametriService }                                                from '../../impostazioni/parametri/parametri.service';
+import { _UT_Parametro }                                                   from 'src/app/_models/_UT_Parametro';
 
 //#endregion
 

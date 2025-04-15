@@ -15,7 +15,6 @@ import { Utility }                              from '../../utilities/utility.co
 //services
 import { DocentiService }                       from '../docenti.service';
 import { DocenzeService }                       from '../../docenze/docenze.service';
-import { ClasseAnnoMateriaService }             from '../../classi-anni-materie/classe-anno-materia.service';
 import { ClassiSezioniAnniService }             from '../../classi/classi-sezioni-anni.service';
 
 //models
@@ -24,6 +23,7 @@ import { User }                                 from 'src/app/_user/Users';
 import { CLS_ClasseDocenteMateria }             from 'src/app/_models/CLS_ClasseDocenteMateria';
 import { CLS_ClasseSezioneAnno }                from 'src/app/_models/CLS_ClasseSezioneAnno';
 import { PER_Docente }                          from 'src/app/_models/PER_Docente';
+import { MaterieService } from '../../materie/materie.service';
 
 //#endregion
 @Component({
@@ -36,25 +36,25 @@ export class DocentiDashboardComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
 
-  public classeSezioneAnnoID!:                  number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
-  public classeSezioneAnno!:                    CLS_ClasseSezioneAnno;
-  public annoID!:                               number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
-  public docenteID!:                            number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
-  public docente!:                              PER_Docente;
-  public tipoVoto!:                             string;
-  public iscrizioneID!:                         number;   //valore ricevuto (emitted) dal child IscrizioniClasseList
-  public alunno!:                               ALU_Alunno;   //valore ricevuto (emitted) dal child IscrizioniClasseList
+  public classeSezioneAnnoID!       : number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
+  public classeSezioneAnno!         : CLS_ClasseSezioneAnno;
+  public annoID!                    : number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
+  public docenteID!                 : number;   //valore ricevuto (emitted) dal child ClassiSezioniAnniList
+  public docente!                   : PER_Docente;
+  public tipoVoto!                  : string;
+  public iscrizioneID!              : number;   //valore ricevuto (emitted) dal child IscrizioniClasseList
+  public alunno!                    : ALU_Alunno;   //valore ricevuto (emitted) dal child IscrizioniClasseList
 
-  public classeSezioneAnnoIDrouted!:            string;   //valore ricevuto (routed) dal ruoting
-  public annoIDrouted!:                         string;   //valore ricevuto (routed) dal ruoting
-  isOpen = true;
+  public classeSezioneAnnoIDrouted! : string;   //valore ricevuto (routed) dal ruoting
+  public annoIDrouted!              : string;   //valore ricevuto (routed) dal ruoting
+  isOpen                            = true;
   
-  public currUser!:                             User;
+  public currUser!                  : User;
   
-  obsMaterie$!:                                 Observable<CLS_ClasseDocenteMateria[]>;
-  arrMaterie!:                                  CLS_ClasseDocenteMateria[];
-  form! :                                       UntypedFormGroup;
-  public materiaID!:                            number;
+  obsMaterie$!                      : Observable<CLS_ClasseDocenteMateria[]>;
+  arrMaterie!                       : CLS_ClasseDocenteMateria[];
+  form!                             : UntypedFormGroup;
+  public materiaID!                 : number;
 
 //#endregion
   
@@ -64,13 +64,13 @@ export class DocentiDashboardComponent implements OnInit {
 //#endregion
 
   constructor(
-    private svcDocenti:               DocentiService,
-    private svcClassiSezioniAnni:     ClassiSezioniAnniService,
-    public _dialog:                   MatDialog,
-    private actRoute:                 ActivatedRoute,
-    private svcDocenze:               DocenzeService,
-    private fb:                       UntypedFormBuilder, 
-    private svcClasseAnnoMateria:     ClasseAnnoMateriaService
+    private svcDocenti                 : DocentiService,
+    private svcClassiSezioniAnni       : ClassiSezioniAnniService,
+    public _dialog                     : MatDialog,
+    private actRoute                   : ActivatedRoute,
+    private svcDocenze                 : DocenzeService,
+    private fb                         : UntypedFormBuilder,
+    private svcMaterie                 : MaterieService
   ) {
     this.form = this.fb.group( {
       selectClasseDocenteMaterie: 0
@@ -105,14 +105,22 @@ export class DocentiDashboardComponent implements OnInit {
       )
     }
 
+    //era così prima di togliere classeannomateria
+    // this.form.controls['selectClasseDocenteMaterie'].valueChanges.pipe(
+    //   tap(val => this.materiaID = val),
+    //   concatMap(()=> this.svcClasseAnnoMateria.getByMateriaAndClasseSezioneAnno(this.materiaID, this.classeSezioneAnnoID))
+    // ).subscribe(res => 
+    // {
+    //   this.tipoVoto = res.tipoVoto!.descrizione
+    // }
+    // );
+
     this.form.controls['selectClasseDocenteMaterie'].valueChanges.pipe(
       tap(val => this.materiaID = val),
-      concatMap(()=> this.svcClasseAnnoMateria.getByMateriaAndClasseSezioneAnno(this.materiaID, this.classeSezioneAnnoID))
+      concatMap(()=> this.svcMaterie.get(this.materiaID))
     ).subscribe(res => 
     {
-      // console.log("docenti-dashboard - ngOnInit - this.materiaID", this.materiaID);
-      // console.log("docenti-dashboard - ngOnInit - this.classeSezioneAnnoID", this.classeSezioneAnnoID);
-      // console.log("docenti-dashboard - ngOnInit - res", res);
+      console.log ("docenti-dashboard - ngOnInit - res", res);
       this.tipoVoto = res.tipoVoto!.descrizione
     }
     );

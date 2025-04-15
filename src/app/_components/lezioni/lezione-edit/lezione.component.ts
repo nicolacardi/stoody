@@ -92,7 +92,6 @@ export class LezioneComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data        : DialogDataLezione,
     private fb                                  : UntypedFormBuilder,
     private svcLezioni                          : LezioniService,
-    private svcDocenti                          : DocentiService,
     private svcDocenze                          : DocenzeService,
     private svcClasseSezioneAnno                : ClassiSezioniAnniService,
     private svcIscrizioni                       : IscrizioniService,
@@ -264,75 +263,80 @@ export class LezioneComponent implements OnInit {
   save() {
     this.strH_Ini = this.form.controls['h_Ini'].value;
     this.strH_End = this.form.controls['h_End'].value;
-    // console.log("lezione.component - loadData - this.form.controls['classeDocenteMateria'].value", this.form.controls['classeDocenteMateria'].value);
-    this.svcLezioni.listByDocenteAndOraOverlap (this.data.lezioneID? this.data.lezioneID: 0 , this.form.controls['classeDocenteMateria'].value.docenteID, this.strDtStart, this.strH_Ini, this.strH_End)
-    .subscribe( (val: CAL_Lezione[]) => {
-      //la listByDocenteAndOraOverlap elenca le ore sovrapposte. Se val.length >  0 ce ne sono e bisgona interrompere
-      if (val.length > 0) {
-        // console.log("lezione.component - loadData - val", val);
-        let strMsg = "il Maestro " + val[0].classeDocenteMateria.docente!.persona!.nome + " " + val[0].classeDocenteMateria.docente!.persona!.cognome + " \n è già impegnato in questo slot in ";
-        val.forEach (x => {strMsg = strMsg + "\n - " + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.classe!.descrizione2 + ' ' + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione;})
+    const classeDocenteMateriaID = this.form.controls['classeDocenteMateriaID'].value;
 
-        this._dialog.open(DialogOkComponent, {
-          width: '320px',
-          data: {titolo: "ATTENZIONE!", sottoTitolo: strMsg}
-        });
-      } 
-      else {
+    this.svcDocenze.get(classeDocenteMateriaID).subscribe(classeDocenteMateria => {
+      const docenteID = classeDocenteMateria.docenteID;
 
-        //https://thecodemon.com/angular-get-value-from-disabled-form-control-while-submitting/
-        //i campi disabled non vengono più passati al form!
-        //va prima lanciato questo loop che "ripopola" il form anche con i valori dei campi disabled
-        
-        // for (const prop in this.form.controls) {
-        //   this.form.value[prop] = this.form.controls[prop].value;
-        // }
+      this.svcLezioni.listByDocenteAndOraOverlap (this.data.lezioneID? this.data.lezioneID: 0 , docenteID, this.strDtStart, this.strH_Ini, this.strH_End)
+      .subscribe( (val: CAL_Lezione[]) => {
+        //la listByDocenteAndOraOverlap elenca le ore sovrapposte. Se val.length >  0 ce ne sono e bisgona interrompere
+        if (val.length > 0) {
+          // console.log("lezione.component - loadData - val", val);
+          let strMsg = "il Maestro " + val[0].classeDocenteMateria.docente!.persona!.nome + " " + val[0].classeDocenteMateria.docente!.persona!.cognome + " \n è già impegnato in questo slot in ";
+          val.forEach (x => {strMsg = strMsg + "\n - " + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.classe!.descrizione2 + ' ' + x.classeDocenteMateria.classeSezioneAnno!.classeSezione.sezione;})
 
-        if (this.form.controls['ckAppello'].value == '')   this.form.controls['ckAppello'].setValue(false);     
-        if (this.form.controls['ckCompito'].value == '')   this.form.controls['ckCompito'].setValue(false);     
-        
-        const objLezione = <CAL_Lezione>{
-          classeDocenteMateriaID: this.form.controls['classeDocenteMateriaID'].value,
-          dtCalendario: this.form.controls['dtCalendario'].value,
-          title: this.form.controls['title'].value,
-          start: this.form.controls['start'].value,
-          end: this.form.controls['end'].value,
-          colore: this.form.controls['colore'].value,
-          h_Ini: this.form.controls['h_Ini'].value,
-          h_End: this.form.controls['h_End'].value,
-          supplenteID: this.form.controls['supplenteID'].value,
-          ckEpoca: this.form.controls['ckEpoca'].value,
-          ckFirma: this.form.controls['ckFirma'].value,
-          dtFirma: this.form.controls['dtFirma'].value,
-          ckAssente: this.form.controls['ckAssente'].value,
-          ckAppello: this.form.controls['ckAppello'].value,
-          argomento: this.form.controls['argomento'].value,
-          compiti: this.form.controls['compiti'].value,
-          ckCompito: this.form.controls['ckCompito'].value,
-          argomentoCompito: this.form.controls['argomentoCompito'].value
-        };
-
-        if (this.form.controls['id'].value == null) {   
-          objLezione.id = 0;
-          this.svcLezioni.post(objLezione).subscribe({
-            next: res => {
-              this._dialogRef.close();
-              this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
-            },
-            error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
+          this._dialog.open(DialogOkComponent, {
+            width: '320px',
+            data: {titolo: "ATTENZIONE!", sottoTitolo: strMsg}
           });
         } 
-        else  {
-            objLezione.id = this.form.controls['id'].value;
-            this.svcLezioni.put(objLezione).subscribe({
-            next: res=> {
-              this._dialogRef.close();
-              this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
-            },
-            error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
-         });
+        else {
+
+          //https://thecodemon.com/angular-get-value-from-disabled-form-control-while-submitting/
+          //i campi disabled non vengono più passati al form!
+          //va prima lanciato questo loop che "ripopola" il form anche con i valori dei campi disabled
+          
+          // for (const prop in this.form.controls) {
+          //   this.form.value[prop] = this.form.controls[prop].value;
+          // }
+
+          if (this.form.controls['ckAppello'].value == '')   this.form.controls['ckAppello'].setValue(false);     
+          if (this.form.controls['ckCompito'].value == '')   this.form.controls['ckCompito'].setValue(false);     
+          
+          const objLezione = <CAL_Lezione>{
+            classeDocenteMateriaID: this.form.controls['classeDocenteMateriaID'].value,
+            dtCalendario: this.form.controls['dtCalendario'].value,
+            title: this.form.controls['title'].value,
+            start: this.form.controls['start'].value,
+            end: this.form.controls['end'].value,
+            colore: this.form.controls['colore'].value,
+            h_Ini: this.form.controls['h_Ini'].value,
+            h_End: this.form.controls['h_End'].value,
+            supplenteID: this.form.controls['supplenteID'].value,
+            ckEpoca: this.form.controls['ckEpoca'].value,
+            ckFirma: this.form.controls['ckFirma'].value,
+            dtFirma: this.form.controls['dtFirma'].value,
+            ckAssente: this.form.controls['ckAssente'].value,
+            ckAppello: this.form.controls['ckAppello'].value,
+            argomento: this.form.controls['argomento'].value,
+            compiti: this.form.controls['compiti'].value,
+            ckCompito: this.form.controls['ckCompito'].value,
+            argomentoCompito: this.form.controls['argomentoCompito'].value
+          };
+
+          if (this.form.controls['id'].value == null) {   
+            objLezione.id = 0;
+            this.svcLezioni.post(objLezione).subscribe({
+              next: res => {
+                this._dialogRef.close();
+                this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
+              },
+              error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
+            });
+          } 
+          else  {
+              objLezione.id = this.form.controls['id'].value;
+              this.svcLezioni.put(objLezione).subscribe({
+              next: res=> {
+                this._dialogRef.close();
+                this._snackBar.openFromComponent(SnackbarComponent, {data: 'Record salvato', panelClass: ['green-snackbar']});
+              },
+              error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})
+          });
+          }
         }
-      }
+      });
     });
   }
 

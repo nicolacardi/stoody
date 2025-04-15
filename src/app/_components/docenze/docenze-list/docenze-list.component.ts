@@ -123,28 +123,29 @@ matDataSource = new                             MatTableDataSource<CLS_ClasseDoc
   }
 
   loadData () {
-
-    let obsInsegnamenti$: Observable<CLS_ClasseDocenteMateria[]>;
-    console.log("docenze-list - loadData", this.classeSezioneAnnoID);
-    console.log("docenze-list - loadData", this.docenteID);
-    if (this.classeSezioneAnnoID) {
-      obsInsegnamenti$= this.svcDocenze.listByClasseSezioneAnno(this.classeSezioneAnnoID);
-    } else {
-      obsInsegnamenti$= this.svcDocenze.listByDocente(this.docenteID);
+    let obsDocenze$: Observable<CLS_ClasseDocenteMateria[]> | null = null;
+  
+    console.log("docenze-list - loadData - classesezioneannoID:", this.classeSezioneAnnoID);
+    console.log("docenze-list - loadData - docenteID", this.docenteID);
+  
+    if (this.dove == "coordinatore-dashboard" && this.classeSezioneAnnoID) {
+      obsDocenze$ = this.svcDocenze.listByClasseSezioneAnno(this.classeSezioneAnnoID);
+    } else if (this.dove == "docente-edit" && this.docenteID) {
+      obsDocenze$ = this.svcDocenze.listByDocente(this.docenteID);
     }
-    let loadInsegnamenti$ =this._loadingService.showLoaderUntilCompleted(obsInsegnamenti$);
-
-    loadInsegnamenti$.subscribe(res =>  {
+  
+    if (obsDocenze$) {
+      const loadDocenze$ = this._loadingService.showLoaderUntilCompleted(obsDocenze$);
+  
+      loadDocenze$.subscribe(res => {
         console.log("docenze-list - loadData - res:", res);
-
         this.matDataSource.data = res;
-        //this.matDataSource.paginator = this.paginator;          
         this.sortCustom();
-        this.matDataSource.sort = this.sort; 
-        //this.matDataSource.filterPredicate = this.filterPredicate();
-      }
-    );
-    
+        this.matDataSource.sort = this.sort;
+      });
+    } else {
+      console.warn("Nessun criterio valido per caricare gli insegnamenti");
+    }
   }
 //#endregion
 

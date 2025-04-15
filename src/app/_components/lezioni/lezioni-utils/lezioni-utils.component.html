@@ -3,7 +3,7 @@
         <form class="data-form flex-form" [formGroup] = "form">
             <!-- ********************************    BOTTONI     ************************************* -->
             <div class="center mb10">
-                <img class="iconaMenuBig" src="./assets/calendar_settings.svg">
+                <img class="iconaMenuBig" src="./assets/calendar_settings_T.svg">
                 <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
             </div>
 
@@ -17,7 +17,7 @@
                 <mat-divider></mat-divider>
                 <div class="center  mt10 ">
                     <mat-form-field >
-                        <mat-label>Seleziona una settimana</mat-label>
+                        <mat-label>Settimana selezionata</mat-label>
                         <mat-date-range-input [rangePicker]="picker1">
                             <input matStartDate placeholder="Data Inizio" required formControlName = "picker1start">
                             <input matEndDate placeholder="Data Fine" required formControlName = "picker1end">
@@ -31,7 +31,7 @@
                     </mat-checkbox>
                 </div>
                 <div class="center mt10 ">
-                    <button type="button" mat-button matSuffix class="w500px ma mt10 mt10" (click)="deleteByClasseSezioneAnnoAndDate()" [disabled]="!form.valid" mat-stroked-button>
+                    <button type="button" mat-button matSuffix class="w500px ma mt10 mt10" (click)="deleteByClasseSezioneAnnoAndDateSett()" [disabled]="!form.valid" mat-stroked-button>
                         Cancella la settimana selezionata
                     </button>
                 </div>
@@ -47,6 +47,36 @@
                         Copia la settimana che inizia il {{currMonday | date: "dd/MM/yyyy" }} fino alla settimana selezionata
                     </button>
                 </div>
+            </div>
+        </form>
+        <form class="data-form flex-form" [formGroup] = "form2">
+            <div>
+                <mat-divider class="mt10"></mat-divider>
+                <div class="center  mt10 ">
+
+                    <mat-form-field >
+                        <mat-label>Data Selezionata</mat-label>
+                        <input matInput
+                            required
+                            formControlName = "pickerDataSingola"
+                            [matDatepicker]= "pickerDataSingola"
+                            placeholder="Seleziona una data">
+                        <mat-datepicker-toggle matSuffix [for]="pickerDataSingola" ></mat-datepicker-toggle>
+                        <mat-datepicker #pickerDataSingola></mat-datepicker>
+                    </mat-form-field>
+
+                    <mat-checkbox color="primary" formControlName="ckTutteleClassi2">
+                        Tutte le Classi
+                    </mat-checkbox>
+
+                </div>
+
+                <div class="center mt10 ">
+                    <button type="button" mat-button matSuffix class="w500px ma mt10 mt10" (click)="deleteByClasseSezioneAnnoAndDate()" [disabled]="!form2.valid" mat-stroked-button>
+                        Cancella la data selezionata
+                    </button>
+                </div>
+
             </div>
         </form>
     </mat-card-content>

@@ -57,11 +57,6 @@ export class DocenzeService {
       //http://213.215.231.4/swappX/api/CLS_ClassiDocentiMaterie/GetByClasseSezioneAnnoAndMateriaAndDocente/16/4/3
   }
 
-  countDocenzeByClasseAnnoMateria (classeID: number, annoID: number, materiaID: number): Observable <number>{
-    return this.http.get <number>( environment.apiBaseUrl  + 'CLS_ClassiDocentiMaterie/CountDocenzeByClasseAnnoMateria/'+classeID+'/'+annoID+'/'+materiaID);  
-      //http://213.215.231.4/swappX/api/CLS_ClassiDocentiMaterie/CountDocenzeByClasseAnnoMateria/1/2/7
-  }
-
   put(formData: any): Observable <any>{
     return this.http.put( environment.apiBaseUrl  + 'CLS_ClassiDocentiMaterie/' + formData.id , formData);    
   }

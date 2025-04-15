@@ -1,30 +1,28 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { iif, Observable, of }                  from 'rxjs';
-import { catchError, concatMap, debounceTime, map, switchMap, tap } from 'rxjs/operators';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { MatAutocompleteSelectedEvent }         from '@angular/material/autocomplete';
+import { Component, ElementRef, Inject, OnInit, ViewChild }       from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }                   from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }               from '@angular/material/dialog';
+import { iif, Observable, of }                                    from 'rxjs';
+import { concatMap, debounceTime, map, switchMap, tap }           from 'rxjs/operators';
+import { MatSnackBar }                                            from '@angular/material/snack-bar';
+import { MatAutocompleteSelectedEvent }                           from '@angular/material/autocomplete';
 
 //components
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
-import { DialogData }                           from 'src/app/_models/DialogData';
+import { SnackbarComponent }                                      from '../../utilities/snackbar/snackbar.component';
+import { DialogOkComponent }                                      from '../../utilities/dialog-ok/dialog-ok.component';
+import { DialogData }                                             from 'src/app/_models/DialogData';
 
 //services
-import { DocenzeService }                       from '../docenze.service';
-import { DocentiService }                       from '../../docenti/docenti.service';
-import { ClassiSezioniAnniService }             from '../../classi/classi-sezioni-anni.service';
-import { MaterieService }                       from 'src/app/_components/materie/materie.service';
+import { DocenzeService }                                         from '../docenze.service';
+import { DocentiService }                                         from '../../docenti/docenti.service';
+import { ClassiSezioniAnniService }                               from '../../classi/classi-sezioni-anni.service';
+import { MaterieService }                                         from 'src/app/_components/materie/materie.service';
 
 //models
-import { PER_Docente }                          from 'src/app/_models/PER_Docente';
-import { MAT_Materia }                          from 'src/app/_models/MAT_Materia';
-import { CLS_ClasseSezioneAnno }                from 'src/app/_models/CLS_ClasseSezioneAnno';
-import { ClasseAnnoMateriaService } from '../../classi-anni-materie/classe-anno-materia.service';
-import { CLS_ClasseAnnoMateria } from 'src/app/_models/CLS_ClasseAnnoMateria';
+import { PER_Docente }                                            from 'src/app/_models/PER_Docente';
+import { MAT_Materia }                                            from 'src/app/_models/MAT_Materia';
+import { CLS_ClasseSezioneAnno }                                  from 'src/app/_models/CLS_ClasseSezioneAnno';
 
 //#endregion
 @Component({
@@ -38,7 +36,6 @@ export class DocenzeAddComponent implements OnInit {
 //#region ----- Variabili ----------------------
   obsFilteredDocenti$!:                         Observable<PER_Docente[]>;
   obsMaterie$!:                                 Observable<MAT_Materia[]>;
-  //obsClassiAnniMaterie$!:                                 Observable<CLS_ClasseAnnoMateria[]>;
   form! :                                       UntypedFormGroup;
 
   docentiIsLoading:                             boolean = false;
@@ -56,7 +53,6 @@ export class DocenzeAddComponent implements OnInit {
               private svcMaterie:                     MaterieService,
               private svcDocenti:                     DocentiService,
               private svcClasseSezioneAnno:           ClassiSezioniAnniService,
-              private svcClasseAnnoMateria:           ClasseAnnoMateriaService,
               private svcDocenze:                     DocenzeService,
               public dialogRef:                       MatDialogRef<DocenzeAddComponent>,
               private _snackBar:                      MatSnackBar,
@@ -154,49 +150,7 @@ export class DocenzeAddComponent implements OnInit {
           });
           return of(null); // blocca la catena
         } else {
-          // Terzo controllo: recupero il `CLS_ClasseSezioneAnno` usando `classesezioneannoID`
-          return this.svcClasseSezioneAnno.get(this.data.classeSezioneAnnoID);
-        }
-      }),
-      concatMap(res3 => {
-        // Recupero le informazioni necessarie per il controllo successivo
-        const classeID = res3!.classeSezione.classeID;
-        const annoID = res3!.annoID;
-
-        // Eseguo il controllo per verificare se esiste un record in CLS_ClassiAnniMaterie
-        return this.svcClasseAnnoMateria.getByMateriaAndClasseAndAnno(this.materiaSelectedID, classeID, annoID).pipe(
-          catchError(error => {
-            // Se si verifica un errore (ad esempio record non trovato), gestisco l'errore
-            if (error.status === 404) {
-              // Qui, puoi gestire l'errore come "non trovato"
-              this._dialog.open(DialogOkComponent, {
-                width: '360px',
-                data: {
-                  titolo: "ATTENZIONE!",
-                  sottoTitolo: "Per questa combinazione <br>classe-anno-materia<br> non esiste un tipo voto. Prima di salvare una docenza<br>va definito nelle impostazioni."
-                }
-              });
-            } else {
-              // Gestisco altri errori (se necessario)
-              this._dialog.open(DialogOkComponent, {
-                width: '360px',
-                data: {
-                  titolo: "ERRORE!",
-                  sottoTitolo: "Si è verificato un errore durante il controllo."
-                }
-              });
-            }
-            // Restituisco un valore null per continuare il flusso
-            return of(null);
-          })
-        );
-      }),
-      concatMap(resCAM => {
-        if (resCAM == null) {
-          // Se non esiste il record in CLS_ClassiAnniMaterie, il flusso si interrompe già con il catchError sopra
-          return of(null); // blocca la catena
-        } else {
-          // Se il controllo è passato, posso procedere con il salvataggio
+          // Nessun controllo aggiuntivo, procedo direttamente al salvataggio
           return this.svcDocenze.post(objDocenza);
         }
       })

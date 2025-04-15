@@ -54,6 +54,17 @@
                     <button type="button" class="_btnColorPicker" 
                     (click)="openColorPicker()"  [ngStyle]="{'background-color': form.controls['color'].value}" > </button>
                 </mat-grid-tile>
+
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Tipo Voti</mat-label>
+                        <mat-select required formControlName="tipoVotoID">
+                            <mat-option *ngFor="let element of (obsTipiVoto$ | async)" [value]="element.id">
+                            {{element.descrizione}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
             </mat-grid-list>
         </form>
     </mat-card-content>

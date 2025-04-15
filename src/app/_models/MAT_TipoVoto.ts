@@ -1,4 +1,4 @@
-export interface CLS_TipoVoto {
+export interface MAT_TipoVoto {
         id:                                     number;
 
         tipoVoto:                               string;

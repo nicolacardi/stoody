@@ -87,6 +87,7 @@ export class LezioniUtilsComponent implements OnInit {
 //#region ----- Variabili ----------------------
 
   form!:                     UntypedFormGroup;
+  form2!:                     UntypedFormGroup;
   currMonday!:               Date;
 
 //#endregion
@@ -107,6 +108,11 @@ export class LezioniUtilsComponent implements OnInit {
       picker1end:                    [null, Validators.required],
       ckTutteleClassi1:              [null],
     });
+
+    this.form2 = this.fb.group({
+      pickerDataSingola:             [null, Validators.required],
+      ckTutteleClassi2:              [null],
+    });
    }
 //#endregion
 
@@ -124,7 +130,7 @@ export class LezioniUtilsComponent implements OnInit {
 
 //#region ----- Vari metodi --------------------
 
-  deleteByClasseSezioneAnnoAndDate() {
+  deleteByClasseSezioneAnnoAndDateSett() {
     
     let ckTutteleClassi1 = this.form.controls['ckTutteleClassi1'].value;
     let dtStart: Date;
@@ -142,6 +148,26 @@ export class LezioniUtilsComponent implements OnInit {
       });
     } else {
       this.svcLezioni.deleteByDate(dtStartYYYY_MM_DD, dtEndYYYY_MM_DD).subscribe({
+        next: res => {this._snackBar.openFromComponent(SnackbarComponent, {data: 'Operazione effettuata correttamente', panelClass: ['green-snackbar']}) } ,
+        error: err=> {this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})}
+      });
+    }
+  }
+
+  deleteByClasseSezioneAnnoAndDate() {
+    
+    let ckTutteleClassi2 = this.form2.controls['ckTutteleClassi2'].value;
+    let dtStart: Date;
+    dtStart = this.form2.controls['pickerDataSingola'].value;
+    let dtStartYYYY_MM_DD = dtStart.toLocaleString('sv').replace(' ', 'T').substring(0,10);
+
+    if (ckTutteleClassi2 == false  || ckTutteleClassi2 == null) {
+      this.svcLezioni.deleteByClasseSezioneAnnoAndDate(this.data.classeSezioneAnnoID, dtStartYYYY_MM_DD, dtStartYYYY_MM_DD).subscribe({
+        next: res => {this._snackBar.openFromComponent(SnackbarComponent, {data: 'Operazione effettuata correttamente', panelClass: ['green-snackbar']}) } ,
+        error: err=> {this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})}
+      });
+    } else {
+      this.svcLezioni.deleteByDate(dtStartYYYY_MM_DD, dtStartYYYY_MM_DD).subscribe({
         next: res => {this._snackBar.openFromComponent(SnackbarComponent, {data: 'Operazione effettuata correttamente', panelClass: ['green-snackbar']}) } ,
         error: err=> {this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in salvataggio', panelClass: ['red-snackbar']})}
       });

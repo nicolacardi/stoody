@@ -91,7 +91,7 @@ export class LezioniCalendarioComponent implements OnInit {
             //mostra l'ora
             let timeText = document.createElement('div');
             timeText.className = "fc-event-time";
-            timeText.innerHTML = event.timeText;
+            timeText.innerHTML = Utility.normalizeTime(event.timeText);
             //include Info aggiuntive
             let titleText = document.createElement('div');
             titleText.className = "fc-event-title";   //sono visibili SOLO i titoli quindi non fa lo switch Materie Docenti
@@ -330,7 +330,7 @@ export class LezioniCalendarioComponent implements OnInit {
         },
         settings: {
           icon: 'settings-icon',
-          hint: 'strumenti',
+          hint: 'Strumenti di gestione',
           click: this.openLezioniUtils.bind(this)
         },
         registro: {
@@ -646,7 +646,7 @@ export class LezioniCalendarioComponent implements OnInit {
     let strH_END =Utility.formatHour(resizeInfo.event.end);
     let form: CAL_Lezione;
 
-    this.svcLezioni.listByDocenteAndOraOverlap (parseInt(resizeInfo.event.id), resizeInfo.event.extendedProps['docenteID'], dtCalendario, strH_INI, strH_END)
+    this.svcLezioni.listByDocenteAndOraOverlap (parseInt(resizeInfo.event.id), resizeInfo.event.extendedProps['classeDocenteMateria'].docenteID, dtCalendario, strH_INI, strH_END)
     .subscribe(
       (val : CAL_Lezione[])=> {
         if (val.length > 0) {
@@ -731,7 +731,7 @@ export class LezioniCalendarioComponent implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '650px',
-      height: '425px',
+      height: '625px',
       data:  {
         start: this.calendarDOM.getApi().getDate(),
         classeSezioneAnnoID: this.classeSezioneAnnoID

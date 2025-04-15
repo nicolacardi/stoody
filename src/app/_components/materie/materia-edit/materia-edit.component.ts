@@ -1,26 +1,28 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Component, Inject, OnInit }                                       from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators }                from '@angular/forms';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA }       from '@angular/material/dialog';
+import { MatSnackBar }                                                     from '@angular/material/snack-bar';
+import { Observable }                                                      from 'rxjs';
+import { tap }                                                             from 'rxjs/operators';
 
 //components
-import { SnackbarComponent } from '../../utilities/snackbar/snackbar.component';
-import { DialogYesNoComponent } from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { SnackbarComponent }                                               from '../../utilities/snackbar/snackbar.component';
+import { DialogYesNoComponent }                                            from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { ColorPickerComponent }                                            from '../../utilities/color-picker/color-picker.component';
 
 //services
-import { LoadingService } from '../../utilities/loading/loading.service';
-import { MacroMaterieService } from '../macromaterie.service';
-import { MaterieService } from '../materie.service';
+import { LoadingService }                                                  from '../../utilities/loading/loading.service';
+import { MacroMaterieService }                                             from '../macromaterie.service';
+import { MaterieService }                                                  from '../materie.service';
 
 //classes
-import { MAT_MacroMateria } from 'src/app/_models/MAT_MacroMateria';
-import { MAT_Materia } from 'src/app/_models/MAT_Materia';
-import { ColorPickerComponent } from '../../utilities/color-picker/color-picker.component';
-import { DialogDataMateriaEdit } from 'src/app/_models/DialogData';
+import { MAT_MacroMateria }                                                from 'src/app/_models/MAT_MacroMateria';
+import { MAT_Materia }                                                     from 'src/app/_models/MAT_Materia';
+import { DialogDataMateriaEdit }                                           from 'src/app/_models/DialogData';
+import { MAT_TipoVoto }                                                    from 'src/app/_models/MAT_TipoVoto';
+import { TipiVotoService }                                                 from '../tipi-voto.service';
 
 //#endregion
 
@@ -33,25 +35,29 @@ export class MateriaEditComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
 
-  materia$!:                  Observable<MAT_Materia>;
-  obsMacroMaterie$!:          Observable<MAT_MacroMateria[]>;
-
-  form! :                     UntypedFormGroup;
-  emptyForm :                 boolean = false;
-  loading:                    boolean = true;
+  materia$!                : Observable<MAT_Materia>;
+  obsMacroMaterie$!        : Observable<MAT_MacroMateria[]>;
+  obsTipiVoto$!            : Observable<MAT_TipoVoto[]>;
+  form!                    : UntypedFormGroup;
+  emptyForm                : boolean = false;
+  loading                  : boolean = true;
 
 //#endregion
 
 //#region ----- Constructor --------------------
 
-  constructor(public _dialogRef: MatDialogRef<MateriaEditComponent>,
-              @Inject(MAT_DIALOG_DATA) public data:       DialogDataMateriaEdit,
-              private svcMaterie:                     MaterieService,
-              private _loadingService :               LoadingService,
-              private fb:                             UntypedFormBuilder, 
-              public _dialog:                         MatDialog,
-              private _snackBar:                      MatSnackBar,
-              private svcMacroMaterie:                MacroMaterieService  ) { 
+  constructor(
+    public _dialogRef                           : MatDialogRef<MateriaEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public data        : DialogDataMateriaEdit,
+    private svcMaterie                          : MaterieService,
+    private svcTipiVoto                         : TipiVotoService,
+    private svcMacroMaterie                     : MacroMaterieService,
+    private _loadingService                     : LoadingService,
+    private fb                                  : UntypedFormBuilder,
+    public _dialog                              : MatDialog,
+    private _snackBar                           : MatSnackBar,
+
+    ) { 
 
     _dialogRef.disableClose = true;
     
@@ -59,6 +65,7 @@ export class MateriaEditComponent implements OnInit {
       id:                         [null],
       descrizione:                ['', { validators:[ Validators.required, Validators.maxLength(50)]}],
       macroMateriaID:             [''],
+      tipoVotoID:                 [''],
       color:                      [''],
       seq:                        ['']
     });
@@ -74,6 +81,7 @@ export class MateriaEditComponent implements OnInit {
 
   loadData(){
 
+    this.obsTipiVoto$ = this.svcTipiVoto.list();
     this.obsMacroMaterie$ = this.svcMacroMaterie.list();
 
     if (this.data.materiaID && this.data.materiaID + '' != "0") {
@@ -150,6 +158,7 @@ export class MateriaEditComponent implements OnInit {
   }
 
   openColorPicker() {
+
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '350px',

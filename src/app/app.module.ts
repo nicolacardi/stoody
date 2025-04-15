@@ -101,7 +101,7 @@ import { RettaannoEditComponent }                  from './_components/pagamenti
 //Materie
 import { MaterieListComponent }                    from './_components/materie/materie-list/materie-list.component';
 import { MateriePageComponent }                    from './_components/materie/materie-page/materie-page.component';
-import { MateriaEditComponent }                    from './_components/materie/materia-edit/materia-edit.component';
+
 
 //Obiettivi e VotiObiettivi
 import { ObiettiviPageComponent }                  from './_components/obiettivi/obiettivi-page/obiettivi-page.component';
@@ -176,11 +176,6 @@ import { ColorPickerModule }                       from './_components/utilities
 import { FileDropDirective }                       from './_components/utilities/appfiledrop/appfiledrop.directive';
 
 
-//ClassiAnniMaterie
-import { ClassiAnniMaterieListComponent }          from './_components/classi-anni-materie/classi-anni-materie-list/classi-anni-materie-list.component';
-import { ClassiAnniMateriePageComponent }          from './_components/classi-anni-materie/classi-anni-materie-page/classi-anni-materie-page.component';
-import { ClasseAnnoMateriaEditComponent }          from './_components/classi-anni-materie/classe-anno-materia-edit/classe-anno-materia-edit.component';
-import { ClassiAnniMaterieDuplicaComponent }       from './_components/classi-anni-materie/classi-anni-materie-duplica/classi-anni-materie-duplica.component';
 
 //Compiti e Voti
 import { CompitiListComponent }                    from './_components/lezioni/compiti-list/compiti-list.component';
@@ -258,7 +253,6 @@ import { AnnoscolasticoEditComponent }             from './_components/anni-scol
 import { CompitiPageComponent }                    from './_components/lezioni/compiti-page/compiti-page.component';
 import { VotiInterrPageComponent }                 from './_components/lezioni/voti-interr-page/voti-interr-page.component';
 import { DocumentiAlunnoListComponent }            from './_components/pagelle/documenti-alunno-list/documenti-alunno-list.component';
-import { ClassiAnniMaterieFilterComponent }        from './_components/classi-anni-materie/classi-anni-materie-filter/classi-anni-materie-filter.component';
 
 //Docenti
 import { DocentiPageComponent }                    from './_components/docenti/docenti-page/docenti-page.component';
@@ -271,6 +265,7 @@ import { NonDocenteFormComponent }                 from './_components/nondocent
 
 //Dirigenti
 import { DirigenteFormComponent }                  from './_components/dirigenti/dirigente-form/dirigente-form.component';
+import { MateriaEditComponent } from './_components/materie/materia-edit/materia-edit.component';
 
 
 // FullCalendarModule.registerPlugins([ // register FullCalendar plugins
@@ -421,11 +416,6 @@ import { DirigenteFormComponent }                  from './_components/dirigenti
     ObiettivoEditComponent,
     VotiObiettiviEditComponent,
 
-    ClassiAnniMaterieListComponent,
-    ClassiAnniMateriePageComponent,
-    ClasseAnnoMateriaEditComponent,
-    ClassiAnniMaterieDuplicaComponent,
-
     ObiettiviFilterComponent,
     ObiettiviDuplicaComponent,
 
@@ -474,7 +464,7 @@ import { DirigenteFormComponent }                  from './_components/dirigenti
     VotiInterrPageComponent,
     DomandeFilterComponent,
     DocumentiAlunnoListComponent,
-    ClassiAnniMaterieFilterComponent
+
   ],
   imports: [
     BrowserModule,

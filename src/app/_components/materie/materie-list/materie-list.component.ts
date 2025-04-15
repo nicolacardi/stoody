@@ -1,20 +1,20 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { Observable } from 'rxjs';
-import { MatSort } from '@angular/material/sort';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild }      from '@angular/core';
+import { MatTableDataSource }                from '@angular/material/table';
+import { Observable }                        from 'rxjs';
+import { MatSort }                           from '@angular/material/sort';
+import { MatDialog, MatDialogConfig }        from '@angular/material/dialog';
 
 //components
-import { MateriaEditComponent } from '../materia-edit/materia-edit.component';
+import { MateriaEditComponent }              from '../materia-edit/materia-edit.component';
 
 //services
-import { MaterieService } from 'src/app/_components/materie/materie.service';
-import { LoadingService } from '../../utilities/loading/loading.service';
+import { MaterieService }                    from 'src/app/_components/materie/materie.service';
+import { LoadingService }                    from '../../utilities/loading/loading.service';
 
 //models
-import { MAT_Materia } from 'src/app/_models/MAT_Materia';
+import { MAT_Materia }                       from 'src/app/_models/MAT_Materia';
 
 //#endregion
 
@@ -38,7 +38,8 @@ export class MaterieListComponent implements OnInit {
       "seq",
       "descrizione", 
       "macroMateria",
-      "color"
+      "color",
+      "tipoVoto"
 
   ];
 
@@ -87,6 +88,7 @@ export class MaterieListComponent implements OnInit {
 
     loadMaterie$.subscribe(
       val =>   {
+        console.log("materia-list - loadData - val", val);
         this.matDataSource.data = val;
         this.sortCustom(); 
         this.matDataSource.sort = this.sort; 
@@ -105,7 +107,7 @@ export class MaterieListComponent implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '400px',
-      height: '370px',
+      height: '420px',
       data: {
         materiaID:                              0,
         maxSeq:                                 this.maxSeq
@@ -119,7 +121,7 @@ export class MaterieListComponent implements OnInit {
     const dialogConfig : MatDialogConfig = {
       panelClass: 'add-DetailDialog',
       width: '400px',
-      height: '370px',
+      height: '420px',
       data: {
         materiaID:                              materiaID,
         maxSeq:                                 this.maxSeq
