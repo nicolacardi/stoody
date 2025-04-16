@@ -45,7 +45,7 @@
     <ng-container matColumnDef="actionsColumn">
         <mat-header-cell *matHeaderCellDef ></mat-header-cell>
         <mat-cell  *matCellDef="let element;  let j = index;"> 
-            <img (click)="openDetail(element.alunnoID, element.annoID)" class="iconaMenu pointer" src="./assets/money_edit.svg">
+            <img (click)="openDetail(element.alunnoID, element.annoID, element.iscrizione!.id)" class="iconaMenu pointer" src="./assets/money_edit.svg">
         </mat-cell>
     </ng-container>
     

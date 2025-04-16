@@ -1,32 +1,31 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, EventEmitter, HostListener, Inject, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, timer } from 'rxjs';
-import { debounceTime, delayWhen, map, switchMap, tap } from 'rxjs/operators';
-import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { Component, Inject, OnInit, ViewChild }                   from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators }       from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }               from '@angular/material/dialog';
+import { MatSnackBar }                                            from '@angular/material/snack-bar';
+import { lastValueFrom, Observable, of }                                             from 'rxjs';
+import { concatMap, debounceTime, map, switchMap, tap }                           from 'rxjs/operators';
+import { MatAutocomplete, MatAutocompleteSelectedEvent }          from '@angular/material/autocomplete';
 
 //components
-import { SnackbarComponent } from '../../utilities/snackbar/snackbar.component';
-import { RettameseEditComponent } from '../rettamese-edit/rettamese-edit.component';
-import { PagamentiListComponent } from '../pagamenti-list/pagamenti-list.component';
-import { RettapagamentoEditComponent } from '../rettapagamento-edit/rettapagamento-edit.component';
+import { SnackbarComponent }                                      from '../../utilities/snackbar/snackbar.component';
+import { PagamentiListComponent }                                 from '../pagamenti-list/pagamenti-list.component';
+import { RettapagamentoEditComponent }                            from '../rettapagamento-edit/rettapagamento-edit.component';
 
 //services
-import { RetteService } from '../rette.service';
-import { LoadingService } from '../../utilities/loading/loading.service';
-import { AlunniService } from '../../alunni/alunni.service';
+import { RetteService }                                           from '../rette.service';
+import { LoadingService }                                         from '../../utilities/loading/loading.service';
+import { AlunniService }                                          from '../../alunni/alunni.service';
 
 //models
-import { ALU_Alunno } from 'src/app/_models/ALU_Alunno';
-import { ASC_AnnoScolastico } from 'src/app/_models/ASC_AnnoScolastico';
-import { PAG_Retta } from 'src/app/_models/PAG_Retta';
-import { AnniScolasticiService } from 'src/app/_components/anni-scolastici/anni-scolastici.service';
-import { RettaCalcoloAlunnoComponent } from '../retta-calcolo-alunno/retta-calcolo-alunno.component';
-import { RettaannoEditComponent } from '../rettaanno-edit/rettaanno-edit.component';
-import { DialogData } from 'src/app/_models/DialogData';
+import { ALU_Alunno }                                             from 'src/app/_models/ALU_Alunno';
+import { ASC_AnnoScolastico }                                     from 'src/app/_models/ASC_AnnoScolastico';
+import { PAG_Retta }                                              from 'src/app/_models/PAG_Retta';
+import { AnniScolasticiService }                                  from 'src/app/_components/anni-scolastici/anni-scolastici.service';
+import { RettaCalcoloAlunnoComponent }                            from '../retta-calcolo-alunno/retta-calcolo-alunno.component';
+import { RettaannoEditComponent }                                 from '../rettaanno-edit/rettaanno-edit.component';
+import { DialogData }                                             from 'src/app/_models/DialogData';
 
 //#endregion
 @Component({
@@ -39,27 +38,30 @@ export class RettaEditComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
 
-  public obsRette$!:          Observable<PAG_Retta[]>;
-  obsAnni$!:                  Observable<ASC_AnnoScolastico[]>;    //Serve per la combo anno scolastico
+  public obsRette$!        : Observable<PAG_Retta[]>;
+  obsAnni$!                : Observable<ASC_AnnoScolastico[]>;    //Serve per la combo anno scolastico
 
-  filteredAlunni$!:           Observable<ALU_Alunno[]>;
-  formRetta! :                UntypedFormGroup;
-  formAlunno! :               UntypedFormGroup;
+  filteredAlunni$!         : Observable<ALU_Alunno[]>;
+  formRetta!               : UntypedFormGroup;
+  formAlunno!              : UntypedFormGroup;
 
-  alunno!:                    ALU_Alunno;
-  anno!:                      ASC_AnnoScolastico;
+  alunno!                  : ALU_Alunno;
+  anno!                    : ASC_AnnoScolastico;
 
-  mesi:                       number[] = [];
-  quoteConcordate:            number[] = [];
-  quoteDefault:               number[] = [];
-  totPagamenti:               number[] = [];
-  quotaConcordataAnno:        number=0;
-  quotaDefaultAnno:           number=0;
-  totPagamentiAnno:           number=0;
+  mesi                     : number[] = [];
+  annoRetta                : number[] = [];
+  quoteConcordate          : number[] = [];
+  quoteDefault             : number[] = [];
+  totPagamenti             : number[] = [];
+  quotaConcordataAnno      : number=0;
+  quotaDefaultAnno         : number=0;
+  totPagamentiAnno         : number=0;
 
-  nPagamenti:                 number[] = [];
-  retteID:                    number[] = [];
-  idToHighlight!:             number;
+  nPagamenti               : number[] = [];
+  retteID                  : number[] = [];
+
+  retteMese                : PAG_Retta[] = [];
+  idToHighlight!           : number;
 
   //public months=[0,1,2,3,4,5,6,7,8,9,10,11,12].map(x=>new Date(2000,x-1,2));
   public mesiArr=           [ 8,    9,    10,   11,   0,   1,    2,    3,    4,    5,    6,    7];
@@ -68,39 +70,39 @@ export class RettaEditComponent implements OnInit {
 
 //#region ----- ViewChild Input Output ---------
   //@ViewChildren(RettameseEditComponent) ChildrenRettaMese!:QueryList<RettameseEditComponent>;
-  @ViewChild(RettaannoEditComponent) ChildRettaAnno!: RettaannoEditComponent;
-  @ViewChild(PagamentiListComponent) ChildPagamenti!: PagamentiListComponent;
-  @ViewChild(RettapagamentoEditComponent) ChildRettapagamentoEdit!: RettapagamentoEditComponent;
-  @ViewChild(RettaCalcoloAlunnoComponent) ChildRettaCalcoloAlunno!: RettaCalcoloAlunnoComponent;
-  @ViewChild(MatAutocomplete) matAutocomplete!: MatAutocomplete;
+  @ViewChild(RettaannoEditComponent) ChildRettaAnno!                    : RettaannoEditComponent;
+  @ViewChild(PagamentiListComponent) ChildPagamenti!                    : PagamentiListComponent;
+  @ViewChild(RettapagamentoEditComponent) ChildRettapagamentoEdit!      : RettapagamentoEditComponent;
+  @ViewChild(RettaCalcoloAlunnoComponent) ChildRettaCalcoloAlunno!      : RettaCalcoloAlunnoComponent;
+  @ViewChild(MatAutocomplete) matAutocomplete!                          : MatAutocomplete;
 //#endregion
 
 //#region ----- Constructor --------------------
 
   constructor(
-    public _dialogRef: MatDialogRef<RettaEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private fb:             UntypedFormBuilder, 
-    private svcRette:       RetteService,
-    private svcAlunni:      AlunniService,
-    private svcAnni:        AnniScolasticiService,
-    public _dialog:         MatDialog,
-    private _snackBar:      MatSnackBar,
-    private _loadingService:  LoadingService  
+    public _dialogRef                           : MatDialogRef<RettaEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public data        : PAG_Retta,
+    private fb                                  : UntypedFormBuilder,
+    private svcRette                            : RetteService,
+    private svcAlunni                           : AlunniService,
+    private svcAnni                             : AnniScolasticiService,
+    public _dialog                              : MatDialog,
+    private _snackBar                           : MatSnackBar,
+    private _loadingService                     : LoadingService
   ) 
   { 
     _dialogRef.disableClose = true;
 
     this.formRetta = this.fb.group({
-      id:                         [null],
-      alunnoID:                   ['', Validators.required],
-      annoID:                     ['', Validators.required],
-      causaleID:                  ['', Validators.required],
-      dtPagamento:                ['', { validators:[ Validators.required, Validators.maxLength(50)]}],
-      importo:                    ['', { validators:[ Validators.required]}],
-      tipoPagamentoID:            ['', Validators.required],
-      nomeCognomeAlunno:          [null],
-      selectAnnoScolastico:       [null]
+      id                   : [null],
+      alunnoID             : ['', Validators.required],
+      annoID               : ['', Validators.required],
+      causaleID            : ['', Validators.required],
+      dtPagamento          : ['', { validators:[ Validators.required, Validators.maxLength(50)]}],
+      importo              : ['', { validators:[ Validators.required]}],
+      tipoPagamentoID      : ['', Validators.required],
+      nomeCognomeAlunno    : [null],
+      selectAnnoScolastico : [null]
     });
 
     // this.formAlunno = this.fb.group({
@@ -112,10 +114,12 @@ export class RettaEditComponent implements OnInit {
 //#region ----- LifeCycle Hooks e simili--------
 
   ngOnInit() {
+
+    console.log("retta.edit - ngOnInit", this.data);
     this.filteredAlunni$ = this.formRetta.controls['nomeCognomeAlunno'].valueChanges
     .pipe(
       debounceTime(300),
-      switchMap(() => this.svcAlunni.filterAlunni(this.formRetta.value.nomeCognomeAlunno))
+      switchMap(() => this.svcAlunni.filterAlunni(this.formRetta.value.nomeCognomeAlunno))  //SBAGLIATO! BISOGNA PESCARE NELLE ISCRIZIONI E NON NEGLI ALUNNI!!!
     )
 
     this.obsAnni$ = this.svcAnni.list();
@@ -132,67 +136,94 @@ export class RettaEditComponent implements OnInit {
     this.loadData();
   }
 
-  loadData(){
-    
-    this.quotaConcordataAnno=0;
-    this.quotaDefaultAnno=0;
-    this.totPagamentiAnno=0;
+  loadData() {
+    this.quotaConcordataAnno = 0;
+    this.quotaDefaultAnno = 0;
+    this.totPagamentiAnno = 0;
 
-    this.obsRette$ = this.svcRette.listByAlunnoAnno(this.data.alunnoID, this.data.annoID);  
-    const loadRette$ =this._loadingService.showLoaderUntilCompleted(this.obsRette$);
+    this.obsRette$ = this.svcRette.listByIscrizione(this.data.iscrizioneID);
+    const loadRette$ = this._loadingService.showLoaderUntilCompleted(this.obsRette$);
+
     loadRette$.pipe(
-      map(obj => { 
-        //obsRette$ è un Observable<PAG_Retta[]> quindi è un elenco/lista/array di 12 oggetti di tipo PAG_Rette
-        //prendo CIASCUNO di questi 12 oggetti e ci popolo vari array di numeri in cui l'indice va da 0 a 11
-        //in particolare passo il rettaID ORDINATAMENTE a ognuno dei 12 component
-        if (obj.length!= 0 ) {
+        switchMap(obj => {
+            if (obj && obj.length > 0) {
+                // Caso con rette esistenti
+                this.anno = obj[0].anno!;
+                this.alunno = obj[0].alunno!;
+                console.log("retta-edit - loadData - obj", obj);
 
-          this.anno = obj[0].anno!;
-          this.alunno = obj[0].alunno!;
-          this.formRetta.controls['nomeCognomeAlunno'].setValue(this.alunno.persona.nome+" "+this.alunno.persona.cognome);
+                obj.forEach((val) => {
+                    const meseIndex = val.meseRetta - 1;
 
-          obj.forEach((val, i)=>{
-            this.retteID[obj[i].meseRetta-1] = obj[i].id;
+                    this.retteMese[meseIndex] = {
+                        id: val.id,
+                        iscrizioneID: val.iscrizioneID,
+                        annoID: val.annoID,
+                        alunnoID: val.alunnoID,
+                        annoRetta: val.annoRetta,
+                        meseRetta: val.meseRetta,
+                        quotaDefault: val.quotaDefault,
+                        quotaConcordata: val.quotaConcordata,
+                        totPagamenti: 0 // Inizializza il totale dei pagamenti
+                    };
+                    console.log(this.retteMese[meseIndex]);
 
-            this.mesi[obj[i].meseRetta - 1] = obj[i].meseRetta;
-            this.quoteConcordate[obj[i].meseRetta - 1] = obj[i].quotaConcordata;
-            this.quotaConcordataAnno += obj[i].quotaConcordata;
+                    // Somma i pagamenti per il mese corrente
+                    val.pagamenti?.forEach(x => {
+                        this.retteMese[meseIndex].totPagamenti! += x.importo;
+                        this.totPagamentiAnno += x.importo;
+                    });
 
-            this.quoteDefault[obj[i].meseRetta - 1] = obj[i].quotaDefault;
-            this.quotaDefaultAnno += obj[i].quotaDefault;
+                    this.quotaConcordataAnno += val.quotaConcordata;
+                    this.quotaDefaultAnno += val.quotaDefault;
+                });
 
-            //ora calcolo il totale dei pagamenti per ciascun mese e lo metto nell'array totPagamenti sommandolo 
-            this.totPagamenti[obj[i].meseRetta-1] = 0;
-            //this.nPagamenti[obj[i].meseRetta-1] = 0;
+                // Imposta il nome e cognome (aggiunto qui)
+                this.formRetta.controls['nomeCognomeAlunno'].setValue(
+                    this.alunno.persona.nome + " " + this.alunno.persona.cognome
+                );
 
-            obj[i].pagamenti?.forEach(x=>{
-              this.totPagamenti[obj[i].meseRetta-1] += x.importo;
-              //this.nPagamenti[obj[i].meseRetta-1] = this.nPagamenti[obj[i].meseRetta-1] + 1;
-              this.totPagamentiAnno += x.importo;
-            });
-          })
-        } else {
-          //obj.length è = 0 quando non c'è alcun obj, cioè quando si vuole inserire un "nuovo pagamento" da zero
-          //la differenza in questo caso è che non c'è un anno e quindi lo dobbiamo forzare
-          //creo un oggetto vuoto di tipo ASC_Annoscolastico, lo assegno a this.anno e poi ci setto il valor di default
-          // const tmpObj = <ASC_AnnoScolastico>{};
-          // this.anno = tmpObj;
-
-          //this.formRetta.controls['nomeCognomeAlunno'].setValue("");
-          //retta.edit passa i valori a 12 children, uno per mese, che si chiamano rettamese-edit:
-          //nel caso di "nuovo pagamento" impostiamo a 0 tutti i valori trasmessi ai child
-          for (let i = 0; i <= 11; i++) {
-            //idRette[da 0 a 11] è il valore dirà ad ognuno dei 12 child che si tratta di un nuovo pagamento
-            this.retteID[i] = 0; 
-
-            this.quotaConcordataAnno=0;
-            this.quotaDefaultAnno=0;
-            this.totPagamentiAnno=0;
-          }
+                return of(null); // Observable vuoto per completare
+            } else {
+                // Caso senza rette: recupera l'alunno
+                return this.svcAlunni.get(this.data.alunnoID).pipe(
+                    tap(alunno => {
+                        this.alunno = alunno;
+                        console.log("Alunno recuperato da svcAlunni:", alunno);
+                        
+                        // Imposta il nome e cognome (aggiunto anche qui)
+                        this.formRetta.controls['nomeCognomeAlunno'].setValue(
+                            this.alunno.persona.nome + " " + this.alunno.persona.cognome
+                        );
+                    })
+                );
+            }
+        })
+    ).subscribe({
+        next: async () => {
+            // Inizializza gli array se non ci sono rette
+            if (!this.obsRette$ || (await lastValueFrom(this.obsRette$)).length === 0) {
+                for (let i = 0; i <= 11; i++) {
+                    this.retteMese[i] = {
+                        id: 0,
+                        iscrizioneID: 0,
+                        annoID: 0,
+                        alunnoID: 0,
+                        annoRetta: 0,
+                        meseRetta: i + 1, // Impostiamo il mese per ogni entry
+                        quotaDefault: 0,
+                        quotaConcordata: 0,
+                        totPagamenti: 0
+                    };
+                }
+            }
+        },
+        error: (err) => {
+            console.error("Errore nel recupero dei dati:", err);
         }
-      })
-    ).subscribe( )
-  }
+    });
+}
+
 
 
 //#endregion
@@ -222,18 +253,10 @@ export class RettaEditComponent implements OnInit {
     this.loadData()
   }
 
-  // hoverPagamentoArrivato(id: number) {
-  //   //console.log ("arrivato", id);
-  //   this.idToHighlight = id;
-  //   //this.ChildPagamenti.refresh();
-  // }
-
-
   enterAlunnoInput () {
     //Su pressione di enter devo dapprima selezionare il PRIMO valore della lista aperta (a meno che non sia vuoto)
     //Una volta selezionato devo trovare, SE esiste, il valore dell'id che corrisponde a quanto digitato e quello passarlo a passAlunno del service
     //Mancherebbe qui la possibilità di selezionare solo con le freccette e Enter
-
 
     if (this.formRetta.controls['nomeCognomeAlunno'].value != '') {
       this.matAutocomplete.options.first.select();
@@ -243,7 +266,6 @@ export class RettaEditComponent implements OnInit {
     }
   }
 
-
   selected(event: MatAutocompleteSelectedEvent): void {
     //evento triggered su selezione di una voce tra quelle proposte
     this.data.alunnoID = parseInt(event.option.id);
@@ -251,7 +273,14 @@ export class RettaEditComponent implements OnInit {
     this.loadData();
   }
 
+  mesePagamentoClicked (meseRettaClicked: number ){
+    //ora devo passare queste informazioni a rettapagamento-edit
+    this.ChildRettapagamentoEdit.formRetta.controls['causaleID'].setValue(1);
+    this.ChildRettapagamentoEdit.formRetta.controls['meseRetta'].setValue(meseRettaClicked - 1);
+  }
+//#endregion
 
+//#region FUNZIONI NON PIU' UTILIZZATE ?
 
   // blur() {
   //   //evento che dovrebbe essere triggered su click fuori dall'elenco proposto. Va però in conflitto con selected:
@@ -284,14 +313,13 @@ export class RettaEditComponent implements OnInit {
   //   })
   // }
 
-  mesePagamentoClicked (meseRettaClicked: number ){
-    //ora devo passare queste informazioni a rettapagamento-edit
-    this.ChildRettapagamentoEdit.formRetta.controls['causaleID'].setValue(1);
-    this.ChildRettapagamentoEdit.formRetta.controls['meseRetta'].setValue(meseRettaClicked - 1);
-  }
-//#endregion
 
-//#region FUNZIONI NON PIU' UTILIZZATE ?
+    // hoverPagamentoArrivato(id: number) {
+  //   //console.log ("arrivato", id);
+  //   this.idToHighlight = id;
+  //   //this.ChildPagamenti.refresh();
+  // }
+
 
   // savePivot() {
     

@@ -70,7 +70,14 @@
 
     <ng-container matColumnDef="stato">
         <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>St.Iscrizione<mat-icon class="iconaFilter" *ngIf="filterValues.stato">filter_alt</mat-icon></th>
-        <td mat-cell [ngStyle]="{'color': element.stato.color}"  class="_grey-background" *matCellDef="let element" [innerHTML]="element.stato.descrizione | highlight: filterValue"></td>
+        <td mat-cell [ngStyle]="{'color': element.stato.color}"  class="_grey-background" *matCellDef="let element" >
+            <mat-chip
+            class="chip mini-chip mb2"
+            [ngStyle]="{'background-color': element.stato.color}"
+            >
+            {{element.stato.descrizione}}
+            </mat-chip>
+        </td>
     </ng-container>
 
     <ng-container matColumnDef="actionsColumn2">

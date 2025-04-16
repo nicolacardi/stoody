@@ -15,16 +15,17 @@ export interface PAG_Retta {
         quotaDefault:           number,
         quotaConcordata:        number,
         
-        note:                   string;
-        dtIns:                  string;
-        dtUpd:                  string;
-        userIns:                number;
-        userUpd:                number;
+        note?:                   string;
+        dtIns?:                  string;
+        dtUpd?:                  string;
+        userIns?:                number;
+        userUpd?:                number;
 
         iscrizione?:            CLS_Iscrizione;
         anno?:                  ASC_AnnoScolastico;
         alunno?:                ALU_Alunno;
         pagamenti?:             PAG_Pagamento[];
+        totPagamenti?:          number;
 
 }
 

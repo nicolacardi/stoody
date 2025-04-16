@@ -123,3 +123,5 @@ export interface DialogDataRisorsaClasseEdit {
       risorsaCSAID:                             number;
       classeSezioneAnnoID:                      number;
       }
+
+

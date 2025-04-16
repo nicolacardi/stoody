@@ -1,25 +1,27 @@
-<form  *ngIf="(retta$ | async)  || emptyForm" [formGroup] = "form" >
+    <!-- <mat-form-field class="cellRetta center" [ngClass]="{'_highlightConc': quotaConcordata < quotaDefault}"> -->
+
+<form   [formGroup] = "form" >
     <mat-form-field class="cellRetta center"  >
-        <input matInput type="number"
-        (change) = "save()"
-        formControlName="quotaDefault" 
-        class="right"
-        #inpQuotaD>
+        <input  matInput type="number"
+                (change) = "save()"
+                formControlName="quotaDefault" 
+                class="right"
+                #inpQuotaD>
     </mat-form-field>
 
     <mat-form-field class="cellRetta center">
-    <!-- <mat-form-field class="cellRetta center" [ngClass]="{'_highlightConc': quotaConcordata < quotaDefault}"> -->
-        <input matInput #inpQuotaC type="number"
+        <input  matInput type="number"
                 formControlName="quotaConcordata"
                 (change) = "save()" 
-                class="right">
+                class="right"
+                #inpQuotaC >
     </mat-form-field>
 
-    <mat-form-field class="cellRetta" [ngClass]="{'_highlightPag2': totPagamenti < ConvertToNumber(inpQuotaC.value) }">
-        <input matInput type="number"
-        formControlName="totPagamenti"
-        (click) = "clickOnPagamento()"
-        class="right"
-        readonly>
+    <mat-form-field class="cellRetta" [ngClass]="{'_highlightPag2': form.controls['totPagamenti'].value < ConvertToNumber(inpQuotaC.value) }">
+        <input  matInput type="number"
+                formControlName="totPagamenti"
+                (click) = "clickOnPagamento()"
+                class="right"
+                readonly #totPagamenti>
     </mat-form-field>
 </form>

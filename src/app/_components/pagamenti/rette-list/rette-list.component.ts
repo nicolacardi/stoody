@@ -1,31 +1,30 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, ElementRef, Input, OnInit, ViewChild }         from '@angular/core';
-import { MatDialog, MatDialogConfig }           from '@angular/material/dialog';
-import { MatPaginator }                         from '@angular/material/paginator';
-import { MatSlideToggle }                       from '@angular/material/slide-toggle';
-import { MatTableDataSource }                   from '@angular/material/table';
-import { Observable, zip }                      from 'rxjs';
-import { groupBy, map, mergeMap, tap, toArray } from 'rxjs/operators';
-import { FormControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatMenuTrigger }                       from '@angular/material/menu';
+import { Component, OnInit, ViewChild }               from '@angular/core';
+import { MatDialog, MatDialogConfig }                 from '@angular/material/dialog';
+import { MatPaginator }                               from '@angular/material/paginator';
+import { MatSlideToggle }                             from '@angular/material/slide-toggle';
+import { MatTableDataSource }                         from '@angular/material/table';
+import { Observable }                                 from 'rxjs';
+import { UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
+import { MatMenuTrigger }                             from '@angular/material/menu';
 
 //components
-import { RettaEditComponent }                   from '../retta-edit/retta-edit.component';
-import { AlunnoEditComponent }                  from '../../alunni/alunno-edit/alunno-edit.component';
-import { RettaCalcoloComponent }                from '../retta-calcolo/retta-calcolo.component';
+import { RettaEditComponent }                         from '../retta-edit/retta-edit.component';
+import { AlunnoEditComponent }                        from '../../alunni/alunno-edit/alunno-edit.component';
+import { RettaCalcoloComponent }                      from '../retta-calcolo/retta-calcolo.component';
 
 //services
-import { RetteService }                         from '../rette.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { AnniScolasticiService }                from 'src/app/_components/anni-scolastici/anni-scolastici.service';
+import { RetteService }                               from '../rette.service';
+import { LoadingService }                             from '../../utilities/loading/loading.service';
+import { AnniScolasticiService }                      from 'src/app/_components/anni-scolastici/anni-scolastici.service';
 
 //classes
-import { PAG_Retta }                            from 'src/app/_models/PAG_Retta';
-import { PAG_RettaPivot }                       from 'src/app/_models/PAG_RettaPivot';
-import { PAG_RettaGroupObj }                    from 'src/app/_models/PAG_RetteGroupObj';
-import { ASC_AnnoScolastico }                   from 'src/app/_models/ASC_AnnoScolastico';
-import { _UT_Parametro }                        from 'src/app/_models/_UT_Parametro';
+import { PAG_Retta }                                  from 'src/app/_models/PAG_Retta';
+import { PAG_RettaPivot }                             from 'src/app/_models/PAG_RettaPivot';
+import { PAG_RettaGroupObj }                          from 'src/app/_models/PAG_RetteGroupObj';
+import { ASC_AnnoScolastico }                         from 'src/app/_models/ASC_AnnoScolastico';
+import { _UT_Parametro }                              from 'src/app/_models/_UT_Parametro';
 
 //#endregion
 @Component({
@@ -192,7 +191,7 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
 
     loadRette$
       .subscribe(val => {
-        console.table(val);
+        console.log(val);
         this.matDataSource.data = val;
         this.matDataSource.filterPredicate = this.filterPredicate();
         this.matDataSource.paginator = this.paginator;
@@ -444,17 +443,19 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
 
 //#region ----- Add Edit Drop -------
   addRecord(){
-    this.openDetail(0, this.annoID);
+    this.openDetail(0, this.annoID, 0);
   }
 
-  openDetail(alunno: number, annoID: number){
+  openDetail(alunnoID: number, annoID: number, iscrizioneID: number){
+    // console.log("rette.list - openDetail - alunnoID, annoID", alunno, annoID);
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
         width: '850px',
         height: '620px',
         data: {
-          alunnoID: alunno,
-          annoID: annoID
+          alunnoID: alunnoID,
+          annoID: annoID,
+          iscrizioneID: iscrizioneID
         }
     };
 

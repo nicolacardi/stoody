@@ -236,6 +236,7 @@ export class LezioniCalendarioComponent implements OnInit {
           right: 'registro dayGridMonth,timeGridWeek,timeGridDay,listWeek'
         };
       }
+      //this.loadEventsForRange(arg.start, arg.end); qui si potrebbe implementare il lazy loading
     },
     //AZIONI
     select:       this.addEvento.bind(this),          //quando si crea un evento...
@@ -280,6 +281,7 @@ export class LezioniCalendarioComponent implements OnInit {
   ngOnInit(){
   }
 
+
   loadData () {
     let obsLezioni$: Observable<CAL_Lezione[]>;
     this.showWarn = false;
@@ -310,7 +312,7 @@ export class LezioniCalendarioComponent implements OnInit {
     const loadLezioni$ =this._loadingService.showLoaderUntilCompleted(obsLezioni$);
     loadLezioni$.subscribe(
       val =>   {
-        console.log("lezioni-calendario - loadData - elenco eventi estratti da CAL_Lezioni", val);
+        // console.log("lezioni-calendario - loadData - elenco eventi estratti da CAL_Lezioni", val);
 
         this.Events = val.map(lezione => ({
           ...lezione, 

@@ -1,5 +1,5 @@
 <!-- 
-    Rev.0 - 28/08/2021
+    Rev.0 - 17/04/2025
     Componente per l'edit della retta
     Composto da: 
         - Barra Funzioni
@@ -9,7 +9,7 @@
     |           (MatSelect)                 (MatAutoComplete)               |
     |                                                                       |
     |                                                                       |
-    |   /-retta-mese 1--\   /-retta-mese 2--\   /-retta-mese 3--\ ....      |
+    |   /-retta-anno  --\   /-retta-mese 1--\   /-retta-mese 2--\ ....      |
     |   |               |   |               |   |               |           |
     |   |               |   |               |   |               |           |
     |   |               |   |               |   |               |           |
@@ -61,6 +61,7 @@
                                 >
                                 <!-- [displayWith]="displayFn" DisplayWith impedisce che si possa scrivere qualcosa nella input in maniera programmatica-->
                         <mat-autocomplete #autoAlunno="matAutocomplete" (optionSelected)="selected($event)" >
+                            <!-- ATTENZIONE QUESTA DOVREBBE ESSERE UNA LISTA ISCRIZIONI DELL'ANNO E NON DI ALUNNI!!! -->
                             <!-- <mat-spinner *ngIf="nomeAlunnoIsLoading" class="is-loading" diameter="40"></mat-spinner> -->
                             <mat-option *ngFor="let element of (filteredAlunni$ | async)"  [value]="element.persona.nome + ' ' + element.persona.cognome" [id]="element.id.toString()" #option>
                                 <small>{{element.persona.nome}} {{element.persona.cognome}}</small>
@@ -101,25 +102,15 @@
                             <div class="center">
                                 <mat-label>{{placeholderMeseArr[i]}}</mat-label>
                             </div>
-
-                            <!-- ************ PARAMETRI PASSATI AD OGNI CHILD: rettamese-edit *************************     -->
-                            <!-- inputPagamenti: passa al component il tot Pagamenti del mese : serve per le                -->
-                            <!--    _highlightPag2 di quelli che hanno quota concordata > dei pagamenti                     -->
-                            <!-- rettaID: è l'id della retta                                                                -->
-                            <!-- indice: serve a questo component (retta-edit) per riferirsi all'n-esimo component child    -->
-                            <!--    in quanto deve uno ad uno lanciarne il metodo ngOnChanges                               -->
-
-                            <app-rettamese-edit 
-                                [rettaID] ="retteID[mese]"
-                                [quotaDefault] ="quoteDefault[mese]"
-                                [quotaConcordata] ="quoteConcordate[mese]"
-                                [totPagamenti] ="totPagamenti[mese]"
-                                [mese] ="mesi[mese]"
-                                [indice] ="i"
-                                (mesePagamentoClicked) = "mesePagamentoClicked($event)"  >
                                 <!-- [inputPagamenti] ="totPagamenti[mese]" -->
                                 <!--[toHighlight] = "idToHighlight"  -->
-                            </app-rettamese-edit>
+                            <app-rettamese-edit
+                                [rettaMese]="retteMese[mese]"
+                                [annoID]="data.annoID"
+                                [alunnoID]="data.alunnoID"
+                                (mesePagamentoClicked)="mesePagamentoClicked($event)" 
+                            ></app-rettamese-edit>
+
                         </div>
                     </mat-grid-tile>
                 </mat-grid-list>

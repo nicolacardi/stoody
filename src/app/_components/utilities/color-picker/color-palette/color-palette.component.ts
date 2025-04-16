@@ -47,12 +47,21 @@ export class ColorPaletteComponent implements AfterViewInit, OnChanges {
 
   draw() {
     
-    //console.log ("colorpalette 0000")
-    if (!this.ctx) {
-      //console.log ("colorpalette 000")
 
-      this.ctx = this.canvas.nativeElement.getContext('2d')!
+
+      // Se canvas non è ancora disponibile, esci
+  if (!this.canvas?.nativeElement) {
+    return;
+  }
+
+  if (!this.ctx) {
+    this.ctx = this.canvas.nativeElement.getContext('2d', { willReadFrequently: true })!;
+    if (!this.ctx) {
+      return;
     }
+  }
+
+
     //console.log ("colorpalette 0")
     const width = this.canvas.nativeElement.width
     //console.log ("colorpalette 1")

@@ -33,17 +33,12 @@ export class RettePageComponent implements OnInit {
     this.actRoute.queryParams.subscribe(
       params => { 
         this.classeSezioneAnnoIDrouted = params['classeSezioneAnnoID'];  
+        if (!this.classeSezioneAnnoIDrouted) {return;}
         //ora devo passare la classe a RetteList
         this.svcClassiSezioniAnni.get(this.classeSezioneAnnoIDrouted).subscribe( 
           res=> {this.retteList.form.controls['filterControl'].setValue(res.classeSezione.classe!.descrizioneBreve+" "+res.classeSezione.sezione);
           this.retteList.applyFilter(res.classeSezione.classe!.descrizioneBreve+" "+res.classeSezione.sezione);
-
-          }
-        
-          );
-          
-
-
+        });
     });
   }
 

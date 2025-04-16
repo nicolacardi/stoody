@@ -1,21 +1,16 @@
 //#region ----- IMPORTS ------------------------
-
-
-//TODO ngOnChanges scatta un numero enorme di volte su hover della lista pagamenti
-import { Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { Observable }                           from 'rxjs';
-import { MatDialog }                            from '@angular/material/dialog';
+import { Component, EventEmitter, Input, OnInit, Output}       from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup }                from '@angular/forms';
+import { MatDialog }                                           from '@angular/material/dialog';
 
 //components
-import { DialogOkComponent }                    from '../../utilities/dialog-ok/dialog-ok.component';
+import { DialogOkComponent }                                   from '../../utilities/dialog-ok/dialog-ok.component';
 
 //services
-import { RetteService }                         from '../rette.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
+import { RetteService }                                        from '../rette.service';
 
 //models
-import { PAG_Retta }                            from 'src/app/_models/PAG_Retta';
+import { PAG_Retta }                                           from 'src/app/_models/PAG_Retta';
 
 //#endregion
 @Component({
@@ -27,22 +22,15 @@ import { PAG_Retta }                            from 'src/app/_models/PAG_Retta'
 export class RettameseEditComponent implements OnInit{
 
 //#region ----- Variabili ----------------------
-  form! :                                       UntypedFormGroup;
-  retta$!:                                      Observable<PAG_Retta>;
-  
-  emptyForm :                                   boolean = false;
+  form!        : UntypedFormGroup;
+  emptyForm    : boolean = false;
 //#endregion
 
 //#region ----- ViewChild Input Output -------
 
-  @Input() public rettaID!:                     number; 
-  @Input() public quotaConcordata!:             number; 
-  @Input() public quotaDefault!:                number; 
-  @Input() public totPagamenti!:                number; 
-  @Input() public mese!:                        number; 
-  @Input() public indice!:                      number; //serve per poter azionare la save di ciascuna istanza di questo component
-  //@Input() public toHighlight!: number; 
-
+  @Input() public annoID!:                      number; 
+  @Input() public alunnoID!:                    number; 
+  @Input() rettaMese!: PAG_Retta;
   @Output('mesePagamentoClicked')
   clickOnpagamentoEmitter = new EventEmitter<number>();
 //#endregion
@@ -50,17 +38,16 @@ export class RettameseEditComponent implements OnInit{
 //#region ----- Constructor --------------------
 
   constructor(
-    private fb:               UntypedFormBuilder,
-    private svcRette:         RetteService,
-    public _dialog:           MatDialog,
-    private _loadingService:  LoadingService  
+    private fb       : UntypedFormBuilder,
+    private svcRette : RetteService,
+    public _dialog   : MatDialog,
   ) { 
 
     this.form = this.fb.group({
       id:                     [null],
       annoID:                 [null],
       alunnoID:               [null],
-
+      iscrizioneID:           [null],
       annoRetta:              [null],
       meseRetta:              [null],
       quotaDefault:           [null],
@@ -74,8 +61,9 @@ export class RettameseEditComponent implements OnInit{
 
   ngOnChanges() {
 
-    if (this.rettaID && this.rettaID + '' != "0") {
+    if (this.rettaMese) {
       this.loadData();
+      this.emptyForm = false;
     } else {
       this.emptyForm = true;
       this.form.reset(); 
@@ -84,37 +72,48 @@ export class RettameseEditComponent implements OnInit{
   }
 
   ngOnInit(): void {
-
   }
   
   loadData(){
-    this.form.controls['quotaDefault'].setValue(this.quotaDefault);
-    this.form.controls['quotaConcordata'].setValue(this.quotaConcordata);
-    this.form.controls['totPagamenti'].setValue(this.totPagamenti);
+
+  if (this.rettaMese) {
+    this.form.patchValue({
+      id:               this.rettaMese.id,
+      annoID:           this.annoID,                      
+      alunnoID:         this.alunnoID,   
+      iscrizioneID:     this.rettaMese.iscrizioneID,                    
+      annoRetta:        this.rettaMese.annoRetta,
+      meseRetta:        this.rettaMese.meseRetta,
+      quotaDefault:     this.rettaMese.quotaDefault,
+      quotaConcordata:  this.rettaMese.quotaConcordata,
+      totPagamenti:     this.rettaMese.totPagamenti,
+    });
+  }
+
+ 
+
   }
 
 //#endregion
 
 //#region ----- Operazioni CRUD ----------------
   save(): boolean{
-    
-    if (this.rettaID && this.form.dirty) {
-        this.svcRette.put(this.form.value)        
-          .subscribe({
-            next: res=> {
-            //return true;
-            },
-            error: err=>  {
-            //return false;
-            }
-          });
+    console.log ("rettamese-edit - save", this.form.value)
+
+    if (this.form.controls['id'].value != null && this.form.controls['id'].value != 0) {
+      this.svcRette.put(this.form.value).subscribe();
     } else {
-      //post
-      this._dialog.open(DialogOkComponent, {
-        width: '320px',
-        data: {titolo: "ATTENZIONE", sottoTitolo: "Selezionare prima un Alunno"}
-      });
-      this.form.reset();
+      if (this.form.controls['alunnoID'].value == null) {
+        //post
+        this._dialog.open(DialogOkComponent, {
+          width: '320px',
+          data: {titolo: "ATTENZIONE", sottoTitolo: "Selezionare prima un Alunno"}
+        });
+        this.form.reset();
+      } else {
+        this.svcRette.post(this.form.value).subscribe();
+      }
+
     }
     return true;
   }
@@ -126,7 +125,7 @@ export class RettameseEditComponent implements OnInit{
   }
 
   clickOnPagamento() {
-    this.clickOnpagamentoEmitter.emit(this.mese);
+    this.clickOnpagamentoEmitter.emit(this.rettaMese.meseRetta);
   }
 //#endregion
 }
