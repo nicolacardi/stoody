@@ -29,6 +29,7 @@ import { ASC_AnnoScolastico }                   from 'src/app/_models/ASC_AnnoSc
 import { PAG_Pagamento }                        from 'src/app/_models/PAG_Pagamento';
 import { _UT_Parametro }                        from 'src/app/_models/_UT_Parametro';
 import { User }                                 from 'src/app/_user/Users';
+import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 
 //#endregion
 @Component({
@@ -126,17 +127,17 @@ export class PagamentiListComponent implements OnInit {
 //#endregion
 
 //#region ----- ViewChild Input Output ---------
-  @ViewChild(MatPaginator) paginator!:    MatPaginator;
-  @ViewChild(MatSort) sort!:              MatSort;
+  @ViewChild(MatPaginator) paginator!        : MatPaginator;
+  @ViewChild(MatSort) sort!                  : MatSort;
   @ViewChild("filterInput") filterInput!:                     ElementRef;
 
-  @Input() dove!:           string;
-  @Input() alunnoID!:       number;
-  @Input() annoID!:         number;
-  @Input() pagamentiFilterComponent!: PagamentiFilterComponent;
+  @Input() dove!                             : string;
+  @Input() iscrizione!                       : CLS_Iscrizione;
+
+  @Input() pagamentiFilterComponent!         : PagamentiFilterComponent;
 
   @Output('pagamentoEliminato')
-  pagamentoEliminatoEmitter = new EventEmitter<string>();
+  pagamentoEliminatoEmitter                  = new EventEmitter<string>();
   //@Output('hoverPagamento');
 
 //#endregion
@@ -183,7 +184,7 @@ export class PagamentiListComponent implements OnInit {
   }
 
   updateList() {
-    this.annoID = this.form.controls['selectAnnoScolastico'].value;
+    this.iscrizione.classeSezioneAnno.annoID = this.form.controls['selectAnnoScolastico'].value;
     this.loadData();
   }
 
@@ -202,12 +203,12 @@ export class PagamentiListComponent implements OnInit {
     this.obsAnni$= this.svcAnni.list();
     let obsPagamenti$: Observable<PAG_Pagamento[]>;
 
-    if (this.alunnoID == 0 ) return;
-    if (this.alunnoID) {
-      obsPagamenti$= this.svcPagamenti.listByAlunnoAnno(this.alunnoID, this.annoID);
+    if (this.iscrizione.alunnoID == 0 ) return;
+    if (this.iscrizione.alunnoID) {
+      obsPagamenti$= this.svcPagamenti.listByAlunnoAnno(this.iscrizione.alunnoID, this.iscrizione.classeSezioneAnno.annoID);
     } else {
-      if (!this.annoID) this.annoID = this.form.controls['selectAnnoScolastico'].value;
-      obsPagamenti$= this.svcPagamenti.listByAnno(this.annoID);
+      if (!this.iscrizione.classeSezioneAnno.annoID) this.iscrizione.classeSezioneAnno.annoID = this.form.controls['selectAnnoScolastico'].value;
+      obsPagamenti$= this.svcPagamenti.listByAnno(this.iscrizione.classeSezioneAnno.annoID);
     }
     const loadPagamenti$ =this._loadingService.showLoaderUntilCompleted(obsPagamenti$);
 
@@ -316,7 +317,7 @@ export class PagamentiListComponent implements OnInit {
 
   editRecord(alunnoID: number){
 
-    let annoID = this.annoID;
+    let annoID = this.iscrizione.classeSezioneAnno.annoID;
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
         width: '850px',

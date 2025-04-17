@@ -42,9 +42,7 @@ export class RettePageComponent implements OnInit {
     });
   }
 
-  addRecord() {
-    this.retteList.addRecord()
-  }
+
   calcoloRette() {
     this.retteList.calcoloRette()
   }

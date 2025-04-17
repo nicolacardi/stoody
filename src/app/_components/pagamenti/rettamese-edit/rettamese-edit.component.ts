@@ -11,6 +11,7 @@ import { RetteService }                                        from '../rette.se
 
 //models
 import { PAG_Retta }                                           from 'src/app/_models/PAG_Retta';
+import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 
 //#endregion
 @Component({
@@ -28,11 +29,10 @@ export class RettameseEditComponent implements OnInit{
 
 //#region ----- ViewChild Input Output -------
 
-  @Input() public annoID!:                      number; 
-  @Input() public alunnoID!:                    number; 
-  @Input() rettaMese!: PAG_Retta;
+  @Input() public iscrizione!       : CLS_Iscrizione;
+  @Input() rettaMese!               : PAG_Retta;
   @Output('mesePagamentoClicked')
-  clickOnpagamentoEmitter = new EventEmitter<number>();
+  clickOnpagamentoEmitter           = new EventEmitter<number>();
 //#endregion
 
 //#region ----- Constructor --------------------
@@ -78,9 +78,7 @@ export class RettameseEditComponent implements OnInit{
 
   if (this.rettaMese) {
     this.form.patchValue({
-      id:               this.rettaMese.id,
-      annoID:           this.annoID,                      
-      alunnoID:         this.alunnoID,   
+      id:               this.rettaMese.id, 
       iscrizioneID:     this.rettaMese.iscrizioneID,                    
       annoRetta:        this.rettaMese.annoRetta,
       meseRetta:        this.rettaMese.meseRetta,

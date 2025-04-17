@@ -14,10 +14,16 @@ export class PagellaVotiService {
 
   constructor(private http: HttpClient) { }
 
-  listByAnnoClassePagella(annoID: number, classeID: number, pagellaID: number): Observable<DOC_PagellaVoto[]>{
-    return this.http.get<DOC_PagellaVoto[]>(environment.apiBaseUrl+'DOC_PagellaVoti/ListByAnnoClassePagella/'+annoID+'/'+classeID+'/'+pagellaID);   
-    //http://213.215.231.4/swappX/api/DOC_PagellaVoti/ListByAnnoClassePagella/2/1/33
+  // listByAnnoClassePagella(annoID: number, classeID: number, pagellaID: number): Observable<DOC_PagellaVoto[]>{
+  //   return this.http.get<DOC_PagellaVoto[]>(environment.apiBaseUrl+'DOC_PagellaVoti/ListByAnnoClassePagella/'+annoID+'/'+classeID+'/'+pagellaID);   
+  //   //http://213.215.231.4/swappX/api/DOC_PagellaVoti/ListByAnnoClassePagella/2/1/33
+  // }
+
+  listByCSAPagella(classeSezioneAnnoID: number, pagellaID: number): Observable<DOC_PagellaVoto[]>{
+    return this.http.get<DOC_PagellaVoto[]>(environment.apiBaseUrl+'DOC_PagellaVoti/ListByCSAPagella/'+classeSezioneAnnoID+'/'+pagellaID);   
+    //http://213.215.231.4/swappX/api/DOC_PagellaVoti/ListByCSAPagella/16/33
   }
+
 
   listByIscrizionePeriodo(iscrizioneID: number, periodo: number): Observable<DOC_PagellaVoto[]>{
     return this.http.get<DOC_PagellaVoto[]>(environment.apiBaseUrl+'DOC_PagellaVoti/ListByIscrizionePeriodo/'+iscrizioneID+'/'+periodo);   

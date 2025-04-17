@@ -149,6 +149,7 @@ export class SegreteriaDashboardComponent implements OnInit {
     let iscrizione: CLS_Iscrizione;
     let annoID!: number;
     let classeID!: number;
+    let classeSezioneAnnoID!: number
     let alunno!: ALU_Alunno;
     let lstPagellaVoti!: DOC_PagellaVoto[];
     let pagella!: DOC_Pagella;
@@ -158,6 +159,7 @@ export class SegreteriaDashboardComponent implements OnInit {
       iscrizione =  this.viewListIscrizioni.getChecked()[i];
       annoID = iscrizione!.classeSezioneAnno.annoID;
       classeID = iscrizione!.classeSezioneAnno.classeSezione.classeID;
+      classeSezioneAnnoID = iscrizione!.classeSezioneAnnoID;
       alunno = iscrizione!.alunno;
 
       //1. VERIFICA SE LA PAGELLA ESISTE
@@ -183,7 +185,7 @@ export class SegreteriaDashboardComponent implements OnInit {
       }
 
       //3. ESTRAZIONE VOTI
-      await firstValueFrom(this.svcPagellaVoti.listByAnnoClassePagella(annoID, classeID, pagella.id!).pipe(tap(res=> lstPagellaVoti = res)));
+      await firstValueFrom(this.svcPagellaVoti.listByCSAPagella(classeSezioneAnnoID, pagella.id!).pipe(tap(res=> lstPagellaVoti = res)));
 
       //serve estrarre il template
       //3.5. ESTRAZIONE TEMPLATE

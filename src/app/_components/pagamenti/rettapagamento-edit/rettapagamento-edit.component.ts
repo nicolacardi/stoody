@@ -22,6 +22,7 @@ import { TipiPagamentoService } from '../tipiPagamento.service';
 //models
 import { PAG_CausalePagamento } from 'src/app/_models/PAG_CausalePagamento';
 import { PAG_TipoPagamento } from 'src/app/_models/PAG_TipoPagamento';
+import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 
 //#endregion
 @Component({
@@ -44,8 +45,7 @@ export class RettapagamentoEditComponent implements OnInit {
 //#region ----- ViewChild Input Output ---------
   @ViewChild('causale')       public causale!: MatSelect;
 
-  @Input() alunnoID!:       number;
-  @Input() annoID!:         number;
+  @Input() iscrizione!:       CLS_Iscrizione;
   @Output('nuovoPagamento')
   pagamentoEmitter = new EventEmitter<string>();
 //#endregion
@@ -89,7 +89,7 @@ export class RettapagamentoEditComponent implements OnInit {
 //#region ----- Operazioni CRUD ----------------
   save( ){
     //if (this.formRetta.controls['id'].value == null) { //non serve questo check: facciamo sempre la post mai la put
-   if (this.alunnoID == 0) {
+   if (this.iscrizione.alunnoID == 0) {
     this._dialog.open(DialogOkComponent, {
       width: '320px',
       data: {titolo: "ATTENZIONE", sottoTitolo: "Selezionare prima un Alunno"}
@@ -97,14 +97,14 @@ export class RettapagamentoEditComponent implements OnInit {
     this.formRetta.reset();
     return;
    }
-    this.formRetta.controls['alunnoID'].setValue(this.alunnoID);
-    this.formRetta.controls['annoID'].setValue(this.annoID);
+    this.formRetta.controls['alunnoID'].setValue(this.iscrizione.alunnoID);
+    this.formRetta.controls['annoID'].setValue(this.iscrizione.classeSezioneAnno.annoID);
     
 
     if (this.causale.value == 1) {
       
       //ATTENZIONE: ASINCRONA! BISOGNA ASPETTARE CHE QUESTA RISPONDA PRIMA DI LANCIARE LA SUCCESSIVA post
-      this.svcRette.getByAlunnoAnnoMese(this.alunnoID, this.annoID, (this.formRetta.controls['meseRetta'].value + 1))
+      this.svcRette.getByAlunnoAnnoMese(this.iscrizione.alunnoID, this.iscrizione.classeSezioneAnno.annoID, (this.formRetta.controls['meseRetta'].value + 1))
       .pipe (
         tap (val=> this.formRetta.controls['rettaID'].setValue(val.id)), //il valore in arrivo dalla load viene inserito nel form
         concatMap(() => this.svcPagamenti.post(this.formRetta.value)) //concatMap ATTENDE l'observable precedente prima di lanciare il successivo

@@ -25,6 +25,7 @@ import { PAG_RettaPivot }                             from 'src/app/_models/PAG_
 import { PAG_RettaGroupObj }                          from 'src/app/_models/PAG_RetteGroupObj';
 import { ASC_AnnoScolastico }                         from 'src/app/_models/ASC_AnnoScolastico';
 import { _UT_Parametro }                              from 'src/app/_models/_UT_Parametro';
+import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 
 //#endregion
 @Component({
@@ -191,7 +192,7 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
 
     loadRette$
       .subscribe(val => {
-        console.log(val);
+        console.log("rette-list - loadData - val", val);
         this.matDataSource.data = val;
         this.matDataSource.filterPredicate = this.filterPredicate();
         this.matDataSource.paginator = this.paginator;
@@ -441,21 +442,15 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
   }
 //#endregion
 
-//#region ----- Add Edit Drop -------
-  addRecord(){
-    this.openDetail(0, this.annoID, 0);
-  }
 
-  openDetail(alunnoID: number, annoID: number, iscrizioneID: number){
-    // console.log("rette.list - openDetail - alunnoID, annoID", alunno, annoID);
+  openDetail(iscrizione: CLS_Iscrizione){
+    console.log("rette.list - openDetail - iscrizione", iscrizione);
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
         width: '850px',
         height: '620px',
         data: {
-          alunnoID: alunnoID,
-          annoID: annoID,
-          iscrizioneID: iscrizioneID
+          iscrizione: iscrizione
         }
     };
 

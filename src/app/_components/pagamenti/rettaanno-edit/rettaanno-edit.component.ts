@@ -3,6 +3,7 @@
 import { Component, Input, OnChanges }                from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup }       from '@angular/forms';
 import { Observable }                                 from 'rxjs';
+import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 
 //models
 import { PAG_Retta }                                  from 'src/app/_models/PAG_Retta';
@@ -25,8 +26,7 @@ export class RettaannoEditComponent implements OnChanges {
 //#endregion
 
 //#region ----- ViewChild Input Output -------
-  @Input() alunnoID!                   : number;
-  @Input() annoID!                     : number;
+  @Input() iscrizione!                 : CLS_Iscrizione;
   @Input() quotaConcordataAnno!        : number;
   @Input() quotaDefaultAnno!           : number;
   @Input() totPagamentiAnno!           : number;
@@ -49,7 +49,7 @@ export class RettaannoEditComponent implements OnChanges {
 //#region ----- ViewChild Input Output ---------
 
    ngOnChanges() {
-    if (this.alunnoID && this.alunnoID + '' != "0" && this.quotaDefaultAnno > 0) 
+    if (this.iscrizione && this.quotaDefaultAnno > 0) 
       this.loadData();
     else {
       this.emptyForm = true;

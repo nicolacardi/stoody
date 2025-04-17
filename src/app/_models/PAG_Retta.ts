@@ -7,8 +7,8 @@ export interface PAG_Retta {
         id:                     number,
 
         iscrizioneID:           number,
-        annoID:                 number,
-        alunnoID:               number,
+        // annoID:                 number,
+        // alunnoID:               number,
         
         annoRetta:              number,
         meseRetta:              number,

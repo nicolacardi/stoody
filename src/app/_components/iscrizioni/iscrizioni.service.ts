@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Observable, catchError, of, throwError } from 'rxjs';
+import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 import { environment } from 'src/environments/environment';
 
@@ -76,6 +76,8 @@ export class IscrizioniService {
     //http://213.215.231.4/swappX/api/CLS_Iscrizioni/DeleteByAlunnoAndClasseSezioneAnno/49/16
 
   }
+
+
 
 
   // private handleError(error: HttpErrorResponse) {

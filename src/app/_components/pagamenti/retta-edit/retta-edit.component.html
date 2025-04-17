@@ -41,9 +41,9 @@
             <mat-card-content>
                 <div class="center mt10 ml30 _no-padding-bottom" *ngIf="obsRette$ | async" >
                     <mat-form-field appearance="outline">
-                        <mat-label>a.s.. </mat-label>
-                        <mat-select formControlName="selectAnnoScolastico">
-                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                        <mat-label>a.s.</mat-label>
+                        <mat-select formControlName="selectAnnoScolastico" [compareWith]="compareAnni">
+                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element">
                             {{element.annoscolastico}}
                             </mat-option>
                         </mat-select>
@@ -51,25 +51,7 @@
 
                     <mat-form-field appearance="outline">
                         <mat-label>Alunno</mat-label>
-                        <input type="text"
-                                placeholder="<digita e seleziona>"
-                                matInput
-                                formControlName="nomeCognomeAlunno"
-                                [matAutocomplete]="autoAlunno" #nomeCognomeAlunno 
-                                (keydown.enter) = "enterAlunnoInput()"
-                                
-                                >
-                                <!-- [displayWith]="displayFn" DisplayWith impedisce che si possa scrivere qualcosa nella input in maniera programmatica-->
-                        <mat-autocomplete #autoAlunno="matAutocomplete" (optionSelected)="selected($event)" >
-                            <!-- ATTENZIONE QUESTA DOVREBBE ESSERE UNA LISTA ISCRIZIONI DELL'ANNO E NON DI ALUNNI!!! -->
-                            <!-- <mat-spinner *ngIf="nomeAlunnoIsLoading" class="is-loading" diameter="40"></mat-spinner> -->
-                            <mat-option *ngFor="let element of (filteredAlunni$ | async)"  [value]="element.persona.nome + ' ' + element.persona.cognome" [id]="element.id.toString()" #option>
-                                <small>{{element.persona.nome}} {{element.persona.cognome}}</small>
-                            </mat-option>
-                        </mat-autocomplete>
-                        <!-- <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="resetInputAlunno('nomeCognomeAlunno')">
-                            <mat-icon>close</mat-icon>
-                        </button> -->
+                        <input matInput formControlName="nomeCognomeAlunno" readonly>
                     </mat-form-field>
                 </div>  
                 <mat-grid-list [cols]="15" rowHeight="140px">
@@ -88,8 +70,7 @@
                                 <mat-label>Anno</mat-label>
                             </div>
                             <app-rettaanno-edit
-                                [annoID]="data.annoID"
-                                [alunnoID]="data.alunnoID" 
+                                [iscrizione]="data.iscrizione!"
                                 [quotaDefaultAnno] ="quotaDefaultAnno"
                                 [quotaConcordataAnno] ="quotaConcordataAnno"
                                 [totPagamentiAnno] = "totPagamentiAnno">
@@ -106,8 +87,7 @@
                                 <!--[toHighlight] = "idToHighlight"  -->
                             <app-rettamese-edit
                                 [rettaMese]="retteMese[mese]"
-                                [annoID]="data.annoID"
-                                [alunnoID]="data.alunnoID"
+                                [iscrizione]="data.iscrizione!"
                                 (mesePagamentoClicked)="mesePagamentoClicked($event)" 
                             ></app-rettamese-edit>
 
@@ -120,8 +100,7 @@
                         <mat-label class="frameLabel"> Nuovo Pagamento </mat-label>
                         <div class="mt20">
                             <app-rettapagamento-edit
-                                [alunnoID]="data.alunnoID"
-                                [annoID]="data.annoID"
+                                [iscrizione]="data.iscrizione!"
                                 (nuovoPagamento) = "nuovoPagamentoArrivato($event)">
                             </app-rettapagamento-edit>
                         </div>
@@ -129,8 +108,7 @@
                         <div class="_pagamenti-container _cell-bordered mt10">
                             <app-pagamenti-list 
                                 [dove]="'retta-edit'" 
-                                [alunnoID]="data.alunnoID"
-                                [annoID]="data.annoID"
+                                [iscrizione]="data.iscrizione!"
                                 (pagamentoEliminato) = "pagamentoEliminatoArrivato()">
                                                 <!-- (hoverPagamento) = "hoverPagamentoArrivato($event)" -->
                             </app-pagamenti-list>
@@ -138,12 +116,11 @@
 
                     </mat-tab>
 
-                    <mat-tab label="Utilities Rette" *ngIf="data.alunnoID">
+                    <mat-tab label="Utilities Rette" *ngIf="data.iscrizione.id">
                         <mat-label class="frameLabel"> Utilities per la definizione rapida delle rette </mat-label>
                         <div class="_utilities-container _cell-bordered mt10">
                             <app-retta-calcolo-alunno 
-                                [annoID]="data.annoID"
-                                [alunnoID]="data.alunnoID"
+                                [iscrizione]="data.iscrizione!"
                                 (ricalcoloRette) = "ricalcoloRetteArrivato()"   >
                             </app-retta-calcolo-alunno>
                         </div>

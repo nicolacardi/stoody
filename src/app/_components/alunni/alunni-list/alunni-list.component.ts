@@ -390,14 +390,7 @@ export class AlunniListComponent implements OnInit {
 //#region ----- Add Edit Drop ------------------
 
   addRecord(){
-    const dialogConfig : MatDialogConfig = {
-      panelClass: 'add-DetailDialog',
-      width: '900px',
-      height: '750px',
-      data: 0
-    };
-    const dialogRef = this._dialog.open(AlunnoEditComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(() => this.loadData());
+   this.openDetail(0);
   }
 
   openDetail(id:any){

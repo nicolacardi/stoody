@@ -5,11 +5,11 @@ export interface CLS_ClasseSezioneAnno {
         id:                                     number;
         sezione:                                string;
         annoID:                                 number;
-        classeSezione:                          CLS_ClasseSezione;    //TODO Maiuscolo
+        classeSezione:                          CLS_ClasseSezione;
         
         classeSezioneAnnoSuccID:                number;
         ClasseSezioneAnnoSucc:                  CLS_ClasseSezioneAnno;
-        anno:                                   ASC_AnnoScolastico;   //TODO Maiuscolo
+        anno:                                   ASC_AnnoScolastico;
         numAlunni:                              number;
 }
 

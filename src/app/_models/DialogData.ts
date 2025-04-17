@@ -1,127 +1,132 @@
+import { CLS_Iscrizione } from "./CLS_Iscrizione";
 import { DOC_NotaIscrizione }                   from "./DOC_NotaIscrizione";
 import { DOC_Verbale }                          from "./DOC_Verbale";
 import { TST_VotoInterr }                       from "./TST_VotiInterr";
 
 //I dialog Data si usano ogni volta che da un form ad una Dialog non bisogna passare una sola info ma un serie di informazioni
 export interface DialogData {
-        titolo:                                 string;
-        sottoTitolo:                            string;
-        annoID:                                 number;
-        classeSezioneAnnoID:                    number;
-        alunnoID:                               number;
+        titolo                   : string;
+        sottoTitolo              : string;
+        annoID                   : number;
+        classeSezioneAnnoID      : number;
+        alunnoID                 : number;
       }
       
 export interface DialogDataLezione {
-        lezioneID:                              number;
-        start:                                  string;
-        end:                                    string;
-        dtCalendario:                           string;
-        h_Ini:                                  string;
-        h_End:                                  string;
-        classeSezioneAnnoID:                    number;
-        dove:                                   string;
-        docenteID:                              number;
+        lezioneID                : number;
+        start                    : string;
+        end                      : string;
+        dtCalendario             : string;
+        h_Ini                    : string;
+        h_End                    : string;
+        classeSezioneAnnoID      : number;
+        dove                     : string;
+        docenteID                : number;
       }
 
 export interface DialogDataEvento {
-        eventoID:                              number;
-        start:                                  string;
-        end:                                    string;
-        dtCalendario:                           string;
-        h_Ini:                                  string;
-        h_End:                                  string;
+        eventoID                 : number;
+        start                    : string;
+        end                      : string;
+        dtCalendario             : string;
+        h_Ini                    : string;
+        h_End                    : string;
 
       }
 
 export interface DialogDataLezioniUtils {
-        start:                                  Date;
-        classeSezioneAnnoID:                    number;
+        start                    : Date;
+        classeSezioneAnnoID      : number;
       }
 
 export interface DialogDataDownloadRegistroClasse {
-      start:                                    Date;
-      classeSezioneAnnoID:                      number;
-      annoID:                                   number;
+      start                      : Date;
+      classeSezioneAnnoID        : number;
+      annoID                     : number;
       }
 
 export interface DialogDataDownloadRegistroDocente {
-      start:                                    Date;
-      docenteID:                                number;
-      annoID:                                   number;
+      start                      : Date;
+      docenteID                  : number;
+      annoID                     : number;
       }
 
       
 
 
 export interface DialogDataVotiObiettivi {
-        iscrizioneID:                           number
-        pagellaID:                              number;
-        pagellaVotoID:                          number;
-        periodo:                                number;
+        iscrizioneID             : number
+        pagellaID                : number;
+        pagellaVotoID            : number;
+        periodo                  : number;
         //dtDocumento?:                              string;
-        classeSezioneAnnoID:                    number;
-        materiaID:                              number;
-        chiusa:                                 boolean;
+        classeSezioneAnnoID      : number;
+        materiaID                : number;
+        chiusa                   : boolean;
       }
 
 export interface DialogDataColoreMateria {
-        ascRGB:                                 string;
+        ascRGB                   : string;
       }
 
 export interface DialogDataNota {
-        notaID:                                 number;
-        iscrizioni:                             DOC_NotaIscrizione[];
-        classeSezioneAnnoID:                    number;
-        personaID:                              number;
-        nome?:                                  string;
-        cognome?:                               string;
-        dtNota?:                                string;
+        notaID                   : number;
+        iscrizioni               : DOC_NotaIscrizione[];
+        classeSezioneAnnoID      : number;
+        personaID                : number;
+        nome?                    : string;
+        cognome?                 : string;
+        dtNota?                  : string;
       }
 
 export interface DialogDataVerbale {
-        verbale:                                DOC_Verbale;
-        annoID:                                 number;
+        verbale                  : DOC_Verbale;
+        annoID                   : number;
       }
 
 export interface DialogDataVotoInterr {
-        votoInterr:                             TST_VotoInterr;
-        classeSezioneAnnoID:                    number;
-        docenteID:                              number;
-        lezioneID:                              number;  //se undefined serve a capire che ci troviamo in orario-docenti!
+        votoInterr               : TST_VotoInterr;
+        classeSezioneAnnoID      : number;
+        docenteID                : number;
+        lezioneID                : number;  //se undefined serve a capire che ci troviamo in orario-docenti!
       }
 
 export interface DialogDataMateriaEdit {
-      materiaID:                                number;
-      maxSeq:                                   number;
+      materiaID                  : number;
+      maxSeq                     : number;
       }
 
 export interface DialogDataDomandaEdit {
-      domandaID:                               number;
-      maxSeq:                                   number;
+      domandaID                  : number;
+      maxSeq                     : number;
       }
 
 export interface DialogDataFileEdit {
-      risorsaID:                              number;
+      risorsaID                  : number;
       }
 
 export interface DialogDataParametroEdit {
-      parametroID:                              number;
-      maxSeq:                                   number;
+      parametroID                : number;
+      maxSeq                     : number;
       }
 
 export interface DialogDataAnnoEdit {
-      annoID:                                   number;
+      annoID                     : number;
       }
 
 export interface DialogDataTipoEventoEdit {
-      tipoEventoID:                           number;
-      maxSeq:                                   number;
+      tipoEventoID               : number;
+      maxSeq                     : number;
 
       }
 
 export interface DialogDataRisorsaClasseEdit {
-      risorsaCSAID:                             number;
-      classeSezioneAnnoID:                      number;
+      risorsaCSAID               : number;
+      classeSezioneAnnoID        : number;
+      }
+
+export interface DialogDataIscrizione {
+      iscrizione                 : CLS_Iscrizione;
       }
 
 

@@ -36,7 +36,7 @@ form! :                             UntypedFormGroup;
 
   public hasFratelloMaggiore  : boolean = false;
   public anno!:                        ASC_AnnoScolastico;
-  public iscrizione!:                  CLS_Iscrizione;
+
 
   public strDescrizione!:              string;
   public strDescrizioneClasse!:              string;
@@ -44,8 +44,8 @@ form! :                             UntypedFormGroup;
 //#endregion
 
 //#region ----- ViewChild Input Output -------
-  @Input() annoID!:         number;
-  @Input() alunnoID!:         number;
+
+  @Input() iscrizione!:         CLS_Iscrizione;
 
   @ViewChildren('QuoteListElement') QuoteList!: QueryList<any>;
   @Output('ricalcoloRette')
@@ -80,14 +80,14 @@ form! :                             UntypedFormGroup;
   ngOnInit(): void {
 
     //estraggo anno e iscrizione, utili per quando dovrò procedere con la put
-    this.svcAnni.get(this.annoID).subscribe (anno => this.anno = anno);  
+    this.svcAnni.get(this.iscrizione.classeSezioneAnno.annoID).subscribe (anno => this.anno = anno);  
     this.caricaQuotaConcordataDefault();
   }
 
   caricaQuotaConcordataDefault() {
-    this.svcIscrizioni.getByAlunnoAndAnno(this.annoID, this.alunnoID).pipe (
+    this.svcIscrizioni.getByAlunnoAndAnno(this.iscrizione.classeSezioneAnno.annoID, this.iscrizione.alunnoID).pipe (
       tap((iscrizione: CLS_Iscrizione) => this.iscrizione = iscrizione),
-      concatMap( (iscrizione: CLS_Iscrizione) => this.svcAlunni.hasFratelloMaggiore(this.annoID, this.alunnoID).pipe(
+      concatMap( (iscrizione: CLS_Iscrizione) => this.svcAlunni.hasFratelloMaggiore(this.iscrizione.classeSezioneAnno.annoID, this.iscrizione.alunnoID).pipe(
         tap ( val =>  {
           this.strDescrizioneClasse= "Di seguito la quota annuale prevista per la classe "+ iscrizione.classeSezioneAnno.classeSezione.classe!.descrizione2;
           if (val && this.QuoteRidotteFratelli) {
@@ -141,7 +141,7 @@ form! :                             UntypedFormGroup;
     }
     this.svcIscrizioni.updateStato(formData).subscribe();
 
-    this.svcRette.listByAlunnoAnno(this.alunnoID, this.annoID ).subscribe (
+    this.svcRette.listByAlunnoAnno(this.iscrizione.alunnoID, this.iscrizione.classeSezioneAnno.annoID ).subscribe (
       async (retteAnnoAlunno) => {
     
       //se array vuoto, INSERT
@@ -175,8 +175,6 @@ form! :                             UntypedFormGroup;
           let rettaMese: PAG_Retta = {
             id : 0,
             iscrizioneID:           this.iscrizione.id,
-            annoID:                 this.annoID,
-            alunnoID:               this.alunnoID,
             annoRetta:              annoRetta,
             meseRetta:              mese,
             quotaDefault:           importoMese,

@@ -217,8 +217,7 @@ export class RettaCalcoloComponent implements OnInit {
                         let rettaMese: PAG_Retta = {
                           id : 0,
                           iscrizioneID:           iscrizione.id,
-                          annoID:                 annoID,
-                          alunnoID:               iscrizione.alunnoID,
+
                           annoRetta:              annoRetta,
                           meseRetta:              mese,
                           quotaDefault:           importoMese,

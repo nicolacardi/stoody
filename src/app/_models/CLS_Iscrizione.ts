@@ -14,16 +14,17 @@ export interface CLS_Iscrizione {
         dtIni:                                  string;
         dtEnd:                                  string;
 
-        note:                                   string;
-        dtIns:                                  string;
-        dtUpd:                                  string;
-        userIns:                                number;
-        userUpd:                                number;
+        note?:                                   string;
+        dtIns?:                                  string;
+        dtUpd?:                                  string;
+        userIns?:                                number;
+        userUpd?:                                number;
         
         stato:                                  CLS_IscrizioneStato;               
         alunno:                                 ALU_Alunno;
         classeSezioneAnno:                      CLS_ClasseSezioneAnno;
 
+        
         pagella1:                               DOC_Pagella;
         pagella2:                               DOC_Pagella;
         certCompetenze:                         DOC_CertCompetenze;
