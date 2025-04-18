@@ -1,28 +1,28 @@
 //#region ----- IMPORTS ------------------------
 
-import { Component, Inject, OnInit }            from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { EMPTY, Observable, Subscription, iif, of }             from 'rxjs';
-import { concatMap, map, tap }                       from 'rxjs/operators';
+import { Component, Inject, OnInit }                              from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators }       from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }               from '@angular/material/dialog';
+import { MatSnackBar }                                            from '@angular/material/snack-bar';
+import { SnackbarComponent }                                      from '../../utilities/snackbar/snackbar.component';
+import { EMPTY, Observable, Subscription, of }                    from 'rxjs';
+import { concatMap, map, tap }                                    from 'rxjs/operators';
 
 //components
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { DialogYesNoComponent }                                   from '../../utilities/dialog-yes-no/dialog-yes-no.component';
 
 //services
-import { ClassiSezioniAnniService }             from '../classi-sezioni-anni.service';
-import { ClassiSezioniService }                 from '../classi-sezioni.service';
-import { ClassiService }                        from '../classi.service';
-import { AnniScolasticiService }                from 'src/app/_components/anni-scolastici/anni-scolastici.service';
-import { LoadingService }                       from '../../utilities/loading/loading.service';
+import { ClassiSezioniAnniService }                               from '../classi-sezioni-anni.service';
+import { ClassiSezioniService }                                   from '../classi-sezioni.service';
+import { ClassiService }                                          from '../classi.service';
+import { AnniScolasticiService }                                  from 'src/app/_components/anni-scolastici/anni-scolastici.service';
+import { LoadingService }                                         from '../../utilities/loading/loading.service';
 
 //models
-import { CLS_ClasseSezioneAnno, CLS_ClasseSezioneAnnoGroup } from 'src/app/_models/CLS_ClasseSezioneAnno';
-import { ASC_AnnoScolastico }                   from 'src/app/_models/ASC_AnnoScolastico';
-import { CLS_Classe }                           from 'src/app/_models/CLS_Classe';
-import { CLS_ClasseSezione }                    from 'src/app/_models/CLS_ClasseSezione';
+import { CLS_ClasseSezioneAnno}                                   from 'src/app/_models/CLS_ClasseSezioneAnno';
+import { ASC_AnnoScolastico }                                     from 'src/app/_models/ASC_AnnoScolastico';
+import { CLS_Classe }                                             from 'src/app/_models/CLS_Classe';
+import { CLS_ClasseSezione }                                      from 'src/app/_models/CLS_ClasseSezione';
 
 //#endregion
 @Component({
@@ -49,16 +49,18 @@ export class ClasseSezioneAnnoEditComponent implements OnInit {
 //#endregion
 
 //#region ----- Constructor -------------------
-  constructor(@Inject(MAT_DIALOG_DATA) public classeSezioneAnnoID: number,
-              public _dialogRef:                          MatDialogRef<ClasseSezioneAnnoEditComponent>,
-              private fb:                                 UntypedFormBuilder,
-              private svcClasseSezioneAnno:               ClassiSezioniAnniService,
-              private svcClasseSezione:                   ClassiSezioniService,
-              private svcClassi:                          ClassiService,
-              private svcAnni:                            AnniScolasticiService,
-              public _dialog:                             MatDialog,
-              private _snackBar:                          MatSnackBar,
-              private _loadingService :                   LoadingService ) { 
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public classeSezioneAnnoID        : number,
+    public _dialogRef                                          : MatDialogRef<ClasseSezioneAnnoEditComponent>,
+    private fb                                                 : UntypedFormBuilder,
+    private svcClasseSezioneAnno                               : ClassiSezioniAnniService,
+    private svcClasseSezione                                   : ClassiSezioniService,
+    private svcClassi                                          : ClassiService,
+    private svcAnni                                            : AnniScolasticiService,
+    public _dialog                                             : MatDialog,
+    private _snackBar                                          : MatSnackBar,
+    private _loadingService                                    : LoadingService
+  ) { 
     
     _dialogRef.disableClose = true;
 

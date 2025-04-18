@@ -39,6 +39,7 @@ export class PagamentiFilterComponent implements OnInit {
   importoMenoDiFilter = new                     UntypedFormControl('');
   dataDal = new                                 UntypedFormControl('');
   dataAl = new                                  UntypedFormControl('');
+
 //#endregion
   
 //#region ----- ViewChild Input Output -------  
@@ -86,6 +87,8 @@ export class PagamentiFilterComponent implements OnInit {
     // this.pagamentiListComponent.updateEmailAddresses();
     this.formClean = this.isFormClean();
   }
+
+
 
   isFormClean(): boolean {
     return (

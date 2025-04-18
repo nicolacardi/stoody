@@ -19,7 +19,7 @@ export class PagamentiService {
     //http://213.215.231.4/swappX/api/PAG_Pagamenti
   }
 
-  get(pagamentoID: any): Observable<PAG_Pagamento>{
+  get(pagamentoID: number): Observable<PAG_Pagamento>{
     return this.http.get<PAG_Pagamento>(environment.apiBaseUrl+'PAG_Pagamenti/'+pagamentoID);
     //http://213.215.231.4/swappX/api/PAG_Pagamenti/5
   }

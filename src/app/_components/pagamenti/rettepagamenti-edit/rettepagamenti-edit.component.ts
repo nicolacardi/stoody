@@ -26,12 +26,12 @@ import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 
 //#endregion
 @Component({
-  selector: 'app-rettapagamento-edit',
-  templateUrl: './rettapagamento-edit.component.html',
+  selector: 'app-rettepagamenti-edit',
+  templateUrl: './rettepagamenti-edit.component.html',
   styleUrls: ['../pagamenti.css'],
   standalone: false
 })
-export class RettapagamentoEditComponent implements OnInit {
+export class RettePagamentiEditComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
   formRetta! :                UntypedFormGroup;
@@ -71,6 +71,9 @@ export class RettapagamentoEditComponent implements OnInit {
       meseRetta:                  ['', Validators.required],
       rettaID:                    ['']
     });
+
+    this.causaliPagamento$ = this.svcCausaliPagamento.list();
+    this.tipiPagamento$ = this.svcTipiPagamento.list();
   }
 //#endregion
 
@@ -81,8 +84,7 @@ export class RettapagamentoEditComponent implements OnInit {
   }
 
   loadData(){
-    this.causaliPagamento$ = this.svcCausaliPagamento.list();
-    this.tipiPagamento$ = this.svcTipiPagamento.list();
+
   }
 //#endregion
 

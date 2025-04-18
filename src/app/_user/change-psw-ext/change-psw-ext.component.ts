@@ -46,13 +46,15 @@ export class ChangePswExtComponent {
 
 //#region ----- Constructor --------------------
 
-  constructor( private fb:                      UntypedFormBuilder, 
-               private svcUser:                 UserService,
-               private _snackBar:               MatSnackBar,
-               private renderer:                Renderer2,
-               private route:                   ActivatedRoute,
-               private router:                  Router,
-               public _dialog:                  MatDialog    ) { 
+  constructor( 
+    private fb             : UntypedFormBuilder,
+    private svcUser        : UserService,
+    private _snackBar      : MatSnackBar,
+    private renderer       : Renderer2,
+    private route          : ActivatedRoute,
+    private router         : Router,
+    public _dialog         : MatDialog
+  ) { 
 
     this.route.queryParams.subscribe(params => {
       this.routedUsername = params['username'];

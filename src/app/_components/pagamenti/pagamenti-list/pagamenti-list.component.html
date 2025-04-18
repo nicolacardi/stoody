@@ -31,7 +31,7 @@
     <ng-container matColumnDef="actionsColumn">
         <th mat-header-cell *matHeaderCellDef cdkDrag></th>
         <td mat-cell *matCellDef="let element;  let j = index;"> 
-            <img (click)="editRecord(element.alunno.id)" class="iconaMenu pointer" src="./assets/money_edit.svg">
+            <img (click)="openDetail(element.id)" class="iconaMenu pointer" src="./assets/money_edit.svg">
         </td>
     </ng-container>
 

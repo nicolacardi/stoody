@@ -7,7 +7,7 @@
     <mat-icon>add</mat-icon>
 </button>
 
-<button mat-mini-fab aria-label="Filtri Avanzati" matTooltip="Filtri Avanzati" class="_btn-add _btn-pos-right-2 _btn-pos-top-1" [ngClass]="{'_btn-add-red': !apppagamentifilter.formClean}" (click)="filterSidenav.toggle();" >
+<button mat-mini-fab aria-label="Filtri Avanzati" matTooltip="Filtri Avanzati" class="_btn-add _btn-pos-right-2 _btn-pos-top-1" [ngClass]="{'_btn-add-red': isFormDirty}" (click)="filterSidenav.toggle();" >
     <mat-icon>filter_alt</mat-icon>
 </button>
 

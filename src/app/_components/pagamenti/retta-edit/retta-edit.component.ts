@@ -4,15 +4,14 @@ import { Component, Inject, OnInit, ViewChild }                   from '@angular
 import { UntypedFormBuilder, UntypedFormGroup, Validators }       from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA }               from '@angular/material/dialog';
 import { MatSnackBar }                                            from '@angular/material/snack-bar';
-import { lastValueFrom, Observable, of }                          from 'rxjs';
-import { switchMap, tap }                                         from 'rxjs/operators';
+import { Observable }                                             from 'rxjs';
+import { Router }                                                 from '@angular/router';
 
 //components
 import { SnackbarComponent }                                      from '../../utilities/snackbar/snackbar.component';
-import { PagamentiListComponent }                                 from '../pagamenti-list/pagamenti-list.component';
-import { RettapagamentoEditComponent }                            from '../rettapagamento-edit/rettapagamento-edit.component';
 import { RettaCalcoloAlunnoComponent }                            from '../retta-calcolo-alunno/retta-calcolo-alunno.component';
 import { RettaannoEditComponent }                                 from '../rettaanno-edit/rettaanno-edit.component';
+import { DialogOkComponent }                                      from '../../utilities/dialog-ok/dialog-ok.component';
 
 //services
 import { RetteService }                                           from '../rette.service';
@@ -25,8 +24,9 @@ import { IscrizioniService }                                      from '../../is
 import { ALU_Alunno }                                             from 'src/app/_models/ALU_Alunno';
 import { ASC_AnnoScolastico }                                     from 'src/app/_models/ASC_AnnoScolastico';
 import { PAG_Retta }                                              from 'src/app/_models/PAG_Retta';
-import { DialogOkComponent } from '../../utilities/dialog-ok/dialog-ok.component';
-import { DialogDataIscrizione } from 'src/app/_models/DialogData';
+import { DialogDataIscrizione }                                   from 'src/app/_models/DialogData';
+import { CLS_Iscrizione }                                         from 'src/app/_models/CLS_Iscrizione';
+
 
 
 
@@ -72,10 +72,7 @@ export class RettaEditComponent implements OnInit {
 //#endregion
 
 //#region ----- ViewChild Input Output ---------
-  //@ViewChildren(RettameseEditComponent) ChildrenRettaMese!:QueryList<RettameseEditComponent>;
   @ViewChild(RettaannoEditComponent) ChildRettaAnno!                    : RettaannoEditComponent;
-  // @ViewChild(PagamentiListComponent) ChildPagamenti!                    : PagamentiListComponent;
-  // @ViewChild(RettapagamentoEditComponent) ChildRettapagamentoEdit!      : RettapagamentoEditComponent;
   @ViewChild(RettaCalcoloAlunnoComponent) ChildRettaCalcoloAlunno!      : RettaCalcoloAlunnoComponent;
 //#endregion
 
@@ -91,7 +88,9 @@ export class RettaEditComponent implements OnInit {
     private svcAnni                             : AnniScolasticiService,
     public _dialog                              : MatDialog,
     private _snackBar                           : MatSnackBar,
-    private _loadingService                     : LoadingService
+    private _loadingService                     : LoadingService,
+    private router                              : Router,
+    
   ) 
   { 
     _dialogRef.disableClose = true;
@@ -119,6 +118,7 @@ export class RettaEditComponent implements OnInit {
             console.log ("retta-edit - constructor - iscrizione", iscrizione);
             if (iscrizione) {
               this.data.iscrizione=iscrizione;
+              console.log ("ho cambiato this.data, ci ho scritto", this.data);
               this.loadData();
               this.ultimoAnnoValido = val;
             } else {
@@ -146,12 +146,12 @@ export class RettaEditComponent implements OnInit {
 
   ngOnInit() {
     this.obsAnni$ = this.svcAnni.list();
-    console.log ("retta.edit - ngOnInit", this.data);
+    // console.log ("retta.edit - ngOnInit", this.data);
     this.formRetta.controls['selectAnnoScolastico'].setValue(this.data.iscrizione!.classeSezioneAnno.anno);
   }
 
   loadData() {
-    console.log ("***************LOADDATA")
+    // console.log ("***************retta-edit - LOADDATA")
     this.formRetta.controls['nomeCognomeAlunno'].setValue(
       this.data.iscrizione.alunno.persona.nome + " " + this.data.iscrizione.alunno.persona.cognome
     );
@@ -213,7 +213,7 @@ export class RettaEditComponent implements OnInit {
           //   const mese = i;
           //   console.log ("retteMese", mese, this.retteMese[mese])
           // }
-          console.log (this.quotaConcordataAnno);
+          
         }
       },
       error: (err) => {
@@ -227,20 +227,31 @@ export class RettaEditComponent implements OnInit {
   }
 
   onPanelOpened() {
-    this.updateDialogSize();
+    this.updateDialogSize('500px');
   }
 
   // Quando il pannello viene chiuso
   onPanelClosed() {
-    this.updateDialogSize();
+    this.updateDialogSize('324px');
   }
 
-  updateDialogSize() {
+  updateDialogSize(height: string) {
     setTimeout(() => {
-      this._dialogRef.updateSize('850px', 'auto'); // Ridimensiona il dialog in base al contenuto
+      this._dialogRef.updateSize('850px', height); // Ridimensiona il dialog in base al contenuto
     }, 100); // Aggiungi un piccolo ritardo per assicurarti che il layout sia stato applicato
   }
 
+  pagamentiAlunnoAnno(iscrizione: CLS_Iscrizione) {
+    this._dialogRef.close();
+    console.log("apro pagamenti page con questi parametri", iscrizione.alunno.persona.nome, iscrizione.alunno.persona.cognome, iscrizione.classeSezioneAnno.annoID);
+    this.router.navigate(['/pagamenti'], {
+      queryParams: {
+        nomeRouted: iscrizione.alunno.persona.nome,
+        cognomeRouted: iscrizione.alunno.persona.cognome,
+        annoIDRouted: iscrizione.classeSezioneAnno.annoID
+      }
+    });
+  }
 
 //#endregion
 

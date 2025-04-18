@@ -86,9 +86,6 @@ export class AnnoscolasticoEditComponent implements OnInit {
   }
 
   loadData(){
-
-
-
     this.obsAnni$ = this.svcAnni.list();
 
     if (this.data.annoID && this.data.annoID + '' != "0") {

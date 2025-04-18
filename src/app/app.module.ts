@@ -93,7 +93,7 @@ import { RettePageComponent }                      from './_components/pagamenti
 import { RetteListComponent }                      from './_components/pagamenti/rette-list/rette-list.component';
 import { RettaEditComponent }                      from './_components/pagamenti/retta-edit/retta-edit.component';
 import { RettameseEditComponent }                  from './_components/pagamenti/rettamese-edit/rettamese-edit.component';
-import { RettapagamentoEditComponent }             from './_components/pagamenti/rettapagamento-edit/rettapagamento-edit.component';
+import { RettePagamentiEditComponent }             from './_components/pagamenti/rettepagamenti-edit/rettepagamenti-edit.component';
 import { RettaCalcoloAlunnoComponent }             from './_components/pagamenti/retta-calcolo-alunno/retta-calcolo-alunno.component';
 import { RettaCalcoloComponent }                   from './_components/pagamenti/retta-calcolo/retta-calcolo.component';
 import { RettaannoEditComponent }                  from './_components/pagamenti/rettaanno-edit/rettaanno-edit.component';
@@ -266,6 +266,7 @@ import { NonDocenteFormComponent }                 from './_components/nondocent
 //Dirigenti
 import { DirigenteFormComponent }                  from './_components/dirigenti/dirigente-form/dirigente-form.component';
 import { MateriaEditComponent } from './_components/materie/materia-edit/materia-edit.component';
+import { PagamentoEditComponent } from './_components/pagamenti/pagamento-edit/pagamento-edit.component';
 
 
 // FullCalendarModule.registerPlugins([ // register FullCalendar plugins
@@ -372,10 +373,11 @@ import { MateriaEditComponent } from './_components/materie/materia-edit/materia
     RetteListComponent,
     RettaEditComponent,
     RettameseEditComponent,
-    RettapagamentoEditComponent,
+    RettePagamentiEditComponent,
     RettaCalcoloComponent,
     RettaCalcoloAlunnoComponent,
     RettaannoEditComponent,
+    PagamentoEditComponent,
 
     ToolbarComponent,
     SceltaColonneComponent,

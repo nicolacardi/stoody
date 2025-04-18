@@ -1,35 +1,35 @@
 //#region ----- IMPORTS ------------------------
 
-import { CdkDragDrop, moveItemInArray }         from '@angular/cdk/drag-drop';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogConfig }           from '@angular/material/dialog';
-import { MatTableDataSource }                   from '@angular/material/table';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { Observable }                           from 'rxjs';
-import { MatPaginator }                         from '@angular/material/paginator';
-import { MatSort }                              from '@angular/material/sort';
-import { MatSnackBar }                          from '@angular/material/snack-bar';
+import { CdkDragDrop, moveItemInArray }                                                from '@angular/cdk/drag-drop';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }       from '@angular/core';
+import { MatDialog, MatDialogConfig }                                                  from '@angular/material/dialog';
+import { MatTableDataSource }                                                          from '@angular/material/table';
+import { UntypedFormBuilder, UntypedFormGroup }                                        from '@angular/forms';
+import { Observable }                                                                  from 'rxjs';
+import { MatPaginator }                                                                from '@angular/material/paginator';
+import { MatSort }                                                                     from '@angular/material/sort';
+import { MatSnackBar }                                                                 from '@angular/material/snack-bar';
 
 //components
-import { DialogYesNoComponent }                 from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-import { RettaEditComponent }                   from '../retta-edit/retta-edit.component';
-import { PagamentiFilterComponent }             from '../pagamenti-filter/pagamenti-filter.component';
-import { SnackbarComponent }                    from '../../utilities/snackbar/snackbar.component';
-import { Utility }                              from '../../utilities/utility.component';
+import { DialogYesNoComponent }                                                        from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { RettaEditComponent }                                                          from '../retta-edit/retta-edit.component';
+import { PagamentiFilterComponent }                                                    from '../pagamenti-filter/pagamenti-filter.component';
+import { SnackbarComponent }                                                           from '../../utilities/snackbar/snackbar.component';
+import { Utility }                                                                     from '../../utilities/utility.component';
 
 //services
-import { LoadingService }                       from '../../utilities/loading/loading.service';
-import { AnniScolasticiService }                from 'src/app/_components/anni-scolastici/anni-scolastici.service';
-import { PagamentiService }                     from '../pagamenti.service';
-import { TableColsService }                     from '../../utilities/toolbar/tablecols.service';
-import { TableColsVisibleService }              from '../../utilities/toolbar/tablecolsvisible.service';
+import { LoadingService }                                                              from '../../utilities/loading/loading.service';
+import { AnniScolasticiService }                                                       from 'src/app/_components/anni-scolastici/anni-scolastici.service';
+import { PagamentiService }                                                            from '../pagamenti.service';
+import { TableColsService }                                                            from '../../utilities/toolbar/tablecols.service';
+import { TableColsVisibleService }                                                     from '../../utilities/toolbar/tablecolsvisible.service';
 
 //models
-import { ASC_AnnoScolastico }                   from 'src/app/_models/ASC_AnnoScolastico';
-import { PAG_Pagamento }                        from 'src/app/_models/PAG_Pagamento';
-import { _UT_Parametro }                        from 'src/app/_models/_UT_Parametro';
-import { User }                                 from 'src/app/_user/Users';
-import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
+import { ASC_AnnoScolastico }                                                          from 'src/app/_models/ASC_AnnoScolastico';
+import { PAG_Pagamento }                                                               from 'src/app/_models/PAG_Pagamento';
+import { _UT_Parametro }                                                               from 'src/app/_models/_UT_Parametro';
+import { User }                                                                        from 'src/app/_user/Users';
+import { PagamentoEditComponent } from '../pagamento-edit/pagamento-edit.component';
 
 //#endregion
 @Component({
@@ -41,17 +41,17 @@ import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 export class PagamentiListComponent implements OnInit {
 
 //#region ----- Variabili ----------------------
-  currUser!:                                    User;
-  matDataSource = new MatTableDataSource<PAG_Pagamento>();
-  pagamentoEmitter = new EventEmitter<number>();
+  currUser!             : User;
+  matDataSource         = new MatTableDataSource<PAG_Pagamento>();
+  pagamentoEmitter      = new EventEmitter<number>();
 
-  obsAnni$!:                Observable<ASC_AnnoScolastico[]>;    //Serve per la combo anno scolastico
-  form:                     UntypedFormGroup;            //form fatto della sola combo anno scolastico
+  obsAnni$!             : Observable<ASC_AnnoScolastico[]>;
+  form                  : UntypedFormGroup;
 
-  show: boolean = true;
+  show                  : boolean = true;
  
-  tableName = "PagamentiList";
-  displayedColumns: string[] =  [];
+  tableName             = "PagamentiList";
+  displayedColumns      : string[] =  [];
   displayedColumnsList: string[] = [
     "actionsColumn", 
     "dtPagamento", 
@@ -69,17 +69,17 @@ export class PagamentiListComponent implements OnInit {
     //"genitoreID",
     "note"];
 
-  displayedColumnsListRettaEdit: string[] = [
-    "dtPagamento", 
-    "importo", 
-    "tipoPagamento.descrizione",
-    "causale.descrizione",
-    "retta.meseRetta",
-    "delete" ];
+  // displayedColumnsListRettaEdit: string[] = [
+  //   "dtPagamento", 
+  //   "importo", 
+  //   "tipoPagamento.descrizione",
+  //   "causale.descrizione",
+  //   "retta.meseRetta",
+  //   "delete" ];
 
 
-  rptTitle = 'Lista pagamenti';
-  rptFileName = 'ListaPagamenti';
+  rptTitle              = 'Lista pagamenti';
+  rptFileName           = 'ListaPagamenti';
 
   rptFieldsToKeep  = [
     "dtPagamento", 
@@ -104,25 +104,25 @@ export class PagamentiListComponent implements OnInit {
     "note"];
 
 
-  menuTopLeftPosition =  {x: '0', y: '0'} 
-  matMenuTrigger: any;
+  menuTopLeftPosition   = {x: '0', y: '0'}
+  matMenuTrigger        : any;
 
-  filterValue = '';       //Filtro semplice
+  filterValue           = '';       //Filtro semplice
 
   filterValues = {
-    tipoPagamento: '',
-    causale: '',
-    importoPiuDi: '',
-    importo: '',
-    importoMenoDi: '',
-    nome: '',
-    cognome: '',
-    dataDal: '',
-    dataAl: '',
-    filtrosx: ''
+    tipoPagamento       : '',
+    causale             : '',
+    importoPiuDi        : '',
+    importo             : '',
+    importoMenoDi       : '',
+    nome                : '',
+    cognome             : '',
+    dataDal             : '',
+    dataAl              : '',
+    filtrosx            : ''
   };
 
-  public months=[0,1,2,3,4,5,6,7,8,9,10,11,12].map(x=>new Date(2000,x-1,2).toLocaleString('it-IT', {month: 'short'}).toUpperCase());
+  public months         = [0,1,2,3,4,5,6,7,8,9,10,11,12].map(x=>new Date(2000,x-1,2).toLocaleString('it-IT', {month: 'short'}).toUpperCase());
 
 //#endregion
 
@@ -130,14 +130,8 @@ export class PagamentiListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!        : MatPaginator;
   @ViewChild(MatSort) sort!                  : MatSort;
   @ViewChild("filterInput") filterInput!:                     ElementRef;
-
-  @Input() dove!                             : string;
-  @Input() iscrizione!                       : CLS_Iscrizione;
-
   @Input() pagamentiFilterComponent!         : PagamentiFilterComponent;
 
-  @Output('pagamentoEliminato')
-  pagamentoEliminatoEmitter                  = new EventEmitter<string>();
   //@Output('hoverPagamento');
 
 //#endregion
@@ -145,14 +139,14 @@ export class PagamentiListComponent implements OnInit {
 //#region ----- Constructor --------------------
 
   constructor(
-    private fb:                                 UntypedFormBuilder, 
-    private svcPagamenti:                       PagamentiService,
-    private svcAnni:                            AnniScolasticiService,
-    public _dialog:                             MatDialog, 
-    private _snackBar:                          MatSnackBar,
-    private _loadingService:                    LoadingService,
-    private svcTableCols:                       TableColsService,
-    private svcTableColsVisible:                TableColsVisibleService
+    private fb                         : UntypedFormBuilder,
+    private svcPagamenti               : PagamentiService,
+    private svcAnni                    : AnniScolasticiService,
+    public _dialog                     : MatDialog,
+    private _snackBar                  : MatSnackBar,
+    private _loadingService            : LoadingService,
+    private svcTableCols               : TableColsService,
+    private svcTableColsVisible        : TableColsVisibleService
   ) {
    
     let obj = localStorage.getItem('AnnoCorrente');
@@ -171,20 +165,12 @@ export class PagamentiListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
-    if (this.dove == 'retta-edit') {
-      this.show = false;
-      this.displayedColumns =  this.displayedColumnsListRettaEdit;
-    } else {
-      this.show = true;
-      // this.displayedColumns =  this.displayedColumnsList;
-      this.loadLayout();
-    }
+    this.show = true;
+    this.loadLayout();
     this.loadData();
   }
 
   updateList() {
-    this.iscrizione.classeSezioneAnno.annoID = this.form.controls['selectAnnoScolastico'].value;
     this.loadData();
   }
 
@@ -202,14 +188,8 @@ export class PagamentiListComponent implements OnInit {
 
     this.obsAnni$= this.svcAnni.list();
     let obsPagamenti$: Observable<PAG_Pagamento[]>;
-
-    if (this.iscrizione.alunnoID == 0 ) return;
-    if (this.iscrizione.alunnoID) {
-      obsPagamenti$= this.svcPagamenti.listByAlunnoAnno(this.iscrizione.alunnoID, this.iscrizione.classeSezioneAnno.annoID);
-    } else {
-      if (!this.iscrizione.classeSezioneAnno.annoID) this.iscrizione.classeSezioneAnno.annoID = this.form.controls['selectAnnoScolastico'].value;
-      obsPagamenti$= this.svcPagamenti.listByAnno(this.iscrizione.classeSezioneAnno.annoID);
-    }
+    obsPagamenti$= this.svcPagamenti.listByAnno(this.form.controls['selectAnnoScolastico'].value);
+    
     const loadPagamenti$ =this._loadingService.showLoaderUntilCompleted(obsPagamenti$);
 
     loadPagamenti$.subscribe(
@@ -217,10 +197,11 @@ export class PagamentiListComponent implements OnInit {
         // console.log("pagamenti-list loadData - val ", val);
         this.matDataSource.data = val;
         this.matDataSource.paginator = this.paginator;
-        
         this.sortCustom(); 
         this.matDataSource.sort = this.sort;
         this.matDataSource.filterPredicate = this.filterPredicate();
+
+
       }
     );
   }
@@ -312,24 +293,19 @@ export class PagamentiListComponent implements OnInit {
 //#region ----- Add Edit Drop ------------------
 
   addRecord(){
-    this.editRecord(0);
+
   }
 
-  editRecord(alunnoID: number){
-
-    let annoID = this.iscrizione.classeSezioneAnno.annoID;
+  openDetail(pagamentoID: number){
+    console.log ("pagamenti-list openDetail, id", pagamentoID);
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
-        width: '850px',
-        height: '620px',
-        data: {
-          alunnoID: alunnoID,
-          annoID: annoID
-        }
+        width: '875px',
+        height: '324px',
+        data:pagamentoID
     };
-
-    const dialogRef = this._dialog.open(RettaEditComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe( () => this.loadData());
+    const dialogRef = this._dialog.open(PagamentoEditComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(() => this.loadData());
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -359,16 +335,10 @@ export class PagamentiListComponent implements OnInit {
       result => {
         if(result){
           this.svcPagamenti.delete(Number(pagamentoID))
-          //.pipe (
-          //  finalize(()=>this.router.navigate(['/alunni']))
-          //)
           .subscribe({
             next: res=> {
               this._snackBar.openFromComponent(SnackbarComponent,{data: 'Record cancellato', panelClass: ['red-snackbar']});
-              //this._dialogRef.close();
               this.loadData();
-              this.pagamentoEliminatoEmitter.emit();
-              //AS: attenzione: se non faccio refresh la griglia non si aggiorna: perchè ???
             },
             error: err=> this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore in cancellazione', panelClass: ['red-snackbar']})
           });

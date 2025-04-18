@@ -50,9 +50,11 @@ export class AppComponent implements OnInit {
   @ViewChild('expansionDocenti') public expansionDocenti!: MatExpansionPanel;
 
 //#endregion
-  constructor(private svcUser:                  UserService,
-              private router:                   Router,
-              private eventEmitterService:      EventEmitterService  ) {
+  constructor(
+    private svcUser                    : UserService,
+    private router                     : Router,
+    private eventEmitterService        : EventEmitterService
+  ) {
    
   }
 

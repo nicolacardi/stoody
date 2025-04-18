@@ -31,7 +31,7 @@
     \-----------------------------------------------------------------------/
 -->
 
-    <form  [formGroup] = "formRetta" >
+    <form  [formGroup] = "formRetta" style="overflow-y: hidden">
 
         <mat-card appearance="outlined" class="form-cardRette data-form">
             <img class="iconaMenuBig" src="./assets/money_edit_T.svg">
@@ -63,7 +63,7 @@
                             <br>
                             <div class="mt10">DEFAULT</div>
                             <div class="mt10">CONCORDATE</div>
-                            <div class="mt10">PAGATE</div>
+                            <div class="mt10"><button class="_btn-text" mat-button (click)="pagamentiAlunnoAnno(data.iscrizione)">PAGAMENTI</button> </div>
                         </div>
                     </mat-grid-tile>
 
@@ -95,7 +95,8 @@
                     </mat-grid-tile>
                 </mat-grid-list>
                 
-                <mat-expansion-panel class="mt10" style="margin-bottom: 30px" hideToggle (opened)="onPanelOpened()" (closed)="onPanelClosed()">
+
+                <mat-expansion-panel class="mt10" style="margin-bottom: 30px center" hideToggle (opened)="onPanelOpened()" (closed)="onPanelClosed()">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             <mat-icon>settings</mat-icon>
@@ -107,7 +108,6 @@
                         (ricalcoloRette) = "ricalcoloRetteArrivato()"   >
                     </app-retta-calcolo-alunno>
                 </mat-expansion-panel>
-
                 
 
         </mat-card>

@@ -447,7 +447,7 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
     console.log("rette.list - openDetail - iscrizione:", iscrizione);
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
-        width: '850px',
+        width: '875px',
         height: '324px',
         data: {
           iscrizione

@@ -7,6 +7,7 @@ import { NavigationService } from '../../utilities/navigation/navigation.service
 //components
 import { PagamentiFilterComponent } from '../pagamenti-filter/pagamenti-filter.component';
 import { PagamentiListComponent } from '../pagamenti-list/pagamenti-list.component';
+import { ActivatedRoute } from '@angular/router';
 
 //#endregion
 @Component({
@@ -16,18 +17,49 @@ import { PagamentiListComponent } from '../pagamenti-list/pagamenti-list.compone
 })
 export class PagamentiPageComponent implements OnInit {
 
+  nomeRouted!        : string;
+  cognomeRouted!     : string;
+  annoIDRouted!      : number;
 //#region ----- ViewChild Input Output -------
   @ViewChild(PagamentiListComponent) pagamentiList!: PagamentiListComponent; 
   @ViewChild(PagamentiFilterComponent) pagamentiFilterComponent!: PagamentiFilterComponent; 
   @ViewChild('sidenav', { static: true }) drawerFiltriAvanzati!: MatDrawer;
 //#endregion
 
-  constructor(private _navigationService:  NavigationService) { }
+  constructor(
+    private _navigationService      : NavigationService,
+    private route                   : ActivatedRoute,
+  ) { }
 
 //#region ----- LifeCycle Hooks e simili--------
   ngOnInit(): void {
     this._navigationService.passPage("pagamentiPage");
+
+
+
+    this.route.queryParams.subscribe(params => {
+      this.nomeRouted = params['nomeRouted'];
+      this.cognomeRouted = params['cognomeRouted'];
+      this.annoIDRouted = +params['annoIDRouted'];
+
+      console.log ("pagamenti-page arrivati parametri", this.nomeRouted, this.cognomeRouted, this.annoIDRouted);
+    });
   }
+
+  get isFormDirty(): boolean {
+    return this.pagamentiFilterComponent ? !this.pagamentiFilterComponent.formClean : false;
+  }
+
+  ngAfterViewInit(): void {
+
+    if (this.nomeRouted && this.cognomeRouted && this.annoIDRouted) {
+      this.pagamentiFilterComponent.nomeFilter.setValue(this.nomeRouted);
+      this.pagamentiFilterComponent.cognomeFilter.setValue(this.cognomeRouted);
+      this.pagamentiList.form.controls['selectAnnoScolastico'].setValue(this.annoIDRouted);
+      
+    }
+  }
+
 //#endregion
 
 //#region ----- Add Edit Drop ------------------

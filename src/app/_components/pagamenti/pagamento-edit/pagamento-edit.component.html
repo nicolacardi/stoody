@@ -1,0 +1,92 @@
+<mat-card appearance="outlined" class="form-card">
+    <mat-card-content>
+        <form *ngIf="(pagamento$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">            
+
+            <!-- ********************************    BOTTONI     ************************************* -->
+            <div class="center">
+                <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" mat-dialog-close>
+                    <mat-icon>arrow_back</mat-icon>
+                </button> -->
+                <img class="iconaMenuBig" src="./assets/classe_edit_T.svg">
+
+                <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
+
+                <button *ngIf="pagamentoID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="loadData()" >
+                    <mat-icon>restart_alt</mat-icon>
+                </button>
+
+                <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="save()" >
+                    <mat-icon>save</mat-icon>
+                </button>
+
+                <button *ngIf="pagamentoID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
+                        [disabled]= "!form.valid" 
+                        (click)="delete()" >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            <mat-grid-list [cols]= 3 class="no-overflowx mt30" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field  >
+                        <mat-label>Anno Scolastico</mat-label>
+                        <mat-select formControlName               = "annoID">
+                            <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
+                                {{element.annoscolastico}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.controls['annoID'].errors?.['required']"> Campo obbligatorio</mat-error>
+                    </mat-form-field>
+                </mat-grid-tile>
+        
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Data Pagamento</mat-label>
+                        <input matInput  #date
+                            required
+                            formControlName                           = "dtPagamento"
+                            [matDatepicker]                           = "dpDtPagamento"
+                            placeholder                               = "Data" >
+                        <mat-datepicker-toggle matSuffix [for]        = "dpDtPagamento"></mat-datepicker-toggle>
+                        <mat-datepicker #dpDtPagamento></mat-datepicker>
+                        <!-- <mat-error *ngIf="formRetta.controls.dtPagamento.errors?.['required']"> Campo obbligatorio</mat-error> -->
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Importo</mat-label>
+                        <input matInput type                          = "number" required placeholder="Importo" formControlName="importo">
+                        <!-- <mat-error *ngIf="formRetta.controls.importo.errors?.['required']"> Campo obbligatorio</mat-error> -->
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                <mat-form-field  >
+                    <mat-label>Tipo</mat-label>
+                    <mat-select formControlName="tipoPagamentoID">
+                        <mat-option *ngFor="let element of (tipiPagamento$ | async)" [value]="element.id">
+                            {{element.descrizione}}
+                        </mat-option>
+                    </mat-select>
+                    <!-- <mat-error *ngIf="formRetta.controls.tipoPagamentoID.errors?.['required']"> Campo obbligatorio</mat-error> -->
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field  matRequired>
+                    <mat-label>Causale</mat-label>
+                    <mat-select formControlName="causaleID" #causale (selectionChange)="changedCausale(causale.value)">
+                        <mat-option *ngFor="let element of (causaliPagamento$ | async)" [value]="element.id">
+                            {{element.descrizione}}
+                        </mat-option>
+                    </mat-select>
+                    <!-- <mat-error *ngIf="formRetta.controls.causaleID.errors?.['required']"> Campo obbligatorio</mat-error> -->
+                </mat-form-field>
+            </mat-grid-tile>
+            
+            </mat-grid-list>
+        </form>
+    </mat-card-content>
+</mat-card>
+
