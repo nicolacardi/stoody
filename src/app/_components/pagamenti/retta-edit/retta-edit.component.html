@@ -73,7 +73,6 @@
                                 <mat-label>Anno</mat-label>
                             </div>
                             <app-rettaanno-edit
-                                [iscrizione]="data.iscrizione!"
                                 [quotaDefaultAnno] ="quotaDefaultAnno"
                                 [quotaConcordataAnno] ="quotaConcordataAnno"
                                 [totPagamentiAnno] = "totPagamentiAnno">
@@ -86,12 +85,10 @@
                             <div class="center">
                                 <mat-label>{{placeholderMeseArr[i]}}</mat-label>
                             </div>
-                                <!-- [inputPagamenti] ="totPagamenti[mese]" -->
-                                <!--[toHighlight] = "idToHighlight"  -->
                             <app-rettamese-edit
                                 [rettaMese]="retteMese[mese]"
-                                [iscrizione]="data.iscrizione!"
-                                (mesePagamentoClicked)="mesePagamentoClicked($event)" 
+                                (mesePagamentoClicked)="mesePagamentoClicked($event)"
+                                (saved)="loadData()"
                             ></app-rettamese-edit>
 
                         </div>

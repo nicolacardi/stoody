@@ -192,7 +192,7 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
 
     loadRette$
       .subscribe(val => {
-        console.log("rette-list - loadData - val", val);
+        // console.log("rette-list - loadData - val", val);
         this.matDataSource.data = val;
         this.matDataSource.filterPredicate = this.filterPredicate();
         this.matDataSource.paginator = this.paginator;
@@ -443,14 +443,14 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
 //#endregion
 
 
-  openDetail(iscrizione: CLS_Iscrizione){
-    console.log("rette.list - openDetail - iscrizione", iscrizione);
+  openDetail(iscrizione: CLS_Iscrizione ){
+    console.log("rette.list - openDetail - iscrizione:", iscrizione);
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
         width: '850px',
         height: '620px',
         data: {
-          iscrizione: iscrizione
+          iscrizione
         }
     };
 

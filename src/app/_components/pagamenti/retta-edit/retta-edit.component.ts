@@ -25,8 +25,8 @@ import { IscrizioniService }                                      from '../../is
 import { ALU_Alunno }                                             from 'src/app/_models/ALU_Alunno';
 import { ASC_AnnoScolastico }                                     from 'src/app/_models/ASC_AnnoScolastico';
 import { PAG_Retta }                                              from 'src/app/_models/PAG_Retta';
-import { DialogDataIscrizione }                                   from 'src/app/_models/DialogData';
 import { DialogOkComponent } from '../../utilities/dialog-ok/dialog-ok.component';
+import { DialogDataIscrizione } from 'src/app/_models/DialogData';
 
 
 
@@ -108,21 +108,16 @@ export class RettaEditComponent implements OnInit {
       selectAnnoScolastico : [null]
     });
 
-    // this.formAlunno = this.fb.group({
-    //   nomeCognomeAlunno:          [null]
-    // })
-
-
     this.formRetta.controls['selectAnnoScolastico'].valueChanges.subscribe(
       val=> {
         if (val) {
-          console.log("è cambiato l'anno selezionato", val);
+          //console.log("è cambiato l'anno selezionato", val);
           //se cambia l'anno bisogna ri-acquisire l'iscrizione, sulla base dello stesso alunno ma di un anno differente
           //devo dunque estrarre l'iscrizione sulla base dell'alunnoID attuale e di annoID selezionato.
           this.svcIscrizioni.getByAlunnoAndAnno(val.id,this.data.iscrizione.alunnoID)
           .subscribe(iscrizione=>{
+            console.log ("retta-edit - constructor - iscrizione", iscrizione);
             if (iscrizione) {
-              //console.log ("retta-edit - constructor - iscrizione", iscrizione);
               this.data.iscrizione=iscrizione;
               this.loadData();
               this.ultimoAnnoValido = val;
@@ -155,9 +150,28 @@ export class RettaEditComponent implements OnInit {
     this.formRetta.controls['selectAnnoScolastico'].setValue(this.data.iscrizione!.classeSezioneAnno.anno);
   }
 
-
-  
   loadData() {
+    console.log ("***************LOADDATA")
+    this.formRetta.controls['nomeCognomeAlunno'].setValue(
+      this.data.iscrizione.alunno.persona.nome + " " + this.data.iscrizione.alunno.persona.cognome
+    );
+    this.retteMese = [];
+    //inizializzo i 12 retteMese
+    for (let i = 0; i <= 11; i++) {
+      const mese = i + 1;
+      this.retteMese[i] = {
+        id: 0,
+        iscrizioneID: this.data.iscrizione.id,
+        annoRetta: (mese>=9 && mese <=12)
+                    ? this.data.iscrizione?.classeSezioneAnno?.anno.anno1
+                    : this.data.iscrizione?.classeSezioneAnno?.anno.anno2,
+        meseRetta: mese,
+        quotaDefault: 0,
+        quotaConcordata: 0,
+        totPagamenti: 0,
+        iscrizione: this.data.iscrizione!
+      };
+    }
     this.quotaConcordataAnno = 0;
     this.quotaDefaultAnno = 0;
     this.totPagamentiAnno = 0;
@@ -165,89 +179,52 @@ export class RettaEditComponent implements OnInit {
     this.obsRette$ = this.svcRette.listByIscrizione(this.data.iscrizione!.id);
     const loadRette$ = this._loadingService.showLoaderUntilCompleted(this.obsRette$);
 
-    loadRette$.pipe(
-        switchMap(obj => {
+    loadRette$
+    .subscribe({
+      next: obj => {
+        if (obj && obj.length > 0) {
+          //inserirsco in un array retteMese quelli che trovo
+          //retteMese[i] è l'oggetto che passo a ogni rettamese-edit
+          //per qulli non trovati è stato già inizializzato a 0 (vedi più su)
+          obj.forEach((val) => {
+            const meseIndex = val.meseRetta - 1;
+            this.retteMese[meseIndex] = {
+              id: val.id,
+              iscrizioneID: val.iscrizioneID,
+              annoRetta: val.annoRetta,
+              meseRetta: val.meseRetta,
+              quotaDefault: val.quotaDefault,
+              quotaConcordata: val.quotaConcordata,
+              totPagamenti: 0,
+              iscrizione: this.data.iscrizione! //aggiungo all'oggetto l'iscrizione
+            };
 
-            if (obj && obj.length > 0) {
-                // Caso con rette esistenti
-                //console.log ("retta-edit - loadData - obj: ", obj);
-                this.alunno = obj[0].iscrizione!.alunno!;
-                // Imposta il nome e cognome
-                this.formRetta.controls['nomeCognomeAlunno'].setValue(
-                  this.alunno.persona.nome + " " + this.alunno.persona.cognome
-              );
+            // Somma i pagamenti del mese corrente a totPagamentiAnno val.pagamenti è un array
+            val.pagamenti?.forEach(x => {
+                this.retteMese[meseIndex].totPagamenti! += x.importo;
+                this.totPagamentiAnno += x.importo;
+            });
 
-                obj.forEach((val) => {
-                    const meseIndex = val.meseRetta - 1;
+            this.quotaConcordataAnno += val.quotaConcordata;
+            this.quotaDefaultAnno += val.quotaDefault;
 
-                    this.retteMese[meseIndex] = {
-                        id: val.id,
-                        iscrizioneID: val.iscrizioneID,
-                        annoRetta: val.annoRetta,
-                        meseRetta: val.meseRetta,
-                        quotaDefault: val.quotaDefault,
-                        quotaConcordata: val.quotaConcordata,
-                        totPagamenti: 0
-                    };
-                    //console.log(this.retteMese[meseIndex]);
-
-                    // Somma i pagamenti per il mese corrente
-                    val.pagamenti?.forEach(x => {
-                        this.retteMese[meseIndex].totPagamenti! += x.importo;
-                        this.totPagamentiAnno += x.importo;
-                    });
-
-                    this.quotaConcordataAnno += val.quotaConcordata;
-                    this.quotaDefaultAnno += val.quotaDefault;
-                });
-
-
-
-                return of(null); // Observable vuoto per completare
-            } else {
-                // Caso senza rette: recupera l'alunno
-                //TODO: rifare senza alunno: mettere l'iscrizione invece!
-                //ma attenzioen: la mat autocomplete accetta nomi e cognomi alunni
-                return this.svcAlunni.get(this.data.iscrizione!.alunnoID).pipe(
-                    tap(alunno => {
-                        this.alunno = alunno;
-                        console.log("Alunno recuperato da svcAlunni:", alunno);
-                        
-                        // Imposta il nome e cognome (aggiunto anche qui)
-                        this.formRetta.controls['nomeCognomeAlunno'].setValue(
-                            this.alunno.persona.nome + " " + this.alunno.persona.cognome
-                        );
-                    })
-                );
-            }
-        })
-    ).subscribe({
-        next: async () => {
-            // Inizializza gli array se non ci sono rette
-            if (!this.obsRette$ || (await lastValueFrom(this.obsRette$)).length === 0) {
-                for (let i = 0; i <= 11; i++) {
-                    this.retteMese[i] = {
-                        id: 0,
-                        iscrizioneID: 0,
-                        annoRetta: 0,
-                        meseRetta: i + 1, // Impostiamo il mese per ogni entry
-                        quotaDefault: 0,
-                        quotaConcordata: 0,
-                        totPagamenti: 0
-                    };
-                }
-            }
-        },
-        error: (err) => {
-            console.error("Errore nel recupero dei dati:", err);
+          });
+          // for (let i = 0; i <= 11; i++) {
+          //   const mese = i;
+          //   console.log ("retteMese", mese, this.retteMese[mese])
+          // }
+          console.log (this.quotaConcordataAnno);
         }
+      },
+      error: (err) => {
+          console.error("Errore nel recupero dei dati:", err);
+      }
     });
-}
+  }
 
-
-compareAnni = (a: any, b: any): boolean => {
-  return a && b && a.id === b.id;
-}
+  compareAnni = (a: any, b: any): boolean => {
+    return a && b && a.id === b.id;
+  }
 //#endregion
 
 //#region ----- Interazioni Varie Interfaccia --

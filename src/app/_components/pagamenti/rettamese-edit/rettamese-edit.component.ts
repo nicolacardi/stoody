@@ -3,21 +3,17 @@ import { Component, EventEmitter, Input, OnInit, Output}       from '@angular/co
 import { UntypedFormBuilder, UntypedFormGroup }                from '@angular/forms';
 import { MatDialog }                                           from '@angular/material/dialog';
 
-//components
-import { DialogOkComponent }                                   from '../../utilities/dialog-ok/dialog-ok.component';
-
 //services
 import { RetteService }                                        from '../rette.service';
 
 //models
 import { PAG_Retta }                                           from 'src/app/_models/PAG_Retta';
-import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 
 //#endregion
 @Component({
-  selector: 'app-rettamese-edit',
-  templateUrl: './rettamese-edit.component.html',
-  styleUrls: ['../pagamenti.css'],
+  selector        : 'app-rettamese-edit',
+  templateUrl     : './rettamese-edit.component.html',
+  styleUrls       : ['../pagamenti.css'],
 })
 
 export class RettameseEditComponent implements OnInit{
@@ -29,10 +25,10 @@ export class RettameseEditComponent implements OnInit{
 
 //#region ----- ViewChild Input Output -------
 
-  @Input() public iscrizione!       : CLS_Iscrizione;
-  @Input() rettaMese!               : PAG_Retta;
-  @Output('mesePagamentoClicked')
-  clickOnpagamentoEmitter           = new EventEmitter<number>();
+
+  @Input() rettaMese!      : PAG_Retta;
+  @Output() mesePagamentoClicked = new EventEmitter<number>();
+  @Output() saved          = new EventEmitter<void>();
 //#endregion
 
 //#region ----- Constructor --------------------
@@ -45,8 +41,6 @@ export class RettameseEditComponent implements OnInit{
 
     this.form = this.fb.group({
       id:                     [null],
-      annoID:                 [null],
-      alunnoID:               [null],
       iscrizioneID:           [null],
       annoRetta:              [null],
       meseRetta:              [null],
@@ -60,13 +54,10 @@ export class RettameseEditComponent implements OnInit{
 //#region ----- LifeCycle Hooks e simili-------
 
   ngOnChanges() {
-
+    // console.log ("retta-mese - ngOnChanges - rettaMese", this.rettaMese);
     if (this.rettaMese) {
       this.loadData();
-      this.emptyForm = false;
-    } else {
-      this.emptyForm = true;
-      this.form.reset(); 
+
     }
     //if (this.toHighlight == this.rettaID && this.toHighlight!= null) {this.evidenzia = true} else { this.evidenzia = false}
   }
@@ -75,45 +66,31 @@ export class RettameseEditComponent implements OnInit{
   }
   
   loadData(){
-
-  if (this.rettaMese) {
-    this.form.patchValue({
-      id:               this.rettaMese.id, 
-      iscrizioneID:     this.rettaMese.iscrizioneID,                    
-      annoRetta:        this.rettaMese.annoRetta,
-      meseRetta:        this.rettaMese.meseRetta,
-      quotaDefault:     this.rettaMese.quotaDefault,
-      quotaConcordata:  this.rettaMese.quotaConcordata,
-      totPagamenti:     this.rettaMese.totPagamenti,
-    });
-  }
-
- 
-
+    if (this.rettaMese) {
+      this.form.patchValue({
+        id:               this.rettaMese.id, 
+        iscrizioneID:     this.rettaMese.iscrizioneID,                    
+        annoRetta:        this.rettaMese.annoRetta,
+        meseRetta:        this.rettaMese.meseRetta,
+        quotaDefault:     this.rettaMese.quotaDefault,
+        quotaConcordata:  this.rettaMese.quotaConcordata,
+        totPagamenti:     this.rettaMese.totPagamenti,
+      });
+    }
   }
 
 //#endregion
 
 //#region ----- Operazioni CRUD ----------------
-  save(): boolean{
-    console.log ("rettamese-edit - save", this.form.value)
-
+  save(){
     if (this.form.controls['id'].value != null && this.form.controls['id'].value != 0) {
-      this.svcRette.put(this.form.value).subscribe();
+      // console.log("rettamese-edit - put di this.form.value", this.form.value)
+      this.svcRette.put(this.form.value).subscribe(()=>this.saved.emit());
     } else {
-      if (this.form.controls['alunnoID'].value == null) {
-        //post
-        this._dialog.open(DialogOkComponent, {
-          width: '320px',
-          data: {titolo: "ATTENZIONE", sottoTitolo: "Selezionare prima un Alunno"}
-        });
-        this.form.reset();
-      } else {
-        this.svcRette.post(this.form.value).subscribe();
-      }
-
+      // console.log("rettamese-edit - post di this.form.value", this.form.value)
+      this.svcRette.post(this.form.value).subscribe(()=>this.saved.emit());
     }
-    return true;
+    
   }
 //#endregion
 
@@ -122,9 +99,12 @@ export class RettameseEditComponent implements OnInit{
     return parseInt(x);
   }
 
+
+
   clickOnPagamento() {
-    this.clickOnpagamentoEmitter.emit(this.rettaMese.meseRetta);
+    this.mesePagamentoClicked.emit(this.rettaMese.meseRetta);
   }
+
 //#endregion
 }
 

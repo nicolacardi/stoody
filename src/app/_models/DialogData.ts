@@ -127,6 +127,6 @@ export interface DialogDataRisorsaClasseEdit {
 
 export interface DialogDataIscrizione {
       iscrizione                 : CLS_Iscrizione;
-      }
+}
 
 
