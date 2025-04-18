@@ -26,6 +26,7 @@ import { ALU_Alunno }                                             from 'src/app/
 import { ASC_AnnoScolastico }                                     from 'src/app/_models/ASC_AnnoScolastico';
 import { PAG_Retta }                                              from 'src/app/_models/PAG_Retta';
 import { DialogDataIscrizione }                                   from 'src/app/_models/DialogData';
+import { DialogOkComponent } from '../../utilities/dialog-ok/dialog-ok.component';
 
 
 
@@ -127,8 +128,14 @@ export class RettaEditComponent implements OnInit {
               this.ultimoAnnoValido = val;
             } else {
               //bisogna impedire che cambi o meglio reimpostare l'anno precedente e dare un messaggio
-              this._snackBar.openFromComponent(SnackbarComponent, {data: "Nessuna iscrizione di questo alunno nell'anno "+val.annoscolastico, panelClass: ['red-snackbar']})
-              this.formRetta.controls['selectAnnoScolastico'].setValue(this.ultimoAnnoValido);
+              const dialogRef = this._dialog.open(DialogOkComponent, {
+                width: '320px',
+                data: {titolo: "ATTENZIONE!", sottoTitolo: "Non ci sono iscrizioni<br>dell'alunno specificato<br>per l'anno scolastico selezionato"}
+              });
+              //this.formRetta.controls['selectAnnoScolastico'].setValue(this.ultimoAnnoValido);
+              dialogRef.afterClosed().subscribe(() => {
+                this.formRetta.controls['selectAnnoScolastico'].setValue(this.ultimoAnnoValido);
+              });
             }
             }
           );
@@ -148,6 +155,8 @@ export class RettaEditComponent implements OnInit {
     this.formRetta.controls['selectAnnoScolastico'].setValue(this.data.iscrizione!.classeSezioneAnno.anno);
   }
 
+
+  
   loadData() {
     this.quotaConcordataAnno = 0;
     this.quotaDefaultAnno = 0;

@@ -42,7 +42,10 @@
                 <div class="center mt10 ml30 _no-padding-bottom" *ngIf="obsRette$ | async" >
                     <mat-form-field appearance="outline">
                         <mat-label>a.s.</mat-label>
-                        <mat-select formControlName="selectAnnoScolastico" [compareWith]="compareAnni">
+                        <mat-select 
+                            formControlName="selectAnnoScolastico" 
+
+                            [compareWith]="compareAnni">
                             <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element">
                             {{element.annoscolastico}}
                             </mat-option>
