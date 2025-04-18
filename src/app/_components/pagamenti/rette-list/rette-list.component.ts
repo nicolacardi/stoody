@@ -448,7 +448,7 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
         width: '850px',
-        height: '620px',
+        height: '324px',
         data: {
           iscrizione
         }

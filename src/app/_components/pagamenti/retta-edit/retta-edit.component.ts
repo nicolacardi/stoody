@@ -74,8 +74,8 @@ export class RettaEditComponent implements OnInit {
 //#region ----- ViewChild Input Output ---------
   //@ViewChildren(RettameseEditComponent) ChildrenRettaMese!:QueryList<RettameseEditComponent>;
   @ViewChild(RettaannoEditComponent) ChildRettaAnno!                    : RettaannoEditComponent;
-  @ViewChild(PagamentiListComponent) ChildPagamenti!                    : PagamentiListComponent;
-  @ViewChild(RettapagamentoEditComponent) ChildRettapagamentoEdit!      : RettapagamentoEditComponent;
+  // @ViewChild(PagamentiListComponent) ChildPagamenti!                    : PagamentiListComponent;
+  // @ViewChild(RettapagamentoEditComponent) ChildRettapagamentoEdit!      : RettapagamentoEditComponent;
   @ViewChild(RettaCalcoloAlunnoComponent) ChildRettaCalcoloAlunno!      : RettaCalcoloAlunnoComponent;
 //#endregion
 
@@ -225,21 +225,38 @@ export class RettaEditComponent implements OnInit {
   compareAnni = (a: any, b: any): boolean => {
     return a && b && a.id === b.id;
   }
+
+  onPanelOpened() {
+    this.updateDialogSize();
+  }
+
+  // Quando il pannello viene chiuso
+  onPanelClosed() {
+    this.updateDialogSize();
+  }
+
+  updateDialogSize() {
+    setTimeout(() => {
+      this._dialogRef.updateSize('850px', 'auto'); // Ridimensiona il dialog in base al contenuto
+    }, 100); // Aggiungi un piccolo ritardo per assicurarti che il layout sia stato applicato
+  }
+
+
 //#endregion
 
 //#region ----- Interazioni Varie Interfaccia --
 
-  nuovoPagamentoArrivato(str: string) {
+  //nuovoPagamentoArrivato(str: string) {
     //è stato inserito un nuovo pagamento: devo fare il refresh dei child: della lista (ChildPagamenti) e di retta edit che in cascata passa i totali aggiornati ai vari
     //retta-mese edit e retta-anno-edit
-    this.ChildPagamenti.loadData();
-    this.loadData();
+    // this.ChildPagamenti.loadData();
+    // this.loadData();
     
-  }
+  //}
 
-  pagamentoEliminatoArrivato () {
-    this.loadData();
-  }
+  //pagamentoEliminatoArrivato () {
+    // this.loadData();
+  //}
 
   ricalcoloRetteArrivato() {
     // //è stato effettuato un ricalcolo delle rette calcolate: ora bisogna fare la refresh di tutti i 12 rettamese
@@ -254,9 +271,9 @@ export class RettaEditComponent implements OnInit {
 
 
   mesePagamentoClicked (meseRettaClicked: number ){
-    //ora devo passare queste informazioni a rettapagamento-edit
-    this.ChildRettapagamentoEdit.formRetta.controls['causaleID'].setValue(1);
-    this.ChildRettapagamentoEdit.formRetta.controls['meseRetta'].setValue(meseRettaClicked - 1);
+    // //ora devo passare queste informazioni a rettapagamento-edit
+    // this.ChildRettapagamentoEdit.formRetta.controls['causaleID'].setValue(1);
+    // this.ChildRettapagamentoEdit.formRetta.controls['meseRetta'].setValue(meseRettaClicked - 1);
   }
 //#endregion
 

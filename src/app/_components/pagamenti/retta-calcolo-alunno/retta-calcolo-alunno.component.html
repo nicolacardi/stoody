@@ -1,32 +1,40 @@
-<mat-grid-list class="ma w50 _bordered-grey p5 mt20" [cols]="12" rowHeight="20px">
-    <mat-grid-tile *ngFor="let mese of mesiArr; let i = index" >
-        <mat-label>{{placeholderMeseArr[i]}}</mat-label>
-    </mat-grid-tile>
-    <mat-grid-tile *ngFor="let placeholderMese of placeholderMeseArr; let i = index" >
-        <mat-checkbox color="warn" #QuoteListElement [checked]="!!+QuoteDefault.substring(i,i+1)"></mat-checkbox>
-    </mat-grid-tile>
-</mat-grid-list>
-<div class="center mt10">
-    <mat-label>
-        {{strDescrizione}}
-        iscritto allo stesso anno.
-    </mat-label>
-    <br>
-    <mat-label>
-        {{strDescrizioneClasse}}
-    </mat-label>
-</div>
-<div class="ml12 mt10 center">
-    <form  [formGroup] = "form" >
-        <mat-form-field>
-            <input matInput type="number" placeholder="Quota Concordata" formControlName="quotaConcordata" #nome>
-            <img class="w20px _pos-absolute _refresh pointer" src="./assets/refresh.svg" (click)="caricaQuotaConcordataDefault()">
-        </mat-form-field>
-    </form>
-</div>
+<div style="display: flex; align-items: flex-start; gap: 24px; flex-wrap: wrap;">
 
-<div class="ml12 mt10 center">
-    <button mat-button matSuffix class="w200px ml15" mat-stroked-button aria-label="Clear" [disabled] = "!form.valid" (click)="inserisciRetteConcordate()" >
-        Inserisci Rette Concordate
-    </button>
+    <div>
+        <mat-grid-list class="w100 _bordered-grey p5 mt20" [cols]="12" rowHeight="20px">
+            <mat-grid-tile *ngFor="let mese of mesiArr; let i = index" >
+                <mat-label>{{placeholderMeseArr[i]}}</mat-label>
+            </mat-grid-tile>
+            <mat-grid-tile *ngFor="let placeholderMese of placeholderMeseArr; let i = index" >
+                <mat-checkbox color="warn" #QuoteListElement [checked]="!!+QuoteDefault.substring(i,i+1)"></mat-checkbox>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <div class=" mt10">
+            <mat-label>
+                {{strDescrizione}}
+                iscritto allo stesso anno.
+            </mat-label>
+            <br>
+            <mat-label>
+                {{strDescrizioneClasse}}
+            </mat-label>
+        </div>
+    </div>
+    <div>
+
+        <div class="ml12 mt10">
+            <form  [formGroup] = "form" >
+                <mat-form-field>
+                    <input matInput type="number" placeholder="Quota Concordata" formControlName="quotaConcordata" #nome>
+                    <img class="w20px _pos-absolute _refresh pointer" src="./assets/refresh.svg" (click)="caricaQuotaConcordataDefault()">
+                </mat-form-field>
+            </form>
+        </div>
+
+        <div class="ml12">
+            <button mat-button matSuffix class="w200px ml15" mat-stroked-button aria-label="Clear" [disabled] = "!form.valid" (click)="inserisciRetteConcordate()" >
+                Inserisci Rette Concordate
+            </button>
+        </div>
+    </div>
 </div>

@@ -38,7 +38,7 @@
 
             <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
 
-            <mat-card-content>
+
                 <div class="center mt10 ml30 _no-padding-bottom" *ngIf="obsRette$ | async" >
                     <mat-form-field appearance="outline">
                         <mat-label>a.s.</mat-label>
@@ -94,7 +94,28 @@
                         </div>
                     </mat-grid-tile>
                 </mat-grid-list>
-                <mat-tab-group mat-align-tabs="center">
+                
+                <mat-expansion-panel class="mt10" style="margin-bottom: 30px" hideToggle (opened)="onPanelOpened()" (closed)="onPanelClosed()">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <mat-icon>settings</mat-icon>
+                            <span class="ml10">Utility distribuzione rette</span>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <app-retta-calcolo-alunno
+                        [iscrizione]="data.iscrizione!"
+                        (ricalcoloRette) = "ricalcoloRetteArrivato()"   >
+                    </app-retta-calcolo-alunno>
+                </mat-expansion-panel>
+
+                
+
+        </mat-card>
+    </form>
+
+
+
+<!-- <mat-tab-group mat-align-tabs="center">
 
                     <mat-tab label="Gestione Pagamenti">
                         <mat-label class="frameLabel"> Nuovo Pagamento </mat-label>
@@ -104,33 +125,25 @@
                                 (nuovoPagamento) = "nuovoPagamentoArrivato($event)">
                             </app-rettapagamento-edit>
                         </div>
-                        <!-- <mat-label class="frameLabel"> Pagamenti </mat-label> -->
+
                         <div class="_pagamenti-container _cell-bordered mt10">
                             <app-pagamenti-list 
                                 [dove]="'retta-edit'" 
                                 [iscrizione]="data.iscrizione!"
                                 (pagamentoEliminato) = "pagamentoEliminatoArrivato()">
-                                                <!-- (hoverPagamento) = "hoverPagamentoArrivato($event)" -->
                             </app-pagamenti-list>
                         </div>
 
-                    </mat-tab>
+                    </mat-tab> -->
 
-                    <mat-tab label="Utilities Rette" *ngIf="data.iscrizione.id">
-                        <mat-label class="frameLabel"> Utilities per la definizione rapida delle rette </mat-label>
+                    <!-- <mat-tab label="Utilities Rette" *ngIf="data.iscrizione.id"> -->
+                        <!-- <mat-label class="frameLabel"> Utilities per la definizione rapida delle rette </mat-label>
                         <div class="_utilities-container _cell-bordered mt10">
                             <app-retta-calcolo-alunno 
                                 [iscrizione]="data.iscrizione!"
                                 (ricalcoloRette) = "ricalcoloRetteArrivato()"   >
                             </app-retta-calcolo-alunno>
-                        </div>
+                        </div> -->
                         
-                    </mat-tab>
-                </mat-tab-group>
-                
-            </mat-card-content>
-        </mat-card>
-    </form>
-
-
-
+                    <!-- </mat-tab>
+                </mat-tab-group> -->
