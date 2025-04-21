@@ -70,8 +70,8 @@ export class RettameseEditComponent implements OnInit{
       this.form.patchValue({
         id:               this.rettaMese.id, 
         iscrizioneID:     this.rettaMese.iscrizioneID,                    
-        annoRetta:        this.rettaMese.annoRetta,
-        meseRetta:        this.rettaMese.meseRetta,
+        //annoRetta:        this.rettaMese.annoRetta,
+        //meseRetta:        this.rettaMese.meseRetta,
         quotaDefault:     this.rettaMese.quotaDefault,
         quotaConcordata:  this.rettaMese.quotaConcordata,
         totPagamenti:     this.rettaMese.totPagamenti,
@@ -102,7 +102,7 @@ export class RettameseEditComponent implements OnInit{
 
 
   clickOnPagamento() {
-    this.mesePagamentoClicked.emit(this.rettaMese.meseRetta);
+    //this.mesePagamentoClicked.emit(this.rettaMese.meseRetta);
   }
 
 //#endregion

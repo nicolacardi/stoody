@@ -235,7 +235,7 @@
     }
 
     /*il mese deve essere ascosto quando in retta-edit non si seleziona come causale "retta"*/
-    ._mese-hidden {
+    ._hidden {
         display: none;
     }
 

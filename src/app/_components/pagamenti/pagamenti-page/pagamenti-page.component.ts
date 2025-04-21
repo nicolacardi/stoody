@@ -42,7 +42,7 @@ export class PagamentiPageComponent implements OnInit {
       this.cognomeRouted = params['cognomeRouted'];
       this.annoIDRouted = +params['annoIDRouted'];
 
-      console.log ("pagamenti-page arrivati parametri", this.nomeRouted, this.cognomeRouted, this.annoIDRouted);
+      //console.log ("pagamenti-page arrivati parametri", this.nomeRouted, this.cognomeRouted, this.annoIDRouted);
     });
   }
 

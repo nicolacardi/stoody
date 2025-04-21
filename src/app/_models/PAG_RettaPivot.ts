@@ -1,5 +1,3 @@
-import { ALU_Alunno } from "./ALU_Alunno";
-import { CLS_ClasseSezioneAnno } from "./CLS_ClasseSezioneAnno";
 import { CLS_Iscrizione } from "./CLS_Iscrizione";
 
 export interface PAG_RettaPivot {

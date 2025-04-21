@@ -214,17 +214,8 @@ export class GenitoriListComponent implements OnInit {
 
     if(this.context == "alunno-edit-famiglia"){
       obsGenitori$ = this.svcGenitori.listByAlunno(this.alunnoID);
-      //.pipe(map(res=> res.filter(gen => gen._Figli.some(y => (y.id == this.alunnoID)))));  //BELLISSIMA Sembra giusta ma non funziona
     }
     else {
-      // if(this.ckSoloAttivi){
-      //   obsGenitori$= this.svcGenitori.listWithChildren()
-      //     .pipe( 
-      //       map(res=> res.filter((x) => x.persona.ckAttivo == true)),
-      //       tap(res=>console.log("genitori-list", res))
-      //     );
-      // }
-      // else
         obsGenitori$= this.svcGenitori.listWithChildren();
     }
 

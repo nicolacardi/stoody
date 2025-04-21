@@ -1,35 +1,35 @@
 //#region ----- IMPORTS ------------------------
 
-import { CdkDragDrop, moveItemInArray }                                                from '@angular/cdk/drag-drop';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }       from '@angular/core';
-import { MatDialog, MatDialogConfig }                                                  from '@angular/material/dialog';
-import { MatTableDataSource }                                                          from '@angular/material/table';
-import { UntypedFormBuilder, UntypedFormGroup }                                        from '@angular/forms';
-import { Observable }                                                                  from 'rxjs';
-import { MatPaginator }                                                                from '@angular/material/paginator';
-import { MatSort }                                                                     from '@angular/material/sort';
-import { MatSnackBar }                                                                 from '@angular/material/snack-bar';
+import { CdkDragDrop, moveItemInArray }                                       from '@angular/cdk/drag-drop';
+import { Component, ElementRef, EventEmitter, Input, OnInit, ViewChild }      from '@angular/core';
+import { MatDialog, MatDialogConfig }                                         from '@angular/material/dialog';
+import { MatTableDataSource }                                                 from '@angular/material/table';
+import { UntypedFormBuilder, UntypedFormGroup }                               from '@angular/forms';
+import { Observable }                                                         from 'rxjs';
+import { MatPaginator }                                                       from '@angular/material/paginator';
+import { MatSort }                                                            from '@angular/material/sort';
+import { MatSnackBar }                                                        from '@angular/material/snack-bar';
 
 //components
-import { DialogYesNoComponent }                                                        from '../../utilities/dialog-yes-no/dialog-yes-no.component';
-import { RettaEditComponent }                                                          from '../retta-edit/retta-edit.component';
-import { PagamentiFilterComponent }                                                    from '../pagamenti-filter/pagamenti-filter.component';
-import { SnackbarComponent }                                                           from '../../utilities/snackbar/snackbar.component';
-import { Utility }                                                                     from '../../utilities/utility.component';
+import { DialogYesNoComponent }                                               from '../../utilities/dialog-yes-no/dialog-yes-no.component';
+import { PagamentiFilterComponent }                                           from '../pagamenti-filter/pagamenti-filter.component';
+import { SnackbarComponent }                                                  from '../../utilities/snackbar/snackbar.component';
+import { Utility }                                                            from '../../utilities/utility.component';
+import { PagamentoEditComponent }                                             from '../pagamento-edit/pagamento-edit.component';
 
 //services
-import { LoadingService }                                                              from '../../utilities/loading/loading.service';
-import { AnniScolasticiService }                                                       from 'src/app/_components/anni-scolastici/anni-scolastici.service';
-import { PagamentiService }                                                            from '../pagamenti.service';
-import { TableColsService }                                                            from '../../utilities/toolbar/tablecols.service';
-import { TableColsVisibleService }                                                     from '../../utilities/toolbar/tablecolsvisible.service';
+import { LoadingService }                                                     from '../../utilities/loading/loading.service';
+import { AnniScolasticiService }                                              from 'src/app/_components/anni-scolastici/anni-scolastici.service';
+import { PagamentiService }                                                   from '../pagamenti.service';
+import { TableColsService }                                                   from '../../utilities/toolbar/tablecols.service';
+import { TableColsVisibleService }                                            from '../../utilities/toolbar/tablecolsvisible.service';
 
 //models
-import { ASC_AnnoScolastico }                                                          from 'src/app/_models/ASC_AnnoScolastico';
-import { PAG_Pagamento }                                                               from 'src/app/_models/PAG_Pagamento';
-import { _UT_Parametro }                                                               from 'src/app/_models/_UT_Parametro';
-import { User }                                                                        from 'src/app/_user/Users';
-import { PagamentoEditComponent } from '../pagamento-edit/pagamento-edit.component';
+import { ASC_AnnoScolastico }                                                 from 'src/app/_models/ASC_AnnoScolastico';
+import { PAG_Pagamento }                                                      from 'src/app/_models/PAG_Pagamento';
+import { _UT_Parametro }                                                      from 'src/app/_models/_UT_Parametro';
+import { User }                                                               from 'src/app/_user/Users';
+
 
 //#endregion
 @Component({
@@ -56,14 +56,10 @@ export class PagamentiListComponent implements OnInit {
     "actionsColumn", 
     "dtPagamento", 
     "importo", 
-    //"tipoPagamentoID", 
     "tipoPagamento.descrizione",
-    //"causaleID", 
     "causale.descrizione",
-    //"rettaID", 
     "retta.quotaConcordata",
     "retta.meseRetta",
-    //"alunnoID", 
     "alunno.cognome",
     "alunno.nome",
     //"genitoreID",
@@ -86,11 +82,11 @@ export class PagamentiListComponent implements OnInit {
     "importo", 
     "tipoPagamento.descrizione",
     "causale.descrizione",
-    "retta.quotaConcordata",
-    "retta.meseRetta",
-    "alunno.persona.cognome",
-    "alunno.persona.nome",
-    "note"];
+    "pagamentoRetta.retta.quotaConcordata",
+    "pagamentoRetta.retta.meseRetta",
+    "pagamentoRetta.retta.iscrizione.alunno.persona.cognome",
+    "pagamentoRetta.retta.iscrizione.alunno.persona.nome"
+  ];
 
   rptColumnsNames  = [
     "dtPagamento", 
@@ -194,13 +190,12 @@ export class PagamentiListComponent implements OnInit {
 
     loadPagamenti$.subscribe(
       val => {
-        // console.log("pagamenti-list loadData - val ", val);
+        console.log("pagamenti-list loadData - val ", val);
         this.matDataSource.data = val;
         this.matDataSource.paginator = this.paginator;
         this.sortCustom(); 
         this.matDataSource.sort = this.sort;
         this.matDataSource.filterPredicate = this.filterPredicate();
-
 
       }
     );
@@ -257,13 +252,13 @@ export class PagamentiListComponent implements OnInit {
       let boolSx = String(data.alunno.persona.nome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
             || String(dtPagamentoddmmyyyy).indexOf(searchTerms.filtrosx) !== -1
             || String(data.importo).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
-            || String(data.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1;
+            || String(data.retta.iscrizione.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1;
 
       let boolDx = foundTipoPagamento
             && foundCausale
             && cfrImporti 
-            && String(data.alunno.persona.nome).toLowerCase().indexOf(searchTerms.nome) !== -1
-            && String(data.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.cognome) !== -1
+            && String(data.retta.iscrizione.alunno.persona.nome).toLowerCase().indexOf(searchTerms.nome) !== -1
+            && String(data.retta.iscrizione.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.cognome) !== -1
             && cfrDate;
 
       return boolSx && boolDx;
@@ -278,8 +273,9 @@ export class PagamentiListComponent implements OnInit {
       switch(property) {
         case 'tipoPagamento.descrizione':       return item.tipoPagamento.descrizione;
         case 'causale.descrizione':             return item.causale.descrizione;
-        case 'alunno.persona.nome':             return item.alunno.persona.nome;
-        case 'alunno.persona.cognome':          return item.alunno.persona.cognome;
+        // case 'pagamentoRetta.retta.quotaConcordata':                            return item.pagamentoRetta.retta.quotaConcordata;
+        // case 'pagamentoRetta.retta.iscrizione.alunno.persona.nome':             return item.pagamentoRetta.retta.iscrizione.alunno.persona.nome;
+        // case 'pagamentoRetta.retta.iscrizione.alunno.persona.cognome':          return item.pagamentoRetta.retta.iscrizione.alunno.persona.cognome;
         case 'importo':                         return item.importo;
         case 'dtPagamento':                     return parseInt(item.dtPagamento.toString());
         default: return item[property]
@@ -293,7 +289,7 @@ export class PagamentiListComponent implements OnInit {
 //#region ----- Add Edit Drop ------------------
 
   addRecord(){
-
+    this.openDetail(0)
   }
 
   openDetail(pagamentoID: number){
@@ -301,7 +297,7 @@ export class PagamentiListComponent implements OnInit {
     const dialogConfig : MatDialogConfig = {
         panelClass: 'add-DetailDialog',
         width: '875px',
-        height: '324px',
+        height: '350px',
         data:pagamentoID
     };
     const dialogRef = this._dialog.open(PagamentoEditComponent, dialogConfig);

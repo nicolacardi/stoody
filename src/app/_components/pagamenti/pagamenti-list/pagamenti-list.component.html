@@ -63,23 +63,19 @@
 
     </ng-container>
 
-    <ng-container matColumnDef="rettaID">
-        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>rettaID</th>
-        <td mat-cell *matCellDef="let element">{{element.rettaID}}</td>
-    </ng-container>
 
-    <ng-container matColumnDef="retta.quotaConcordata">
-        <th mat-header-cell *matHeaderCellDef cdkDrag>importo Retta</th>
+    <ng-container matColumnDef="pagamentoRetta.retta.quotaConcordata">
+        <th mat-header-cell *matHeaderCellDef cdkDrag >importo Retta</th>
         <td mat-cell *matCellDef="let element">
             <!-- {{element.retta.quotaConcordata}} -->
-            <ng-container *ngIf="element.retta; else default1">
-                {{element.retta.quotaConcordata}}
+            <ng-container *ngIf="element.pagamentoRetta; else default1">
+                {{element.pagamentoRetta.retta.quotaConcordata}}
             </ng-container>
             <ng-template #default1>-</ng-template>
         </td>
     </ng-container>
 
-    <ng-container matColumnDef="retta.meseRetta">
+    <ng-container matColumnDef="pagamentoRetta.retta.meseRetta">
         <th mat-header-cell *matHeaderCellDef cdkDrag >mese</th>
         <td mat-cell *matCellDef="let element">
             <ng-container *ngIf="element.retta; else default2">
@@ -89,22 +85,17 @@
         </td>
     </ng-container>
 
-    <ng-container matColumnDef="alunno.cognome">
-        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
+    <ng-container matColumnDef="pagamentoRetta.retta.iscrizione.alunno.persona.cognome">
+        <th mat-header-cell *matHeaderCellDef cdkDrag  >Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
         <!-- <td mat-cell *matCellDef="let element">{{element.alunno.cognome}}</td> -->
-        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.cognome | highlight: filterValue"></td>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.pagamentoRetta? element.pagamentoRetta.retta.iscrizione.alunno.persona.cognome:'' | highlight: filterValue"></td>
 
     </ng-container>
-    <ng-container matColumnDef="alunno.nome">
-        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Nome<mat-icon class="iconaFilter" *ngIf="filterValues.nome">filter_alt</mat-icon></th>
+    <ng-container matColumnDef="pagamentoRetta.retta.iscrizione.alunno.persona.nome">
+        <th mat-header-cell *matHeaderCellDef cdkDrag  >Nome<mat-icon class="iconaFilter" *ngIf="filterValues.nome">filter_alt</mat-icon></th>
         <!-- <td mat-cell *matCellDef="let element">{{element.alunno.nome}}</td> -->
-        <td mat-cell *matCellDef="let element" [innerHTML]="element.alunno.persona.nome | highlight: filterValue"></td>
+        <td mat-cell *matCellDef="let element" [innerHTML]="element.pagamentoRetta? element.pagamentoRetta.retta.iscrizione.alunno.persona.nome: '' | highlight: filterValue"></td>
 
-    </ng-container>
-
-    <ng-container matColumnDef="genitoreID">
-        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header>genitoreID</th>
-        <td mat-cell *matCellDef="let element">{{element.genitoreID}}</td>
     </ng-container>
 
     <ng-container matColumnDef="note">

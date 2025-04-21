@@ -8,7 +8,6 @@ import { Observable }                                             from 'rxjs';
 import { Router }                                                 from '@angular/router';
 
 //components
-import { SnackbarComponent }                                      from '../../utilities/snackbar/snackbar.component';
 import { RettaCalcoloAlunnoComponent }                            from '../retta-calcolo-alunno/retta-calcolo-alunno.component';
 import { RettaannoEditComponent }                                 from '../rettaanno-edit/rettaanno-edit.component';
 import { DialogOkComponent }                                      from '../../utilities/dialog-ok/dialog-ok.component';
@@ -151,75 +150,75 @@ export class RettaEditComponent implements OnInit {
   }
 
   loadData() {
-    // console.log ("***************retta-edit - LOADDATA")
-    this.formRetta.controls['nomeCognomeAlunno'].setValue(
-      this.data.iscrizione.alunno.persona.nome + " " + this.data.iscrizione.alunno.persona.cognome
-    );
-    this.retteMese = [];
-    //inizializzo i 12 retteMese
-    for (let i = 0; i <= 11; i++) {
-      const mese = i + 1;
-      this.retteMese[i] = {
-        id: 0,
-        iscrizioneID: this.data.iscrizione.id,
-        annoRetta: (mese>=9 && mese <=12)
-                    ? this.data.iscrizione?.classeSezioneAnno?.anno.anno1
-                    : this.data.iscrizione?.classeSezioneAnno?.anno.anno2,
-        meseRetta: mese,
-        quotaDefault: 0,
-        quotaConcordata: 0,
-        totPagamenti: 0,
-        iscrizione: this.data.iscrizione!
-      };
-    }
-    this.quotaConcordataAnno = 0;
-    this.quotaDefaultAnno = 0;
-    this.totPagamentiAnno = 0;
-    //console.log ("retta-edit - loadData - this.data", this.data);
-    this.obsRette$ = this.svcRette.listByIscrizione(this.data.iscrizione!.id);
-    const loadRette$ = this._loadingService.showLoaderUntilCompleted(this.obsRette$);
+    // // console.log ("***************retta-edit - LOADDATA")
+    // this.formRetta.controls['nomeCognomeAlunno'].setValue(
+    //   this.data.iscrizione.alunno.persona.nome + " " + this.data.iscrizione.alunno.persona.cognome
+    // );
+    // this.retteMese = [];
+    // //inizializzo i 12 retteMese
+    // for (let i = 0; i <= 11; i++) {
+    //   const mese = i + 1;
+    //   this.retteMese[i] = {
+    //     id: 0,
+    //     iscrizioneID: this.data.iscrizione.id,
+    //     annoRetta: (mese>=9 && mese <=12)
+    //                 ? this.data.iscrizione?.classeSezioneAnno?.anno.anno1
+    //                 : this.data.iscrizione?.classeSezioneAnno?.anno.anno2,
+    //     meseRetta: mese,
+    //     quotaDefault: 0,
+    //     quotaConcordata: 0,
+    //     totPagamenti: 0,
+    //     iscrizione: this.data.iscrizione!
+    //   };
+    // }
+    // this.quotaConcordataAnno = 0;
+    // this.quotaDefaultAnno = 0;
+    // this.totPagamentiAnno = 0;
+    // //console.log ("retta-edit - loadData - this.data", this.data);
+    // this.obsRette$ = this.svcRette.listByIscrizione(this.data.iscrizione!.id);
+    // const loadRette$ = this._loadingService.showLoaderUntilCompleted(this.obsRette$);
 
-    loadRette$
-    .subscribe({
-      next: obj => {
-        if (obj && obj.length > 0) {
-          //inserirsco in un array retteMese quelli che trovo
-          //retteMese[i] è l'oggetto che passo a ogni rettamese-edit
-          //per qulli non trovati è stato già inizializzato a 0 (vedi più su)
-          obj.forEach((val) => {
-            const meseIndex = val.meseRetta - 1;
-            this.retteMese[meseIndex] = {
-              id: val.id,
-              iscrizioneID: val.iscrizioneID,
-              annoRetta: val.annoRetta,
-              meseRetta: val.meseRetta,
-              quotaDefault: val.quotaDefault,
-              quotaConcordata: val.quotaConcordata,
-              totPagamenti: 0,
-              iscrizione: this.data.iscrizione! //aggiungo all'oggetto l'iscrizione
-            };
+    // loadRette$
+    // .subscribe({
+    //   next: obj => {
+    //     if (obj && obj.length > 0) {
+    //       //inserisco in un array retteMese quelli che trovo
+    //       //retteMese[i] è l'oggetto che passo a ogni rettamese-edit
+    //       //per qulli non trovati è stato già inizializzato a 0 (vedi più su)
+    //       obj.forEach((val) => {
+    //         const meseIndex = val.meseRetta - 1;
+    //         this.retteMese[meseIndex] = {
+    //           id: val.id,
+    //           iscrizioneID: val.iscrizioneID,
+    //           annoRetta: val.annoRetta,
+    //           meseRetta: val.meseRetta,
+    //           quotaDefault: val.quotaDefault,
+    //           quotaConcordata: val.quotaConcordata,
+    //           totPagamenti: 0,
+    //           iscrizione: this.data.iscrizione! //aggiungo all'oggetto l'iscrizione
+    //         };
 
-            // Somma i pagamenti del mese corrente a totPagamentiAnno val.pagamenti è un array
-            val.pagamenti?.forEach(x => {
-                this.retteMese[meseIndex].totPagamenti! += x.importo;
-                this.totPagamentiAnno += x.importo;
-            });
+    //         // Somma i pagamenti del mese corrente a totPagamentiAnno val.pagamenti è un array
+    //         val._Pagamenti?.forEach(x => {
+    //             this.retteMese[meseIndex].totPagamenti! += x.Pagamento!.importo;
+    //             this.totPagamentiAnno += x.Pagamento!.importo;
+    //         });
 
-            this.quotaConcordataAnno += val.quotaConcordata;
-            this.quotaDefaultAnno += val.quotaDefault;
+    //         this.quotaConcordataAnno += val.quotaConcordata;
+    //         this.quotaDefaultAnno += val.quotaDefault;
 
-          });
-          // for (let i = 0; i <= 11; i++) {
-          //   const mese = i;
-          //   console.log ("retteMese", mese, this.retteMese[mese])
-          // }
+    //       });
+    //       // for (let i = 0; i <= 11; i++) {
+    //       //   const mese = i;
+    //       //   console.log ("retteMese", mese, this.retteMese[mese])
+    //       // }
           
-        }
-      },
-      error: (err) => {
-          console.error("Errore nel recupero dei dati:", err);
-      }
-    });
+    //     }
+    //   },
+    //   error: (err) => {
+    //       console.error("Errore nel recupero dei dati:", err);
+    //   }
+    // });
   }
 
   compareAnni = (a: any, b: any): boolean => {

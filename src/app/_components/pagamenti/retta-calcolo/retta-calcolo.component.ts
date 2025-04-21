@@ -157,118 +157,118 @@ export class RettaCalcoloComponent implements OnInit {
     
     obsIscrizioni$.subscribe(val =>  {
 
-        val.forEach( (iscrizione: CLS_Iscrizione) => {
-            let primaQuota =  true;
+      //   val.forEach( (iscrizione: CLS_Iscrizione) => {
+      //       let primaQuota =  true;
 
-            let formData = {
-              id: iscrizione.id,
-              codiceStato: 30
-            }
-            this.svcIscrizioni.updateStato(formData).subscribe(
-                () => this.viewListClassi.loadData()
-            );
+      //       let formData = {
+      //         id: iscrizione.id,
+      //         codiceStato: 30
+      //       }
+      //       this.svcIscrizioni.updateStato(formData).subscribe(
+      //           () => this.viewListClassi.loadData()
+      //       );
 
-            let hasFratelloMaggiore= false;
-            this.svcAlunni.hasFratelloMaggiore(annoID, iscrizione.alunnoID )
-              .pipe (
-                tap (val=> {
-                  hasFratelloMaggiore = val;
-                }),  
-                concatMap(() => this.svcRette.listByAlunnoAnno(iscrizione.alunnoID, annoID )))
-                  .subscribe( retteAnnoAlunno =>{
+      //       let hasFratelloMaggiore= false;
+      //       this.svcAlunni.hasFratelloMaggiore(annoID, iscrizione.alunnoID )
+      //         .pipe (
+      //           tap (val=> {
+      //             hasFratelloMaggiore = val;
+      //           }),  
+      //           concatMap(() => this.svcRette.listByAlunnoAnno(iscrizione.alunnoID, annoID )))
+      //             .subscribe( retteAnnoAlunno =>{
 
-                    //se array vuoto, INSERT
-                    if(retteAnnoAlunno.length == 0){
+      //               //se array vuoto, INSERT
+      //               if(retteAnnoAlunno.length == 0){
 
-                      const d = new Date();
-                      d.setSeconds(0,0);
-                      let dateNow = d.toISOString().split('.')[0];
+      //                 const d = new Date();
+      //                 d.setSeconds(0,0);
+      //                 let dateNow = d.toISOString().split('.')[0];
 
-                      //loop per i 12 mesi, i primi quattro dell'anno1, gli altri dell'anno2
-                      for( i=1; i<=12; i++){
-                        if (i <= 4) {
-                          mese = i + 8;
-                          annoRetta = anno1;
-                        } 
-                        else {
-                          mese = i - 4;
-                          annoRetta = anno2;
-                        }
+      //                 //loop per i 12 mesi, i primi quattro dell'anno1, gli altri dell'anno2
+      //                 for( i=1; i<=12; i++){
+      //                   if (i <= 4) {
+      //                     mese = i + 8;
+      //                     annoRetta = anno1;
+      //                   } 
+      //                   else {
+      //                     mese = i - 4;
+      //                     annoRetta = anno2;
+      //                   }
 
-                        if (arrCheckMesi[i-1].checked == false) 
-                          importoMese = 0;             
-                        else {
-                          if( this.QuoteRidotteFratelli && hasFratelloMaggiore){
-                            if (primaQuota) {
-                              importoMese = importoMeseRound2 + restoImportoMese2;
-                              primaQuota = false;
-                            } 
-                            else importoMese = importoMeseRound2;
-                          }
-                          else{
-                            if (primaQuota) {
-                              importoMese = importoMeseRound + restoImportoMese;
-                              primaQuota = false;
-                            } 
-                            else  importoMese = importoMeseRound;
-                          }
-                        }
+      //                   if (arrCheckMesi[i-1].checked == false) 
+      //                     importoMese = 0;             
+      //                   else {
+      //                     if( this.QuoteRidotteFratelli && hasFratelloMaggiore){
+      //                       if (primaQuota) {
+      //                         importoMese = importoMeseRound2 + restoImportoMese2;
+      //                         primaQuota = false;
+      //                       } 
+      //                       else importoMese = importoMeseRound2;
+      //                     }
+      //                     else{
+      //                       if (primaQuota) {
+      //                         importoMese = importoMeseRound + restoImportoMese;
+      //                         primaQuota = false;
+      //                       } 
+      //                       else  importoMese = importoMeseRound;
+      //                     }
+      //                   }
 
-                        let rettaMese: PAG_Retta = {
-                          id : 0,
-                          iscrizioneID:           iscrizione.id,
+      //                   let rettaMese: PAG_Retta = {
+      //                     id : 0,
+      //                     iscrizioneID:           iscrizione.id,
 
-                          annoRetta:              annoRetta,
-                          meseRetta:              mese,
-                          quotaDefault:           importoMese,
-                          quotaConcordata:        importoMese,
+      //                     annoRetta:              annoRetta,
+      //                     meseRetta:              mese,
+      //                     quotaDefault:           importoMese,
+      //                     quotaConcordata:        importoMese,
                           
-                          note:                   '',
-                          dtIns:                  dateNow,
-                          dtUpd:                  dateNow,
-                          userIns:                1,
-                          userUpd:                1
-                        };
-                        this.svcRette.post(rettaMese).subscribe();
-                      } 
-                    }
-                    else {
-                      retteAnnoAlunno.forEach((rettaMese) => {
-                        mese = rettaMese.meseRetta;
+      //                     note:                   '',
+      //                     dtIns:                  dateNow,
+      //                     dtUpd:                  dateNow,
+      //                     userIns:                1,
+      //                     userUpd:                1
+      //                   };
+      //                   this.svcRette.post(rettaMese).subscribe();
+      //                 } 
+      //               }
+      //               else {
+      //                 retteAnnoAlunno.forEach((rettaMese) => {
+      //                   mese = rettaMese.meseRetta;
 
-                        if (mese <= 8) 
-                          i = mese + 3;
-                        else 
-                          i = mese - 9;
+      //                   if (mese <= 8) 
+      //                     i = mese + 3;
+      //                   else 
+      //                     i = mese - 9;
                         
-                        if (arrCheckMesi[i].checked == false) 
-                          importoMese = 0;
-                        else {
-                          if( this.QuoteRidotteFratelli && hasFratelloMaggiore){
-                            if (primaQuota) {
-                              importoMese = importoMeseRound2 + restoImportoMese2;
-                              primaQuota = false;
-                            } 
-                            else importoMese = importoMeseRound2;
-                          }
-                          else{
-                            if (primaQuota) {
-                              importoMese = importoMeseRound + restoImportoMese;
-                              primaQuota = false;
-                            } 
-                            else importoMese = importoMeseRound;
-                          }
-                        }
+      //                   if (arrCheckMesi[i].checked == false) 
+      //                     importoMese = 0;
+      //                   else {
+      //                     if( this.QuoteRidotteFratelli && hasFratelloMaggiore){
+      //                       if (primaQuota) {
+      //                         importoMese = importoMeseRound2 + restoImportoMese2;
+      //                         primaQuota = false;
+      //                       } 
+      //                       else importoMese = importoMeseRound2;
+      //                     }
+      //                     else{
+      //                       if (primaQuota) {
+      //                         importoMese = importoMeseRound + restoImportoMese;
+      //                         primaQuota = false;
+      //                       } 
+      //                       else importoMese = importoMeseRound;
+      //                     }
+      //                   }
 
-                        rettaMese.quotaConcordata = importoMese;
-                        rettaMese.quotaDefault = importoMese;
+      //                   rettaMese.quotaConcordata = importoMese;
+      //                   rettaMese.quotaDefault = importoMese;
 
-                        this.svcRette.put(rettaMese).subscribe();
-                      });
-                    }
-                }
-            );
-        });
+      //                   this.svcRette.put(rettaMese).subscribe();
+      //                 });
+      //               }
+      //           }
+      //       );
+      //   });
       }
     )
   }

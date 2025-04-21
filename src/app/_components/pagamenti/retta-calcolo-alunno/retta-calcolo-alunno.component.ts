@@ -141,11 +141,11 @@ form! :                             UntypedFormGroup;
     }
     this.svcIscrizioni.updateStato(formData).subscribe();
 
-    this.svcRette.listByAlunnoAnno(this.iscrizione.alunnoID, this.iscrizione.classeSezioneAnno.annoID ).subscribe (
+    this.svcRette.getByAlunnoAnno(this.iscrizione.alunnoID, this.iscrizione.classeSezioneAnno.annoID ).subscribe (
       async (retteAnnoAlunno) => {
     
       //se array vuoto, INSERT
-      if(retteAnnoAlunno.length == 0){
+      if(!retteAnnoAlunno){
 
         const d = new Date();
         d.setSeconds(0,0);
@@ -175,8 +175,8 @@ form! :                             UntypedFormGroup;
           let rettaMese: PAG_Retta = {
             id : 0,
             iscrizioneID:           this.iscrizione.id,
-            annoRetta:              annoRetta,
-            meseRetta:              mese,
+            // annoRetta:              annoRetta,
+            // meseRetta:              mese,
             quotaDefault:           importoMese,
             quotaConcordata:        importoMese,
             
@@ -207,30 +207,31 @@ form! :                             UntypedFormGroup;
         //sono awaited allora si attende che tutte siano risolte prima della emit
 
           //await Promise.all(retteAnnoAlunno.map( async rettaMese=> {  
-          for (let rettaMese of retteAnnoAlunno) { 
-            mese = rettaMese.meseRetta;  //rettaMese
-            if (mese <= 8) 
-              i = mese + 3;
-            else 
-              i = mese - 9;
-            
-            if (arrCheckMesi[i].checked == false)
-              importoMese = 0;
-            else {
-              if (primaQuota) {
-                importoMese = importoMeseRound + restoImportoMese;
-                primaQuota = false;
-              } 
-              else importoMese = importoMeseRound;
-            }
-            rettaMese.quotaConcordata = importoMese;
-            rettaMese.quotaDefault = importoMese;
-            //ecco qui: non una subscribe ma una toPromise poi awaited e "thenned"
-            const miaput = this.svcRette.put(rettaMese).toPromise();
-            await miaput.then(
-              //() => console.log ("put singola")
-            );      
-          };
+                    //****DA RIFARE TUTTO */
+                    // for (let rettaMese of retteAnnoAlunno) { 
+                    //   //mese = rettaMese.meseRetta;  //rettaMese
+                    //   if (mese <= 8) 
+                    //     i = mese + 3;
+                    //   else 
+                    //     i = mese - 9;
+                      
+                    //   if (arrCheckMesi[i].checked == false)
+                    //     importoMese = 0;
+                    //   else {
+                    //     if (primaQuota) {
+                    //       importoMese = importoMeseRound + restoImportoMese;
+                    //       primaQuota = false;
+                    //     } 
+                    //     else importoMese = importoMeseRound;
+                    //   }
+                    //   rettaMese.quotaConcordata = importoMese;
+                    //   rettaMese.quotaDefault = importoMese;
+                    //   //ecco qui: non una subscribe ma una toPromise poi awaited e "thenned"
+                    //   const miaput = this.svcRette.put(rettaMese).toPromise();
+                    //   await miaput.then(
+                    //     //() => console.log ("put singola")
+                    //   );      
+                    // };
           //));
           
           this._snackBar.openFromComponent(SnackbarComponent, {data: 'Rette inserite per l\'alunno', panelClass: ['green-snackbar']})

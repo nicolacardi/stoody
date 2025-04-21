@@ -1,44 +1,39 @@
-import { ALU_Alunno } from "./ALU_Alunno";
-import { ASC_AnnoScolastico } from "./ASC_AnnoScolastico";
+
 import { CLS_Iscrizione } from "./CLS_Iscrizione";
-import { PAG_Pagamento } from "./PAG_Pagamento";
+import { PAG_PagamentoRetta } from "./PAG_PagamentoRetta";
 
 export interface PAG_Retta {
-        id:                     number,
+        id                 : number,
 
-        iscrizioneID:           number,
-        // annoID:                 number,
-        // alunnoID:               number,
+        iscrizioneID       : number,
         
-        annoRetta:              number,
-        meseRetta:              number,
-        quotaDefault:           number,
-        quotaConcordata:        number,
+        // annoRetta:              number,
+        // meseRetta:              number,
+        quotaDefault       : number,
+        quotaConcordata    : number,
         
-        note?:                   string;
-        dtIns?:                  string;
-        dtUpd?:                  string;
-        userIns?:                number;
-        userUpd?:                number;
+        note?              : string;
+        dtIns?             : string;
+        dtUpd?             : string;
+        userIns?           : number;
+        userUpd?           : number;
 
-        iscrizione?:            CLS_Iscrizione;
-        anno?:                  ASC_AnnoScolastico;
-        alunno?:                ALU_Alunno;
-        pagamenti?:             PAG_Pagamento[];
-        totPagamenti?:          number;
+        iscrizione?        : CLS_Iscrizione;
+        _Pagamenti?        : PAG_PagamentoRetta[];
 
+        totPagamenti?      : number;
 }
 
 
 
 export interface PAG_RettePagamenti_Sum {
-        id:                     number;
+        id                 : number;
         
-        annoRetta:              number;
-        meseRetta:              number;
+        annoRetta          : number;
+        meseRetta          : number;
 
-        importo:                number;
-        quotaDefault:           number;
-        quotaConcordata:        number;
+        importo            : number;
+        quotaDefault       : number;
+        quotaConcordata    : number;
 }
 

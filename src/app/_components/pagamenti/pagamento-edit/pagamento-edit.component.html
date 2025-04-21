@@ -1,44 +1,45 @@
 <mat-card appearance="outlined" class="form-card">
     <mat-card-content>
-        <form *ngIf="(pagamento$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "form">            
+    
 
             <!-- ********************************    BOTTONI     ************************************* -->
             <div class="center">
                 <!-- <button mat-mini-fab aria-label="Back" matTooltip="Back" class="btn" mat-dialog-close>
                     <mat-icon>arrow_back</mat-icon>
                 </button> -->
-                <img class="iconaMenuBig" src="./assets/classe_edit_T.svg">
+                <img class="iconaMenuBig" src="./assets/pagamento_edit_T.svg">
 
                 <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
 
                 <button *ngIf="pagamentoID" mat-mini-fab aria-label="Back" matTooltip="Back" class="btn ml10"
-                        [disabled]= "!form.valid" 
+                        [disabled]= "!formPagamento.valid" 
                         (click)="loadData()" >
                     <mat-icon>restart_alt</mat-icon>
                 </button>
 
                 <button mat-mini-fab aria-label="Salva" matTooltip="Salva" class="btn ml10"
-                        [disabled]= "!form.valid" 
+                        [disabled]= "!formPagamento.valid ||!formPagamentoRetta.valid" 
                         (click)="save()" >
                     <mat-icon>save</mat-icon>
                 </button>
 
                 <button *ngIf="pagamentoID" mat-mini-fab aria-label="Cancella" matTooltip="Cancella" class="btn ml10"
-                        [disabled]= "!form.valid" 
+                        [disabled]= "!formPagamento.valid" 
                         (click)="delete()" >
                     <mat-icon>delete</mat-icon>
                 </button>
             </div>
+        <form *ngIf="(pagamento$ | async) || emptyForm" class="data-form flex-form" [formGroup] = "formPagamento">        
             <mat-grid-list [cols]= 3 class="no-overflowx mt30" rowHeight="60px">
                 <mat-grid-tile>
                     <mat-form-field  >
-                        <mat-label>Anno Scolastico</mat-label>
+                        <mat-label>Anno Scolastico/Fiscale</mat-label>
                         <mat-select formControlName               = "annoID">
                             <mat-option *ngFor="let element of (obsAnni$ | async)" [value]="element.id">
                                 {{element.annoscolastico}}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="form.controls['annoID'].errors?.['required']"> Campo obbligatorio</mat-error>
+                        <mat-error *ngIf="formPagamento.controls['annoID'].errors?.['required']"> Campo obbligatorio</mat-error>
                     </mat-form-field>
                 </mat-grid-tile>
         
@@ -63,28 +64,44 @@
                     </mat-form-field>
                 </mat-grid-tile>
                 <mat-grid-tile>
-                <mat-form-field  >
-                    <mat-label>Tipo</mat-label>
-                    <mat-select formControlName="tipoPagamentoID">
-                        <mat-option *ngFor="let element of (tipiPagamento$ | async)" [value]="element.id">
-                            {{element.descrizione}}
-                        </mat-option>
-                    </mat-select>
-                    <!-- <mat-error *ngIf="formRetta.controls.tipoPagamentoID.errors?.['required']"> Campo obbligatorio</mat-error> -->
-                </mat-form-field>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <mat-form-field  matRequired>
-                    <mat-label>Causale</mat-label>
-                    <mat-select formControlName="causaleID" #causale (selectionChange)="changedCausale(causale.value)">
-                        <mat-option *ngFor="let element of (causaliPagamento$ | async)" [value]="element.id">
-                            {{element.descrizione}}
-                        </mat-option>
-                    </mat-select>
-                    <!-- <mat-error *ngIf="formRetta.controls.causaleID.errors?.['required']"> Campo obbligatorio</mat-error> -->
-                </mat-form-field>
-            </mat-grid-tile>
-            
+                    <mat-form-field  >
+                        <mat-label>Tipo</mat-label>
+                        <mat-select formControlName="tipoPagamentoID">
+                            <mat-option *ngFor="let element of (tipiPagamento$ | async)" [value]="element.id">
+                                {{element.descrizione}}
+                            </mat-option>
+                        </mat-select>
+                        <!-- <mat-error *ngIf="formRetta.controls.tipoPagamentoID.errors?.['required']"> Campo obbligatorio</mat-error> -->
+                    </mat-form-field>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field  matRequired>
+                        <mat-label>Causale</mat-label>
+                        <mat-select formControlName="causaleID" #causale (selectionChange)="changedCausale(causale.value)">
+                            <mat-option *ngFor="let element of (causaliPagamento$ | async)" [value]="element.id">
+                                {{element.descrizione}}
+                            </mat-option>
+                        </mat-select>
+                        <!-- <mat-error *ngIf="formRetta.controls.causaleID.errors?.['required']"> Campo obbligatorio</mat-error> -->
+                    </mat-form-field>
+                </mat-grid-tile>
+                
+                <mat-grid-tile>
+                </mat-grid-tile>
+            </mat-grid-list>
+        </form>
+        <form class="data-form flex-form" [formGroup] = "formPagamentoRetta">
+            <mat-grid-list [cols] =3 class="no-overflowx mt10" rowHeight="60px">
+                <mat-grid-tile>
+                    <mat-form-field  matRequired [ngClass]="{'_hidden': formPagamento.get('causaleID')?.value != 1 && formPagamento.get('causaleID')?.value !=3}">
+                        <mat-label>Alunno</mat-label>
+                        <mat-select formControlName="iscrizioneID" #causale>
+                            <mat-option *ngFor="let element of (obsIscrizioni$ | async)" [value]="element.id">
+                                {{element.alunno.persona.nome}} {{element.alunno.persona.cognome}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-grid-tile>
             </mat-grid-list>
         </form>
     </mat-card-content>

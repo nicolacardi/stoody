@@ -30,14 +30,14 @@ export class RetteService {
     //http://213.215.231.4/swappX/api/PAG_Rette/ListByAnnoPivot/1
   }
 
-  listByAlunnoAnno(alunnoID: number, annoID: number): Observable<PAG_Retta[]>{
-    return this.http.get<PAG_Retta[]>(environment.apiBaseUrl+'PAG_Rette/ListByAlunnoAnno/'+alunnoID+"/"+annoID);
-    //http://213.215.231.4/swappX/api/PAG_Rette/ListByAlunnoAnno/3/1
+  getByAlunnoAnno(alunnoID: number, annoID: number): Observable<PAG_Retta>{
+    return this.http.get<PAG_Retta>(environment.apiBaseUrl+'PAG_Rette/GetByAlunnoAnno/'+alunnoID+"/"+annoID);
+    //http://213.215.231.4/swappX/api/PAG_Rette/GetByAlunnoAnno/3/1
   }
 
-  listByIscrizione(iscrizioneID: number): Observable<PAG_Retta[]>{
-    return this.http.get<PAG_Retta[]>(environment.apiBaseUrl+'PAG_Rette/ListByIscrizione/'+iscrizioneID);
-    //http://213.215.231.4/swappX/api/PAG_Rette/listByIscrizione/328
+  getByIscrizione(iscrizioneID: number): Observable<PAG_Retta>{
+    return this.http.get<PAG_Retta>(environment.apiBaseUrl+'PAG_Rette/GetByIscrizione/'+iscrizioneID);
+    //http://213.215.231.4/swappX/api/PAG_Rette/GetByIscrizione/1385
   }
 
   sumConcordateByIscrizione(iscrizioneID: number): Observable <any> {
