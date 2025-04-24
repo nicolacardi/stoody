@@ -142,7 +142,7 @@ export class ProfiloComponent implements OnInit {
         this.currUser.email =this.form.controls['email'].value;
         this.currUser.fullname = this.form.controls['fullname'].value;
 
-        localStorage.setItem('currentUser', JSON.stringify(this.currUser));
+        sessionStorage.setItem('currentUser', JSON.stringify(this.currUser));
       },
       error: err=> console.log("[profilo.component] - save: ERRORE this.svcUser.put", formData)
     });

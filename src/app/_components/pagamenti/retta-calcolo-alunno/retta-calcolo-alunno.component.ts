@@ -17,6 +17,9 @@ import { ParametriService }                     from 'src/app/_components/impost
 import { ASC_AnnoScolastico }                   from 'src/app/_models/ASC_AnnoScolastico';
 import { CLS_Iscrizione }                       from 'src/app/_models/CLS_Iscrizione';
 import { PAG_Retta }                            from 'src/app/_models/PAG_Retta';
+import { PAG_ScadenzaRetta } from 'src/app/_models/PAG_ScadenzaRetta';
+import { ScadenzeRetteService } from '../scadenzeRette.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-retta-calcolo-alunno',
@@ -52,13 +55,14 @@ form! :                             UntypedFormGroup;
   ricalcoloRetteEmitter = new EventEmitter<string>();
 //#endregion
   constructor(
-    private svcParametri:                 ParametriService,
-    private svcAnni:                      AnniScolasticiService,
-    private svcIscrizioni:                IscrizioniService,
-    private svcAlunni:                    AlunniService,
-    private svcRette:                     RetteService,
-    private _snackBar:                    MatSnackBar, 
-    private fb:                           UntypedFormBuilder, 
+    private svcParametri      : ParametriService,
+    private svcAnni           : AnniScolasticiService,
+    private svcIscrizioni     : IscrizioniService,
+    private svcAlunni         : AlunniService,
+    private svcRette          : RetteService,
+    private svcScadenzeRette  : ScadenzeRetteService,
+    private _snackBar         : MatSnackBar,
+    private fb                : UntypedFormBuilder,
 
     
   ) {
@@ -103,203 +107,118 @@ form! :                             UntypedFormGroup;
     ).subscribe();
   }
 
-  inserisciRetteConcordate(){
+  getUltimoGiornoDelMese(mese: number, anno: number): Date {
+    return new Date(anno, mese + 1, 0);
+  }
 
 
-    //********************************************************************************************************************************************************
-    //ATTENZIONE! DEVO ESSERE SICURO CHE SE C'è UNA RETTA IN UN MESE CI SIA IN TUTTI I 12 MESI ALTRIMENTI LA UPDATE NON FUNZIONA CORRETTAMENTE! ASSICURARSENE!
-
-    //ho creato in ngOnInit l'oggetto anno e  in caricaQuotaConcordataDefault l'oggetto iscrizione, ora vado a usarli
-
-    let annoRetta = 0;
-    let importoMese  = 0;
-
-    let importoMeseRound  = 0;
-    let restoImportoMese  = 0;
-
-    let mese = 0 ;
-    let i = 0;
-    let contaMesi = 0;
-
-    let arrCheckMesi = this.QuoteList.toArray();
-    for( i=1; i<=12; i++) if (arrCheckMesi[i-1].checked == true) contaMesi++;
+  inserisciRetteConcordate() {
+    const arrCheckMesi = this.QuoteList.toArray();
+    const anno1 = this.anno.anno1;
+    const anno2 = this.anno.anno2;
+    const importoAnno = this.form.controls['quotaConcordata'].value;
   
-    let anno1 = this.anno.anno1;
-    let anno2 = this.anno.anno2;
-
-    let importoAnno = this.form.controls['quotaConcordata'].value;
-
-    importoMeseRound = Math.floor(importoAnno/contaMesi);
-    restoImportoMese = importoAnno - importoMeseRound * contaMesi;  //per applicare il resto alla prima quota devo essere sicuro che le quote vengano passate in ordine, quindi nel service metto una orderby
-
-    let primaQuota =  true;
-
-    //aggiorno lo status inserendo il codice 20
-    let formData = {
+    const mesiSelezionati = arrCheckMesi.filter(m => m.checked).length;
+    const importoMeseBase = Math.floor(importoAnno / mesiSelezionati);
+    const resto = importoAnno - (importoMeseBase * mesiSelezionati);
+  
+    // aggiorna stato iscrizione
+    this.svcIscrizioni.updateStato({
       id: this.iscrizione.id,
       codiceStato: 30
-    }
-    this.svcIscrizioni.updateStato(formData).subscribe();
+    }).subscribe();
+  
+    const retta: PAG_Retta = {
+      id: this.iscrizione.retta?.id ?? 0,
+      iscrizioneID: this.iscrizione.id,
+      quotaDefault: importoAnno,
+      quotaConcordata: importoAnno
+    };
+  
+    const salvaScadenze = (rettaID: number) => {
+      let primaQuota = true;
+      const richiesteScadenze = [];
+  
+      for (let i = 0; i < 12; i++) {
+        if (!arrCheckMesi[i].checked) continue;
+  
+        const mese = i <= 3 ? i + 9 : i - 3;
+        const annoRetta = i <= 3 ? anno1 : anno2;
+        const importoMese = primaQuota ? importoMeseBase + resto : importoMeseBase;
+        if (primaQuota) primaQuota = false;
+  
+        const dtScadenza = this.formatDateToString(this.getUltimoGiornoDelMese(mese-1, annoRetta));
 
-    this.svcRette.getByAlunnoAnno(this.iscrizione.alunnoID, this.iscrizione.classeSezioneAnno.annoID ).subscribe (
-      async (retteAnnoAlunno) => {
-    
-      //se array vuoto, INSERT
-      if(!retteAnnoAlunno){
 
-        const d = new Date();
-        d.setSeconds(0,0);
-        let dateNow = d.toISOString().split('.')[0];
 
-        //loop per i 12 mesi, i primi quattro dell'anno1, gli altri dell'anno2
-        for( i=1; i<=12; i++){
-          if (i <= 4) {
-            mese = i + 8;
-            annoRetta = anno1;
-          } 
-          else {
-            mese = i - 4;
-            annoRetta = anno2;
-          }
-
-          if (arrCheckMesi[i-1].checked == false) 
-            importoMese = 0;             
-          else {
-              if (primaQuota) {
-                importoMese = importoMeseRound + restoImportoMese;
-                primaQuota = false;
-              } 
-              else  importoMese = importoMeseRound;
-          }
-
-          let rettaMese: PAG_Retta = {
-            id : 0,
-            iscrizioneID:           this.iscrizione.id,
-            // annoRetta:              annoRetta,
-            // meseRetta:              mese,
-            quotaDefault:           importoMese,
-            quotaConcordata:        importoMese,
-            
-            note:                   '',
-            dtIns:                  dateNow,
-            dtUpd:                  dateNow,
-            userIns:                1,
-            userUpd:                1
-          };
-          this.svcRette.post(rettaMese).subscribe({
-            next: res =>   this._snackBar.openFromComponent(SnackbarComponent, {data: 'Rette inserite per l\'alunno', panelClass: ['green-snackbar']}),
-            error: err=>  this._snackBar.openFromComponent(SnackbarComponent, {data: 'Errore durante l\'inserimento delle rette', panelClass: ['red-snackbar']})
-          });
-        } 
-      } else {
-
-        //problema: dobbiamo attendere le chiamate asincrone (put) che si trovano dentro il ciclo 
-        //PRIMA di passare oltre, alla emit: una forEach impedisce di lavorare forzando delle sincronie
-        //soluzione la promiseAll oppure un ciclo for of sostituisce la forEach
-        //la forEach è inadatta perchè si possano aspettare le funzioni asincrone che essa contiene
-        //Se si usa una PromiseAll è necessario attenderla (await) [e quindi tra l'altro dichiarare la funzione "padre" 
-        //this.svcRette.listByAlunnoAnno come async]
-
-        //ma quanto sopra NON BASTA: ANCHE le singole chiamate asincrone (put) interne al ciclo devono essere attese e quindi a loro volta
-        //trasformate in promise e awaited [il che comporta, nel caso for of, comunque che this.svcRette.listByAlunnoAnno sia async
-        //e che, nel caso di PromiseAll questa sia async].
-        //Solo se entrambe (promiseAll/for of e chiamate interne)
-        //sono awaited allora si attende che tutte siano risolte prima della emit
-
-          //await Promise.all(retteAnnoAlunno.map( async rettaMese=> {  
-                    //****DA RIFARE TUTTO */
-                    // for (let rettaMese of retteAnnoAlunno) { 
-                    //   //mese = rettaMese.meseRetta;  //rettaMese
-                    //   if (mese <= 8) 
-                    //     i = mese + 3;
-                    //   else 
-                    //     i = mese - 9;
-                      
-                    //   if (arrCheckMesi[i].checked == false)
-                    //     importoMese = 0;
-                    //   else {
-                    //     if (primaQuota) {
-                    //       importoMese = importoMeseRound + restoImportoMese;
-                    //       primaQuota = false;
-                    //     } 
-                    //     else importoMese = importoMeseRound;
-                    //   }
-                    //   rettaMese.quotaConcordata = importoMese;
-                    //   rettaMese.quotaDefault = importoMese;
-                    //   //ecco qui: non una subscribe ma una toPromise poi awaited e "thenned"
-                    //   const miaput = this.svcRette.put(rettaMese).toPromise();
-                    //   await miaput.then(
-                    //     //() => console.log ("put singola")
-                    //   );      
-                    // };
-          //));
-          
-          this._snackBar.openFromComponent(SnackbarComponent, {data: 'Rette inserite per l\'alunno', panelClass: ['green-snackbar']})
-          this.ricalcoloRetteEmitter.emit();
+        const scadenza = this.iscrizione.retta?._ScadenzeRette?.[i] ?? null;
+  
+        const scadenzaRetta: PAG_ScadenzaRetta = {
+          id: scadenza?.id ?? 0,
+          rettaID,
+          importo: importoMese,
+          dtScadenza
+        };
+  
+        console.log ("sto per inserire questa:", scadenza);
+        const richiesta = scadenza
+          ? this.svcScadenzeRette.put(scadenzaRetta)
+          : this.svcScadenzeRette.post(scadenzaRetta);
+  
+        richiesteScadenze.push(richiesta);
       }
-    
-    });
-      
-    //https://advancedweb.hu/how-to-use-async-functions-with-array-foreach-in-javascript/   NON FUNZIONA QUI DA NOI
-    //https://codeburst.io/javascript-async-await-with-foreach-b6ba62bbf404                 SPIEGA PERCHE' NON PASSA PER ALCUNI PEZZI PERO' NON FUNZIONA
-    //https://masteringjs.io/tutorials/fundamentals/async-foreach
+  
+      forkJoin(richiesteScadenze).subscribe({
+        next: () => {
+          this._snackBar.openFromComponent(SnackbarComponent, {
+            data: 'Rette inserite per l\'alunno',
+            panelClass: ['green-snackbar']
+          });
+          this.ricalcoloRetteEmitter.emit();
+        },
+        error: () => {
+          this._snackBar.openFromComponent(SnackbarComponent, {
+            data: 'Errore durante l\'inserimento delle scadenze',
+            panelClass: ['red-snackbar']
+          });
+        }
+      });
+    };
+  
+    if (this.iscrizione.retta) {
+      this.svcRette.put(retta).subscribe({
+        next: () => salvaScadenze(retta.id),
+        error: () => {
+          this._snackBar.openFromComponent(SnackbarComponent, {
+            data: 'Errore durante l\'aggiornamento della retta',
+            panelClass: ['red-snackbar']
+          });
+        }
+      });
+    } else {
+      this.svcRette.post(retta).subscribe({
+        next: res => salvaScadenze(res.id),
+        error: () => {
+          this._snackBar.openFromComponent(SnackbarComponent, {
+            data: 'Errore durante l\'inserimento della retta',
+            panelClass: ['red-snackbar']
+          });
+        }
+      });
+    }
   }
   
-
-
-  async testForEachAsync () {
-
-    //ecco il ciclo foreach riscritto per attendere la risoluzione delle chiamate asincrone in esso contenute
-    let arr =[410,411,412]
-        const promiseall = await Promise.all(arr.map( async id=> {
-            const myget = this.svcRette.get(id).toPromise();
-            await myget.then (val => console.log(val));
-            // await myget.then( val => console.log (val));
-          
-        }));
+  
   
 
-
-
-
-    // const arr = [1, 2, 3];
-
-    // await Promise.all(arr.map(async (i) => {
-    //   await setTimeout(() => {
-    //     console.log("a")
-    //   }, 10-i);
-
-    //   console.log(i);
-    // }));
-    
-    // console.log("Finished async");
-
-    //3
-    //2
-    //1
-    //Finished async
-    //a
-    //a
-    //a NON FUNZIONA
-
-
-    // let promise = new Promise ((resolve, reject) => {
-    //   setTimeout (() => {
-    //     resolve ("done");
-    //     console.log ("done");
-    // }, 1000)
-    // });
-
-    // console.log ("await");
-    // let result = await promise;
-    // console.log ("dopo await");
-
-    // //done
-    // //await
-    // //dopo await
-
-    // //FUNZIONA MA SOLO UN CICLO, NON C'E' UN FOR
-}
+  formatDateToString(date: Date): string {
+    // Formato yyyy-MM-dd (compatibile con .NET DateTime)
+    const pad = (n: number) => n < 10 ? '0' + n : n;
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    return `${yyyy}-${mm}-${dd}`;
+  }
 
 }
 

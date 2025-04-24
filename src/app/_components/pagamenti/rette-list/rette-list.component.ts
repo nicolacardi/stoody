@@ -18,14 +18,15 @@ import { RettaCalcoloComponent }                      from '../retta-calcolo/ret
 import { RetteService }                               from '../rette.service';
 import { LoadingService }                             from '../../utilities/loading/loading.service';
 import { AnniScolasticiService }                      from 'src/app/_components/anni-scolastici/anni-scolastici.service';
+import { ScadenzeRetteService }                       from '../scadenzeRette.service';
 
 //classes
 import { PAG_Retta }                                  from 'src/app/_models/PAG_Retta';
-import { PAG_RettaPivot }                             from 'src/app/_models/PAG_RettaPivot';
+import { PAG_ScadenzeRettaPivot }                     from 'src/app/_models/PAG_ScadenzeRettaPivot';
 import { PAG_RettaGroupObj }                          from 'src/app/_models/PAG_RetteGroupObj';
 import { ASC_AnnoScolastico }                         from 'src/app/_models/ASC_AnnoScolastico';
 import { _UT_Parametro }                              from 'src/app/_models/_UT_Parametro';
-import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
+import { CLS_Iscrizione }                             from 'src/app/_models/CLS_Iscrizione';
 
 //#endregion
 @Component({
@@ -36,21 +37,21 @@ import { CLS_Iscrizione } from 'src/app/_models/CLS_Iscrizione';
 export class RetteListComponent implements OnInit {
   
 //#region ----- Variabili ----------------------
-matDataSource = new MatTableDataSource<PAG_RettaPivot>();
+matDataSource = new MatTableDataSource<PAG_ScadenzeRettaPivot>();
 
-  obsAnni$!:                Observable<ASC_AnnoScolastico[]>;    //Serve per la combo anno scolastico
-  form:                     UntypedFormGroup;            //form fatto della sola combo anno scolastico
-  annoID!:                  number;
-  showC= true;
-  showD= true;
-  showP= true;
-  showNum!: number;
+  obsAnni$!       : Observable<ASC_AnnoScolastico[]>;    //Serve per la combo anno scolastico
+  form            : UntypedFormGroup;            //form fatto della sola combo anno scolastico
+  annoID!         : number;
+  showC           = true;
+  showD           = true;
+  showP           = true;
+  showNum!        : number;
 
-  toggledNum!:  number;
+  toggledNum!     : number;
 
-  showLinesC = false;
-  showLinesD = false;
-  showLinesP = true;
+  showLinesC      = false;
+  showLinesD      = false;
+  showLinesP      = true;
 
 
   d_displayedColumns: string[] =  [
@@ -154,13 +155,13 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
 //#region ----- Constructor --------------------
 
   constructor(
-              private svcRette:                 RetteService,
-              private svcAnni:                  AnniScolasticiService,
-              private _loadingService:          LoadingService,
-              private fb:                       UntypedFormBuilder, 
-              public _dialog:                   MatDialog) 
-  {
-    let obj = localStorage.getItem('AnnoCorrente');
+    private svcAnni              : AnniScolasticiService,
+    private svcScadenzeRette     : ScadenzeRetteService,
+    private _loadingService      : LoadingService,
+    private fb                   : UntypedFormBuilder,
+    public _dialog               : MatDialog
+  ) {
+    let obj = sessionStorage.getItem('AnnoCorrente');
     this.form = this.fb.group({
       selectAnnoScolastico:  +(JSON.parse(obj!) as _UT_Parametro).parValue,
       filterControl: ['']
@@ -186,8 +187,8 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
     this.annoID = this.form.controls['selectAnnoScolastico'].value;
     
 
-    let obsRette$: Observable<PAG_RettaPivot[]>;
-    obsRette$= this.svcRette.listByAnnoPivoted(this.annoID);
+    let obsRette$: Observable<PAG_ScadenzeRettaPivot[]>;
+    obsRette$= this.svcScadenzeRette.listByAnnoPivot(this.annoID);
     const loadRette$ =this._loadingService.showLoaderUntilCompleted(obsRette$);
 
     loadRette$
@@ -199,169 +200,10 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
         }
       );
 
-                        // NOTA PER PIU' AVANTI: 
-                        // per avere la riga della retta e sotto la riga del pagamento forse è da usare const result$ = concat(series1$, series2$);
-
-
-                        // let arrObj: PAG_RettaPivot[] = [];
-                        // loadRette$
-                        //   .pipe(
-                        //   //questo tap serve nel caso in cui loadRette non restituisse ALCUN record in quanto in questo caso la mergeMap va in crisi: 
-                        //   //lo stream Rxjs si blocca e non avviene nemmeno la subscribe quindi bisogna prevedere quel caso attivando qui ciò che dovrebbe avvenire nella subscribe.
-                        //     tap(val=> { 
-                        //       console.table(val); //qui vedo come si presenta all'inizio la chiamata...da che dati parto
-                        //       if (val = []){
-                        //         this.matDataSource.data = [];
-                        //         this.matDataSource.paginator = this.paginator;
-                        //       }
-                        //     }),
-                        //     mergeMap(res=>res),                     //passaggio necessario
-                        //     groupBy(o => o.alunnoID),               //la group.key diventa l'alunnoID
-                        //     mergeMap(
-                        //       group => zip([group.key], group.pipe(toArray()))),
-                        //     map(arr => {
-                              
-                        //       //console.log ("quotatrovata2",this.trovaquotaMeseA(arr, 9)) ;
-                        //       //console.log ("quotaPagamenti",this.trovaSommaPagMese(arr, 9)) ;
-                        //       //console.log ("arr",arr[1][0]) ; 
-                        //       arrObj.push(
-                        //         {
-                        //         'alunnoID': arr[0],
-                        //         alunno : arr[1][0].alunno!,
-                        //         nome: arr[1][0].alunno!.persona.nome,
-                        //         cognome: arr[1][0].alunno!.persona.cognome,
-                        //         annoID : arr[1][0].annoID,
-                        //         iscrizione : arr[1][0].iscrizione,
-                        //         'c_SET': this.trovaQuotaConcMese(arr, 9) ,       //ERA: 'c_SET': arr[1][0].quotaConcordata,  MA COSI' SI CREAVANO I VUOTI
-                        //         'c_OTT': this.trovaQuotaConcMese(arr, 10) ,  
-                        //         'c_NOV': this.trovaQuotaConcMese(arr, 11) ,  
-                        //         'c_DIC': this.trovaQuotaConcMese(arr, 12) ,  
-                        //         'c_GEN': this.trovaQuotaConcMese(arr, 1) ,  
-                        //         'c_FEB': this.trovaQuotaConcMese(arr, 2) ,  
-                        //         'c_MAR': this.trovaQuotaConcMese(arr, 3) ,  
-                        //         'c_APR': this.trovaQuotaConcMese(arr, 4) ,  
-                        //         'c_MAG': this.trovaQuotaConcMese(arr, 5) ,  
-                        //         'c_GIU': this.trovaQuotaConcMese(arr, 6) ,  
-                        //         'c_LUG': this.trovaQuotaConcMese(arr, 7) ,  
-                        //         'c_AGO': this.trovaQuotaConcMese(arr, 8) , 
-                                
-                        //         'c_TOT': this.sommaQuoteConc(arr),
-
-                        //         // 'd_SET': this.trovaQuotaDefMese(arr, 9), 
-                        //         // 'd_OTT': this.trovaQuotaDefMese(arr, 10),
-                        //         // 'd_NOV': this.trovaQuotaDefMese(arr, 11),
-                        //         // 'd_DIC': this.trovaQuotaDefMese(arr, 12),
-                        //         // 'd_GEN': this.trovaQuotaDefMese(arr, 1),
-                        //         // 'd_FEB': this.trovaQuotaDefMese(arr, 2),
-                        //         // 'd_MAR': this.trovaQuotaDefMese(arr, 3),
-                        //         // 'd_APR': this.trovaQuotaDefMese(arr, 4),
-                        //         // 'd_MAG': this.trovaQuotaDefMese(arr, 5),
-                        //         // 'd_GIU': this.trovaQuotaDefMese(arr, 6),
-                        //         // 'd_LUG': this.trovaQuotaDefMese(arr, 7),
-                        //         // 'd_AGO': this.trovaQuotaDefMese(arr, 8),
-
-                        //         'd_TOT': this.sommaQuoteDef(arr),
-
-                        //         'p_SET': this.trovaSommaPagMese(arr, 9), 
-                        //         'p_OTT': this.trovaSommaPagMese(arr, 10),
-                        //         'p_NOV': this.trovaSommaPagMese(arr, 11),
-                        //         'p_DIC': this.trovaSommaPagMese(arr, 12),
-                        //         'p_GEN': this.trovaSommaPagMese(arr, 1),
-                        //         'p_FEB': this.trovaSommaPagMese(arr, 2),
-                        //         'p_MAR': this.trovaSommaPagMese(arr, 3),
-                        //         'p_APR': this.trovaSommaPagMese(arr, 4),
-                        //         'p_MAG': this.trovaSommaPagMese(arr, 5),
-                        //         'p_GIU': this.trovaSommaPagMese(arr, 6),
-                        //         'p_LUG': this.trovaSommaPagMese(arr, 7),
-                        //         'p_AGO': this.trovaSommaPagMese(arr, 8),
-
-                        //         'p_TOT': this.sommaQuotePagAnno(arr),
-                        //         }
-                        //       );  //fine arrObj.push
-                        //       return arrObj;
-                        //     })    //fine map
-                        // )         //fine mergeMap
-                        // .subscribe(val => {
-                        //   console.table(val); //passa di qua TROPPE VOLTE: tante quanti i record in realtà dovrebbe passarci UNA SOLA VOLTA!
-                        //   this.matDataSource.data = val;
-                        //   this.matDataSource.filterPredicate = this.filterPredicate();
-                        //   this.matDataSource.paginator = this.paginator;
-                        //   }
-                        // );
+                        
   }
 
-                        // trovaQuotaConcMese (arr: Array<any>, m: number) : number {
-                        //   this.myObjAssigned.alunnoID =  arr[0];
-                        //   this.myObjAssigned._Rette =  arr[1]; 
-                        //     if (this.myObjAssigned._Rette.find(x=> x.meseRetta == m)?.quotaConcordata) {
-                        //       //INTERESSANTE L'USO DEL '!' IN QUESTO CASO! dice: "sono sicuro che non sia undefined"
-                        //       return this.myObjAssigned._Rette.find(x=> x.meseRetta == m)!.quotaConcordata  
-                        //     } 
-                        //     else 
-                        //       return 0;
-                        // }
-
-                        // sommaQuoteConc (arr: Array<any>) : number {
-                        //   this.myObjAssigned.alunnoID =  arr[0];
-                        //   this.myObjAssigned._Rette =  arr[1]; 
-                        //   let totQuotaConcordata = 0;
-                        //   if (this.myObjAssigned._Rette.length != 0) 
-                        //     this.myObjAssigned._Rette.forEach(mese=> totQuotaConcordata += mese.quotaConcordata) 
-                          
-                        //   return totQuotaConcordata;  
-                        // }
-
-                        // trovaQuotaDefMese (arr: Array<any>, m: number) : number {
-                        //   this.myObjAssigned.alunnoID =  arr[0];
-                        //   this.myObjAssigned._Rette =  arr[1]; 
-                        //     if (this.myObjAssigned._Rette.find(x=> x.meseRetta == m)?.quotaDefault) 
-                        //       return this.myObjAssigned._Rette.find(x=> x.meseRetta == m)!.quotaDefault
-                        //     else 
-                        //       return 0;
-                        // }
-
-                        // sommaQuoteDef (arr: Array<any>) : number {
-                        //   this.myObjAssigned.alunnoID =  arr[0];
-                        //   this.myObjAssigned._Rette =  arr[1]; 
-                        //   let totQuotaDefault = 0;
-                        //   if (this.myObjAssigned._Rette.length != 0) {
-                        //     this.myObjAssigned._Rette.forEach(mese=> totQuotaDefault += mese.quotaDefault) 
-                        //   }
-                        //     //INTERESSANTE L'USO DEL '!' IN QUESTO CASO! dice: "sono sicuro che non sia undefined"
-                        //   return totQuotaDefault;  
-                        // }
-
-                        // trovaSommaPagMese (arr: Array<any>, m: number) : number {
-                        // //console.log (arr);
-                        // let sumPags: number;
-                        // this.myObjAssigned.alunnoID =  arr[0];
-                        // this.myObjAssigned._Rette =  arr[1]; 
-                        //   if (this.myObjAssigned._Rette.find(x=> x.meseRetta == m)?.pagamenti) {
-                        //     sumPags = 0;
-                        //     //IN QUESTO CASO ci sono ben DUE "!" uno per il find e uno per i pagamenti
-                        //     this.myObjAssigned._Rette.find(x=> x.meseRetta == m)!.pagamenti!
-                        //     .forEach (x=> sumPags = sumPags + x.importo) ;
-                        //     return sumPags;
-                        //   } 
-                        //   else 
-                        //     return 0;
-                        // }
-
-
-
-                        // sommaQuotePagAnno (arr: Array<any>) : number {
-                        //   //console.log (arr);
-                        //   let sumPags: number;
-                        //   this.myObjAssigned.alunnoID =  arr[0];
-                        //   this.myObjAssigned._Rette =  arr[1];
-                        //   let sumPagsAnno = 0 ;
-                        //   if (this.myObjAssigned._Rette.length != 0) {
-                        //     this.myObjAssigned._Rette.forEach(mese => mese!.pagamenti!
-                        //       .forEach (x=> sumPagsAnno = sumPagsAnno + x.importo)) ;
-                        //   } 
-
-                        //   return sumPagsAnno;
-                        // }
+                        
 //#endregion
 
 //#region ----- Filtri & Sort -------
@@ -449,9 +291,7 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
         panelClass: 'add-DetailDialog',
         width: '875px',
         height: '324px',
-        data: {
-          iscrizione
-        }
+        data: iscrizione
     };
 
     const dialogRef = this._dialog.open(RettaEditComponent, dialogConfig);
@@ -560,3 +400,169 @@ matDataSource = new MatTableDataSource<PAG_RettaPivot>();
 //#endregion
 
 }
+
+
+
+// NOTA PER PIU' AVANTI: 
+                        // per avere la riga della retta e sotto la riga del pagamento forse è da usare const result$ = concat(series1$, series2$);
+
+
+                        // let arrObj: PAG_RettaPivot[] = [];
+                        // loadRette$
+                        //   .pipe(
+                        //   //questo tap serve nel caso in cui loadRette non restituisse ALCUN record in quanto in questo caso la mergeMap va in crisi: 
+                        //   //lo stream Rxjs si blocca e non avviene nemmeno la subscribe quindi bisogna prevedere quel caso attivando qui ciò che dovrebbe avvenire nella subscribe.
+                        //     tap(val=> { 
+                        //       console.table(val); //qui vedo come si presenta all'inizio la chiamata...da che dati parto
+                        //       if (val = []){
+                        //         this.matDataSource.data = [];
+                        //         this.matDataSource.paginator = this.paginator;
+                        //       }
+                        //     }),
+                        //     mergeMap(res=>res),                     //passaggio necessario
+                        //     groupBy(o => o.alunnoID),               //la group.key diventa l'alunnoID
+                        //     mergeMap(
+                        //       group => zip([group.key], group.pipe(toArray()))),
+                        //     map(arr => {
+                              
+                        //       //console.log ("quotatrovata2",this.trovaquotaMeseA(arr, 9)) ;
+                        //       //console.log ("quotaPagamenti",this.trovaSommaPagMese(arr, 9)) ;
+                        //       //console.log ("arr",arr[1][0]) ; 
+                        //       arrObj.push(
+                        //         {
+                        //         'alunnoID': arr[0],
+                        //         alunno : arr[1][0].alunno!,
+                        //         nome: arr[1][0].alunno!.persona.nome,
+                        //         cognome: arr[1][0].alunno!.persona.cognome,
+                        //         annoID : arr[1][0].annoID,
+                        //         iscrizione : arr[1][0].iscrizione,
+                        //         'c_SET': this.trovaQuotaConcMese(arr, 9) ,       //ERA: 'c_SET': arr[1][0].quotaConcordata,  MA COSI' SI CREAVANO I VUOTI
+                        //         'c_OTT': this.trovaQuotaConcMese(arr, 10) ,  
+                        //         'c_NOV': this.trovaQuotaConcMese(arr, 11) ,  
+                        //         'c_DIC': this.trovaQuotaConcMese(arr, 12) ,  
+                        //         'c_GEN': this.trovaQuotaConcMese(arr, 1) ,  
+                        //         'c_FEB': this.trovaQuotaConcMese(arr, 2) ,  
+                        //         'c_MAR': this.trovaQuotaConcMese(arr, 3) ,  
+                        //         'c_APR': this.trovaQuotaConcMese(arr, 4) ,  
+                        //         'c_MAG': this.trovaQuotaConcMese(arr, 5) ,  
+                        //         'c_GIU': this.trovaQuotaConcMese(arr, 6) ,  
+                        //         'c_LUG': this.trovaQuotaConcMese(arr, 7) ,  
+                        //         'c_AGO': this.trovaQuotaConcMese(arr, 8) , 
+                                
+                        //         'c_TOT': this.sommaQuoteConc(arr),
+
+                        //         // 'd_SET': this.trovaQuotaDefMese(arr, 9), 
+                        //         // 'd_OTT': this.trovaQuotaDefMese(arr, 10),
+                        //         // 'd_NOV': this.trovaQuotaDefMese(arr, 11),
+                        //         // 'd_DIC': this.trovaQuotaDefMese(arr, 12),
+                        //         // 'd_GEN': this.trovaQuotaDefMese(arr, 1),
+                        //         // 'd_FEB': this.trovaQuotaDefMese(arr, 2),
+                        //         // 'd_MAR': this.trovaQuotaDefMese(arr, 3),
+                        //         // 'd_APR': this.trovaQuotaDefMese(arr, 4),
+                        //         // 'd_MAG': this.trovaQuotaDefMese(arr, 5),
+                        //         // 'd_GIU': this.trovaQuotaDefMese(arr, 6),
+                        //         // 'd_LUG': this.trovaQuotaDefMese(arr, 7),
+                        //         // 'd_AGO': this.trovaQuotaDefMese(arr, 8),
+
+                        //         'd_TOT': this.sommaQuoteDef(arr),
+
+                        //         'p_SET': this.trovaSommaPagMese(arr, 9), 
+                        //         'p_OTT': this.trovaSommaPagMese(arr, 10),
+                        //         'p_NOV': this.trovaSommaPagMese(arr, 11),
+                        //         'p_DIC': this.trovaSommaPagMese(arr, 12),
+                        //         'p_GEN': this.trovaSommaPagMese(arr, 1),
+                        //         'p_FEB': this.trovaSommaPagMese(arr, 2),
+                        //         'p_MAR': this.trovaSommaPagMese(arr, 3),
+                        //         'p_APR': this.trovaSommaPagMese(arr, 4),
+                        //         'p_MAG': this.trovaSommaPagMese(arr, 5),
+                        //         'p_GIU': this.trovaSommaPagMese(arr, 6),
+                        //         'p_LUG': this.trovaSommaPagMese(arr, 7),
+                        //         'p_AGO': this.trovaSommaPagMese(arr, 8),
+
+                        //         'p_TOT': this.sommaQuotePagAnno(arr),
+                        //         }
+                        //       );  //fine arrObj.push
+                        //       return arrObj;
+                        //     })    //fine map
+                        // )         //fine mergeMap
+                        // .subscribe(val => {
+                        //   console.table(val); //passa di qua TROPPE VOLTE: tante quanti i record in realtà dovrebbe passarci UNA SOLA VOLTA!
+                        //   this.matDataSource.data = val;
+                        //   this.matDataSource.filterPredicate = this.filterPredicate();
+                        //   this.matDataSource.paginator = this.paginator;
+                        //   }
+                        // );
+
+
+                        // trovaQuotaConcMese (arr: Array<any>, m: number) : number {
+                        //   this.myObjAssigned.alunnoID =  arr[0];
+                        //   this.myObjAssigned._Rette =  arr[1]; 
+                        //     if (this.myObjAssigned._Rette.find(x=> x.meseRetta == m)?.quotaConcordata) {
+                        //       //INTERESSANTE L'USO DEL '!' IN QUESTO CASO! dice: "sono sicuro che non sia undefined"
+                        //       return this.myObjAssigned._Rette.find(x=> x.meseRetta == m)!.quotaConcordata  
+                        //     } 
+                        //     else 
+                        //       return 0;
+                        // }
+
+                        // sommaQuoteConc (arr: Array<any>) : number {
+                        //   this.myObjAssigned.alunnoID =  arr[0];
+                        //   this.myObjAssigned._Rette =  arr[1]; 
+                        //   let totQuotaConcordata = 0;
+                        //   if (this.myObjAssigned._Rette.length != 0) 
+                        //     this.myObjAssigned._Rette.forEach(mese=> totQuotaConcordata += mese.quotaConcordata) 
+                          
+                        //   return totQuotaConcordata;  
+                        // }
+
+                        // trovaQuotaDefMese (arr: Array<any>, m: number) : number {
+                        //   this.myObjAssigned.alunnoID =  arr[0];
+                        //   this.myObjAssigned._Rette =  arr[1]; 
+                        //     if (this.myObjAssigned._Rette.find(x=> x.meseRetta == m)?.quotaDefault) 
+                        //       return this.myObjAssigned._Rette.find(x=> x.meseRetta == m)!.quotaDefault
+                        //     else 
+                        //       return 0;
+                        // }
+
+                        // sommaQuoteDef (arr: Array<any>) : number {
+                        //   this.myObjAssigned.alunnoID =  arr[0];
+                        //   this.myObjAssigned._Rette =  arr[1]; 
+                        //   let totQuotaDefault = 0;
+                        //   if (this.myObjAssigned._Rette.length != 0) {
+                        //     this.myObjAssigned._Rette.forEach(mese=> totQuotaDefault += mese.quotaDefault) 
+                        //   }
+                        //     //INTERESSANTE L'USO DEL '!' IN QUESTO CASO! dice: "sono sicuro che non sia undefined"
+                        //   return totQuotaDefault;  
+                        // }
+
+                        // trovaSommaPagMese (arr: Array<any>, m: number) : number {
+                        // //console.log (arr);
+                        // let sumPags: number;
+                        // this.myObjAssigned.alunnoID =  arr[0];
+                        // this.myObjAssigned._Rette =  arr[1]; 
+                        //   if (this.myObjAssigned._Rette.find(x=> x.meseRetta == m)?.pagamenti) {
+                        //     sumPags = 0;
+                        //     //IN QUESTO CASO ci sono ben DUE "!" uno per il find e uno per i pagamenti
+                        //     this.myObjAssigned._Rette.find(x=> x.meseRetta == m)!.pagamenti!
+                        //     .forEach (x=> sumPags = sumPags + x.importo) ;
+                        //     return sumPags;
+                        //   } 
+                        //   else 
+                        //     return 0;
+                        // }
+
+
+
+                        // sommaQuotePagAnno (arr: Array<any>) : number {
+                        //   //console.log (arr);
+                        //   let sumPags: number;
+                        //   this.myObjAssigned.alunnoID =  arr[0];
+                        //   this.myObjAssigned._Rette =  arr[1];
+                        //   let sumPagsAnno = 0 ;
+                        //   if (this.myObjAssigned._Rette.length != 0) {
+                        //     this.myObjAssigned._Rette.forEach(mese => mese!.pagamenti!
+                        //       .forEach (x=> sumPagsAnno = sumPagsAnno + x.importo)) ;
+                        //   } 
+
+                        //   return sumPagsAnno;
+                        // }

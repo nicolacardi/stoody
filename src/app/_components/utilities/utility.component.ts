@@ -141,7 +141,7 @@ export abstract class Utility {
 
   public static getCurrentUser() : User {
     let obj: any;
-    let tmp = localStorage.getItem('currentUser');
+    let tmp = sessionStorage.getItem('currentUser');
     obj = JSON.parse(tmp!) as User;
     return obj;
   }

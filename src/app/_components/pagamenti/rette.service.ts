@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
-import { PAG_Retta, PAG_RettePagamenti_Sum } from 'src/app/_models/PAG_Retta';
-import { PAG_RettaPivot } from 'src/app/_models/PAG_RettaPivot';
+import { Injectable }      from '@angular/core';
+import { HttpClient }      from '@angular/common/http';
+import { Observable }      from 'rxjs';
+import { environment }     from 'src/environments/environment';
+import { PAG_Retta }       from 'src/app/_models/PAG_Retta';
+
 
 
 
@@ -23,11 +23,6 @@ export class RetteService {
   listByAnno(annoID: number): Observable<PAG_Retta[]>{
     return this.http.get<PAG_Retta[]>(environment.apiBaseUrl+'PAG_Rette/ListByAnno/'+annoID);
     //http://213.215.231.4/swappX/api/PAG_Rette/ListByAnno/1
-  }
-
-  listByAnnoPivoted(annoID: number): Observable<PAG_RettaPivot[]>{
-    return this.http.get<PAG_RettaPivot[]>(environment.apiBaseUrl+'PAG_Rette/ListByAnnoPivot/'+annoID);
-    //http://213.215.231.4/swappX/api/PAG_Rette/ListByAnnoPivot/1
   }
 
   getByAlunnoAnno(alunnoID: number, annoID: number): Observable<PAG_Retta>{
@@ -55,10 +50,7 @@ export class RetteService {
     //http://213.215.231.4/swappX/api/PAG_Rette/GetByAlunnoAnnoMese/3/2/9
   }
 
-  listRettePagamenti_Sum(annoID: any): Observable<PAG_RettePagamenti_Sum[]>{
-    return this.http.get<PAG_RettePagamenti_Sum[]>(environment.apiBaseUrl+'PAG_Rette/ListRettePagamenti_Sum/'+annoID);
-    //http://213.215.231.4/swappX/api/PAG_Rette/ListRettePagamenti_Sum/2
-  }
+
 
   put(obj: PAG_Retta): Observable <any>{
     return this.http.put(environment.apiBaseUrl  + 'PAG_Rette/' + obj.id , obj);    

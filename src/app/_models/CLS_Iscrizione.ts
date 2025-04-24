@@ -4,6 +4,7 @@ import { CLS_IscrizioneStato }                  from "./CLS_IscrizioneStato";
 import { DOC_CertCompetenze } from "./DOC_CertCompetenze";
 import { DOC_ConsOrientativo } from "./DOC_ConsOrientativo";
 import { DOC_Pagella }                          from "./DOC_Pagella";
+import { PAG_Retta } from "./PAG_Retta";
 
 export interface CLS_Iscrizione {
         id:                                     number;
@@ -29,4 +30,5 @@ export interface CLS_Iscrizione {
         pagella2:                               DOC_Pagella;
         certCompetenze:                         DOC_CertCompetenze;
         consOrientativo:                        DOC_ConsOrientativo;
+        retta?:                                 PAG_Retta;
 }

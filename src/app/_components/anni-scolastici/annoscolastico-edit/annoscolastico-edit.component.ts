@@ -79,7 +79,7 @@ export class AnnoscolasticoEditComponent implements OnInit {
 //#region ----- LifeCycle Hooks e simili--------
 
   ngOnInit(): void {
-    let objAnno = localStorage.getItem('AnnoCorrente');
+    let objAnno = sessionStorage.getItem('AnnoCorrente');
     this.annoCorrenteID = + (JSON.parse(objAnno!) as _UT_Parametro).parValue
     this.loadData();
 
@@ -224,11 +224,11 @@ export class AnnoscolasticoEditComponent implements OnInit {
       tap( par => {                                 //al valore estratto vado a cambiare il valore
         par.parValue = this.form.controls['id'].value;
         parX = par;
-        console.log ("par estratto", parX);       //e modifico il valore in localstorage
+        console.log ("par estratto", parX);       //e modifico il valore in sessionStorage
       }),
       concatMap(par => this.svcParametri.put(par)), //salvo il parametro che si chiama AnnoCorrente
       map( () => {
-            localStorage.setItem(parX.parName, JSON.stringify(parX)); //imposto il valore nel localStorage
+            sessionStorage.setItem(parX.parName, JSON.stringify(parX)); //imposto il valore nel sessionStorage
       })
       ).subscribe(
 

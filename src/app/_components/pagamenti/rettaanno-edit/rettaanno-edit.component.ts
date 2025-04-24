@@ -25,9 +25,9 @@ export class RettaannoEditComponent implements OnChanges {
 //#endregion
 
 //#region ----- ViewChild Input Output -------
-  @Input() quotaConcordataAnno!        : number;
-  @Input() quotaDefaultAnno!           : number;
-  @Input() totPagamentiAnno!           : number;
+  @Input() quotaConcordataAnno!        : number |null;
+  @Input() quotaDefaultAnno!           : number |null;
+  @Input() totPagamentiAnno!           : number |null;
 //#endregion
 
 //#region ----- Constructor --------------------

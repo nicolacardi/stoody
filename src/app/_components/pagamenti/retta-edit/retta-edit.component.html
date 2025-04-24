@@ -39,7 +39,7 @@
             <button mat-icon-button aria-label="Back" matTooltip="Chiudi" class="_btn-toolbar-close" mat-dialog-close></button>
 
 
-                <div class="center mt10 ml30 _no-padding-bottom" *ngIf="obsRette$ | async" >
+                <div class="center mt10 ml30 _no-padding-bottom" >
                     <mat-form-field appearance="outline">
                         <mat-label>a.s.</mat-label>
                         <mat-select 
@@ -63,7 +63,7 @@
                             <br>
                             <div class="mt10">DEFAULT</div>
                             <div class="mt10">CONCORDATE</div>
-                            <div class="mt10"><button class="_btn-text" mat-button (click)="pagamentiAlunnoAnno(data.iscrizione)">PAGAMENTI</button> </div>
+                            <div class="mt10"><button class="_btn-text" mat-button (click)="pagamentiAlunnoAnno(iscrizione)">PAGAMENTI</button> </div>
                         </div>
                     </mat-grid-tile>
 
@@ -73,8 +73,8 @@
                                 <mat-label>Anno</mat-label>
                             </div>
                             <app-rettaanno-edit
-                                [quotaDefaultAnno] ="quotaDefaultAnno"
-                                [quotaConcordataAnno] ="quotaConcordataAnno"
+                                [quotaDefaultAnno] ="iscrizione.retta?.quotaDefault ?? 0"
+                                [quotaConcordataAnno] ="iscrizione.retta?.quotaConcordata ?? 0"
                                 [totPagamentiAnno] = "totPagamentiAnno">
                             </app-rettaanno-edit>
                         </div>
@@ -87,8 +87,7 @@
                             </div>
                             <app-rettamese-edit
                                 [rettaMese]="retteMese[mese]"
-                                (mesePagamentoClicked)="mesePagamentoClicked($event)"
-                                (saved)="loadData()"
+                                (saved)="reLoadData()"
                             ></app-rettamese-edit>
 
                         </div>
@@ -104,8 +103,8 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <app-retta-calcolo-alunno
-                        [iscrizione]="data.iscrizione!"
-                        (ricalcoloRette) = "ricalcoloRetteArrivato()"   >
+                        [iscrizione]="iscrizione"
+                        (ricalcoloRette) = "reLoadData()"   >
                     </app-retta-calcolo-alunno>
                 </mat-expansion-panel>
                 

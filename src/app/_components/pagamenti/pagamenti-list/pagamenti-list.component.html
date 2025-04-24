@@ -86,7 +86,7 @@
     </ng-container>
 
     <ng-container matColumnDef="pagamentoRetta.retta.iscrizione.alunno.persona.cognome">
-        <th mat-header-cell *matHeaderCellDef cdkDrag  >Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
+        <th mat-header-cell *matHeaderCellDef cdkDrag mat-sort-header >Cognome<mat-icon class="iconaFilter" *ngIf="filterValues.cognome">filter_alt</mat-icon></th>
         <!-- <td mat-cell *matCellDef="let element">{{element.alunno.cognome}}</td> -->
         <td mat-cell *matCellDef="let element" [innerHTML]="element.pagamentoRetta? element.pagamentoRetta.retta.iscrizione.alunno.persona.cognome:'' | highlight: filterValue"></td>
 

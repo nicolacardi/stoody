@@ -7,7 +7,7 @@ export interface PAG_PagamentoRetta {
         pagamentoID        : Date;
 
         retta?             : PAG_Retta;
-        Pagamento?         : PAG_Pagamento;
+        pagamento?         : PAG_Pagamento;
 }
 
 

@@ -1,6 +1,6 @@
 import { CLS_Iscrizione } from "./CLS_Iscrizione";
 
-export interface PAG_RettaPivot {
+export interface PAG_ScadenzeRettaPivot {
         alunnoID:                               number;
         //alunno:                                 ALU_Alunno;
         //nome:                                   string;

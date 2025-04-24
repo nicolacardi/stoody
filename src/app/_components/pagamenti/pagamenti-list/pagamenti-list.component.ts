@@ -145,7 +145,7 @@ export class PagamentiListComponent implements OnInit {
     private svcTableColsVisible        : TableColsVisibleService
   ) {
    
-    let obj = localStorage.getItem('AnnoCorrente');
+    let obj = sessionStorage.getItem('AnnoCorrente');
     this.form = this.fb.group({
       selectAnnoScolastico:  +(JSON.parse(obj!) as _UT_Parametro).parValue
     })
@@ -248,17 +248,17 @@ export class PagamentiListComponent implements OnInit {
 
       let dArr = data.dtPagamento.split("-");
       const dtPagamentoddmmyyyy = dArr[2].substring(0,2)+ "/" +dArr[1]+"/"+dArr[0];
-
-      let boolSx = String(data.alunno.persona.nome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
+      console.log (data);
+      let boolSx = String(data.pagamentoRetta?.retta.iscrizione.alunno.persona.nome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
             || String(dtPagamentoddmmyyyy).indexOf(searchTerms.filtrosx) !== -1
             || String(data.importo).toLowerCase().indexOf(searchTerms.filtrosx) !== -1
-            || String(data.retta.iscrizione.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1;
+            || String(data.pagamentoRetta?.retta.iscrizione.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.filtrosx) !== -1;
 
       let boolDx = foundTipoPagamento
             && foundCausale
             && cfrImporti 
-            && String(data.retta.iscrizione.alunno.persona.nome).toLowerCase().indexOf(searchTerms.nome) !== -1
-            && String(data.retta.iscrizione.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.cognome) !== -1
+            && String(data.pagamentoRetta?.retta.iscrizione.alunno.persona.nome).toLowerCase().indexOf(searchTerms.nome) !== -1
+            && String(data.pagamentoRetta?.retta.iscrizione.alunno.persona.cognome).toLowerCase().indexOf(searchTerms.cognome) !== -1
             && cfrDate;
 
       return boolSx && boolDx;
@@ -269,13 +269,13 @@ export class PagamentiListComponent implements OnInit {
   sortCustom() {
 
     this.matDataSource.sortingDataAccessor = (item:any, property) => {
-
+      console.log ("sortCustom", property, item);
       switch(property) {
         case 'tipoPagamento.descrizione':       return item.tipoPagamento.descrizione;
         case 'causale.descrizione':             return item.causale.descrizione;
         // case 'pagamentoRetta.retta.quotaConcordata':                            return item.pagamentoRetta.retta.quotaConcordata;
         // case 'pagamentoRetta.retta.iscrizione.alunno.persona.nome':             return item.pagamentoRetta.retta.iscrizione.alunno.persona.nome;
-        // case 'pagamentoRetta.retta.iscrizione.alunno.persona.cognome':          return item.pagamentoRetta.retta.iscrizione.alunno.persona.cognome;
+        //case 'pagamentoRetta.retta.iscrizione.alunno.persona.cognome':          return item.pagamentoRetta.retta.iscrizione.alunno.persona.cognome;
         case 'importo':                         return item.importo;
         case 'dtPagamento':                     return parseInt(item.dtPagamento.toString());
         default: return item[property]

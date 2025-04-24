@@ -95,7 +95,7 @@ export class ObiettiviListComponent implements OnInit {
               private _loadingService:                LoadingService,
               public _dialog:                         MatDialog) {
 
-    let obj = localStorage.getItem('AnnoCorrente');
+    let obj = sessionStorage.getItem('AnnoCorrente');
     this.form = this.fb.group({
       selectAnnoScolastico:  +(JSON.parse(obj!) as _UT_Parametro).parValue
     })      

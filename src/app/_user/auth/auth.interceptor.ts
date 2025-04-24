@@ -12,7 +12,7 @@ export class AuthInterceptor implements HttpInterceptor {
       public isLoggedInAuth = false;
 
     //QUESTO COMPONENT SERVE PERCHE' TUTTE LE CHIAMATE AI WEBSERVICE VENGANO "CORREDATE" DEL TOKEN
-    //INFATTI COME SI PUO' VEDERE  headers: req.headers.set('Authorization', 'Bearer ' + localStorage.getItem('token'))
+    //INFATTI COME SI PUO' VEDERE  headers: req.headers.set('Authorization', 'Bearer ' + sessionStorage.getItem('token'))
     //VIENE POI USATA DIRETTAMENTE IN APP.MODULE IN QUESTO MODO:
     //    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     //E QUESTO E' SUFFICIENTE 
@@ -22,11 +22,11 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>
     {
         //console.log("test auth", req);
-        if(localStorage.getItem('token') != null ){
+        if(sessionStorage.getItem('token') != null ){
             //console.log("C'E' il token");
 
             const clonedReq = req.clone({
-                headers: req.headers.set('Authorization', 'Bearer ' + localStorage.getItem('token'))
+                headers: req.headers.set('Authorization', 'Bearer ' + sessionStorage.getItem('token'))
                     //.set('Access-Control-Allow-Origin', '*')
                     //.set('Access-Control-Allow-Credentials', 'true')
             });
@@ -36,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
                         next: res=> {},
                         error: err=> {
                             if(err.status == 401){
-                                localStorage.removeItem('token');
+                                sessionStorage.removeItem('token');
                                 // console.log("auth.interceptor -manca il token: redirect to Login "); //di qui non dovrebbe mai passare
                                        this.svcUser.Logout(); //se c'è il token ma per esempio è quello vecchio bisogna essere cacciati fuori         
                                 this.router.navigateByUrl('/user/login');

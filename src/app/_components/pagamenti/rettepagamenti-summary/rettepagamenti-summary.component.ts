@@ -15,6 +15,7 @@ import { RetteService } from '../rette.service';
 import { ASC_AnnoScolastico } from 'src/app/_models/ASC_AnnoScolastico';
 import { PAG_RettePagamenti_Sum } from 'src/app/_models/PAG_Retta';
 import { _UT_Parametro } from 'src/app/_models/_UT_Parametro';
+import { ScadenzeRetteService } from '../scadenzeRette.service';
 
 //#endregion
 @Component({
@@ -51,11 +52,11 @@ export class RettepagamentiSummaryComponent implements OnInit {
 //#region ----- Constructor --------------------
 
   constructor(private fb:               UntypedFormBuilder,
-              private svcRette:         RetteService,
+              private svcScadenzeRette:         ScadenzeRetteService,
               private svcAnni:          AnniScolasticiService,
               private _loadingService:  LoadingService) { 
   
-    let obj = localStorage.getItem('AnnoCorrente');
+    let obj = sessionStorage.getItem('AnnoCorrente');
     this.form = this.fb.group({
       selectAnnoScolastico:  +(JSON.parse(obj!) as _UT_Parametro).parValue
     })
@@ -75,7 +76,7 @@ export class RettepagamentiSummaryComponent implements OnInit {
     this.displayedColumns = this.displayedColumnsRettePagamentiSummary;
     
     let obsSummary$: Observable<PAG_RettePagamenti_Sum[]>;
-    obsSummary$= this.svcRette.listRettePagamenti_Sum(this.form.controls['selectAnnoScolastico'].value);
+    obsSummary$= this.svcScadenzeRette.listRettePagamenti_Sum(this.form.controls['selectAnnoScolastico'].value);
     const loadSummary$ =this._loadingService.showLoaderUntilCompleted(obsSummary$);
 
     loadSummary$.subscribe(val => this.matDataSource.data = val);

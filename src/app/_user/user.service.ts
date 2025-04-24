@@ -34,7 +34,7 @@ export class UserService {
               private svcEmitter:               EventEmitterService
               )   { 
                 
-    this.BehaviourSubjectcurrentUser = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')!));
+    this.BehaviourSubjectcurrentUser = new BehaviorSubject<User>(JSON.parse(sessionStorage.getItem('currentUser')!));
     this.obscurrentUser = this.BehaviourSubjectcurrentUser.asObservable();
 
     this.formModel = this.fb.group(
@@ -69,8 +69,8 @@ export class UserService {
             if (user && user.token) {
               user.personaID = user.persona!.id;
               user.fullname = user.persona!.nome + " " + user.persona!.cognome;
-              localStorage.setItem('token', user.token!);
-              localStorage.setItem('currentUser', JSON.stringify(user));
+              sessionStorage.setItem('token', user.token!);
+              sessionStorage.setItem('currentUser', JSON.stringify(user));
               this.BehaviourSubjectcurrentUser.next(user);
             }
             else{
@@ -83,9 +83,9 @@ export class UserService {
   }
 
   Logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('AnnoCorrente');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('currentUser');
+    sessionStorage.removeItem('AnnoCorrente');
     this.svcEmitter.onLogout();
   }
 
@@ -174,17 +174,17 @@ export class UserService {
 //AS: VERIFICARE
   getUserProfile(appUser: string){
     //AS: sostituito da auth.interceptor
-    //let tokenHeader = new HttpHeaders({'Authorization':'Bearer '+ localStorage.getItem('token')});
+    //let tokenHeader = new HttpHeaders({'Authorization':'Bearer '+ sessionStorage.getItem('token')});
     //return tokenHeader;
 
     //return this.http.get(this.BaseURI + '/UserProfile', {headers: tokenHeader});
-    //headers : req.headers.set('Authorization', 'Bearer ' + localStorage.getItem('token)'))
+    //headers : req.headers.set('Authorization', 'Bearer ' + sessionStorage.getItem('token)'))
 
     //auth.interceptor
     //return this.http.get(environment.apiBaseURI + '/UserProfile', );
     //return this.http.get(this.BaseURI  + '/UserProfile', );
     
-    //let localUser = localStorage.getItem('appUser');
+    //let localUser = sessionStorage.getItem('appUser');
 
     //console.log("DEBUG -getUserProfile:" + this.BaseURI  + '/ApplicationUser/'+ localUser );
     //return this.http.get(this.BaseURI  + '/ApplicationUser/' + this.formModel.value.UserName, );

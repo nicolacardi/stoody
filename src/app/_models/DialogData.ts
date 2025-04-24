@@ -125,8 +125,8 @@ export interface DialogDataRisorsaClasseEdit {
       classeSezioneAnnoID        : number;
       }
 
-export interface DialogDataIscrizione {
-      iscrizione                 : CLS_Iscrizione;
-}
+// export interface DialogDataIscrizione {
+//       iscrizione                 : CLS_Iscrizione;
+// }
 
 

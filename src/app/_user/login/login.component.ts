@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
 //#endregion
 
   ngOnInit() {
-    if(localStorage.getItem('token') != null)
+    if(sessionStorage.getItem('token') != null)
       this.router.navigateByUrl('/home');
   }
 
@@ -82,7 +82,7 @@ export class LoginComponent implements OnInit {
           
           this.svcParametri.getByParName('AnnoCorrente')
             .pipe(map( par => {
-                localStorage.setItem(par.parName, JSON.stringify(par));
+                sessionStorage.setItem(par.parName, JSON.stringify(par));
                 })
               ).subscribe( 
                 ()=> this.router.navigateByUrl('/home')

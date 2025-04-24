@@ -23,8 +23,8 @@ import { IscrizioniService }                                      from '../../is
 import { ALU_Alunno }                                             from 'src/app/_models/ALU_Alunno';
 import { ASC_AnnoScolastico }                                     from 'src/app/_models/ASC_AnnoScolastico';
 import { PAG_Retta }                                              from 'src/app/_models/PAG_Retta';
-import { DialogDataIscrizione }                                   from 'src/app/_models/DialogData';
 import { CLS_Iscrizione }                                         from 'src/app/_models/CLS_Iscrizione';
+import { ScadenzeRetteService } from '../scadenzeRette.service';
 
 
 
@@ -49,7 +49,8 @@ export class RettaEditComponent implements OnInit {
 
   alunno!                  : ALU_Alunno;
   anno!                    : ASC_AnnoScolastico;
-
+  anno1!                   : number;
+  anno2!                   : number;
   mesi                     : number[] = [];
   annoRetta                : number[] = [];
   quoteConcordate          : number[] = [];
@@ -62,7 +63,7 @@ export class RettaEditComponent implements OnInit {
   nPagamenti               : number[] = [];
   retteID                  : number[] = [];
   ultimoAnnoValido!        : number;
-  retteMese                : PAG_Retta[] = [];
+  retteMese                : any[] = [];
   idToHighlight!           : number;
 
   //public months=[0,1,2,3,4,5,6,7,8,9,10,11,12].map(x=>new Date(2000,x-1,2));
@@ -78,22 +79,19 @@ export class RettaEditComponent implements OnInit {
 //#region ----- Constructor --------------------
 
   constructor(
-    public _dialogRef                           : MatDialogRef<RettaEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data        : DialogDataIscrizione,
-    private fb                                  : UntypedFormBuilder,
-    private svcRette                            : RetteService,
-    private svcAlunni                           : AlunniService,
-    private svcIscrizioni                       : IscrizioniService,
-    private svcAnni                             : AnniScolasticiService,
-    public _dialog                              : MatDialog,
-    private _snackBar                           : MatSnackBar,
-    private _loadingService                     : LoadingService,
-    private router                              : Router,
+    public _dialogRef                                 : MatDialogRef<RettaEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public iscrizione        : CLS_Iscrizione,
+    private fb                                        : UntypedFormBuilder,
+    private svcIscrizioni                             : IscrizioniService,
+    private svcAnni                                   : AnniScolasticiService,
+    public _dialog                                    : MatDialog,
+    private router                                    : Router,
     
   ) 
   { 
     _dialogRef.disableClose = true;
 
+    
     this.formRetta = this.fb.group({
       id                   : [null],
       alunnoID             : ['', Validators.required],
@@ -106,36 +104,42 @@ export class RettaEditComponent implements OnInit {
       selectAnnoScolastico : [null]
     });
 
-    this.formRetta.controls['selectAnnoScolastico'].valueChanges.subscribe(
-      val=> {
-        if (val) {
           //console.log("è cambiato l'anno selezionato", val);
           //se cambia l'anno bisogna ri-acquisire l'iscrizione, sulla base dello stesso alunno ma di un anno differente
           //devo dunque estrarre l'iscrizione sulla base dell'alunnoID attuale e di annoID selezionato.
-          this.svcIscrizioni.getByAlunnoAndAnno(val.id,this.data.iscrizione.alunnoID)
-          .subscribe(iscrizione=>{
-            console.log ("retta-edit - constructor - iscrizione", iscrizione);
-            if (iscrizione) {
-              this.data.iscrizione=iscrizione;
-              console.log ("ho cambiato this.data, ci ho scritto", this.data);
-              this.loadData();
-              this.ultimoAnnoValido = val;
-            } else {
-              //bisogna impedire che cambi o meglio reimpostare l'anno precedente e dare un messaggio
-              const dialogRef = this._dialog.open(DialogOkComponent, {
-                width: '320px',
-                data: {titolo: "ATTENZIONE!", sottoTitolo: "Non ci sono iscrizioni<br>dell'alunno specificato<br>per l'anno scolastico selezionato"}
-              });
-              //this.formRetta.controls['selectAnnoScolastico'].setValue(this.ultimoAnnoValido);
-              dialogRef.afterClosed().subscribe(() => {
-                this.formRetta.controls['selectAnnoScolastico'].setValue(this.ultimoAnnoValido);
-              });
+          //questo pezzo di codice viene richiamato anche in fase di costruzione
+          //quindi è l'unico richiamo di loadData
+          //se cambiando l'anno non viene trovata una iscrizione per l'alunno selezionato impedisce il cambiamento di anno
+          //e reimposta l'anno precedente dando un messaggio
+
+
+          this.formRetta.controls['selectAnnoScolastico'].valueChanges.subscribe(
+            val=> {
+              this.anno1 = val.anno1;
+              this.anno2 = val.anno2;
+              console.log("selectAnnoScolastico", val);
+              this.svcIscrizioni.getByAlunnoAndAnno(val.id,this.iscrizione.alunnoID)
+              .subscribe(iscrizione=>{
+                console.log ("retta-edit - constructor - iscrizione", iscrizione);
+                if (iscrizione) {
+                  this.iscrizione=iscrizione;
+                  //console.log ("ho cambiato this.data, ci ho scritto", this.iscrizione);
+                  this.loadData();
+                  this.ultimoAnnoValido = val;
+                } else {
+                  const dialogRef = this._dialog.open(DialogOkComponent, {
+                    width: '320px',
+                    data: {titolo: "ATTENZIONE!", sottoTitolo: "Non ci sono iscrizioni<br>dell'alunno specificato<br>per l'anno scolastico selezionato"}
+                  });
+                  dialogRef.afterClosed().subscribe(() => {
+                    this.formRetta.controls['selectAnnoScolastico'].setValue(this.ultimoAnnoValido);
+                  });
+                }
+                }
+              );
             }
-            }
-          );
-        }
-      }
-    )
+            
+          )
 
 
   }
@@ -146,80 +150,75 @@ export class RettaEditComponent implements OnInit {
   ngOnInit() {
     this.obsAnni$ = this.svcAnni.list();
     // console.log ("retta.edit - ngOnInit", this.data);
-    this.formRetta.controls['selectAnnoScolastico'].setValue(this.data.iscrizione!.classeSezioneAnno.anno);
+    this.formRetta.controls['selectAnnoScolastico'].setValue(this.iscrizione.classeSezioneAnno.anno);
   }
+
+  reLoadData() {
+    this.svcIscrizioni.get(this.iscrizione.id).subscribe(nuovaIscrizione => {
+      console.log ("reload", nuovaIscrizione)
+      this.iscrizione = nuovaIscrizione;
+      this.loadData();
+    });
+
+  }
+
 
   loadData() {
-    // // console.log ("***************retta-edit - LOADDATA")
-    // this.formRetta.controls['nomeCognomeAlunno'].setValue(
-    //   this.data.iscrizione.alunno.persona.nome + " " + this.data.iscrizione.alunno.persona.cognome
-    // );
-    // this.retteMese = [];
-    // //inizializzo i 12 retteMese
-    // for (let i = 0; i <= 11; i++) {
-    //   const mese = i + 1;
-    //   this.retteMese[i] = {
-    //     id: 0,
-    //     iscrizioneID: this.data.iscrizione.id,
-    //     annoRetta: (mese>=9 && mese <=12)
-    //                 ? this.data.iscrizione?.classeSezioneAnno?.anno.anno1
-    //                 : this.data.iscrizione?.classeSezioneAnno?.anno.anno2,
-    //     meseRetta: mese,
-    //     quotaDefault: 0,
-    //     quotaConcordata: 0,
-    //     totPagamenti: 0,
-    //     iscrizione: this.data.iscrizione!
-    //   };
-    // }
-    // this.quotaConcordataAnno = 0;
-    // this.quotaDefaultAnno = 0;
-    // this.totPagamentiAnno = 0;
-    // //console.log ("retta-edit - loadData - this.data", this.data);
-    // this.obsRette$ = this.svcRette.listByIscrizione(this.data.iscrizione!.id);
-    // const loadRette$ = this._loadingService.showLoaderUntilCompleted(this.obsRette$);
+    console.log ("***************retta-edit - LOADDATA");
 
-    // loadRette$
-    // .subscribe({
-    //   next: obj => {
-    //     if (obj && obj.length > 0) {
-    //       //inserisco in un array retteMese quelli che trovo
-    //       //retteMese[i] è l'oggetto che passo a ogni rettamese-edit
-    //       //per qulli non trovati è stato già inizializzato a 0 (vedi più su)
-    //       obj.forEach((val) => {
-    //         const meseIndex = val.meseRetta - 1;
-    //         this.retteMese[meseIndex] = {
-    //           id: val.id,
-    //           iscrizioneID: val.iscrizioneID,
-    //           annoRetta: val.annoRetta,
-    //           meseRetta: val.meseRetta,
-    //           quotaDefault: val.quotaDefault,
-    //           quotaConcordata: val.quotaConcordata,
-    //           totPagamenti: 0,
-    //           iscrizione: this.data.iscrizione! //aggiungo all'oggetto l'iscrizione
-    //         };
 
-    //         // Somma i pagamenti del mese corrente a totPagamentiAnno val.pagamenti è un array
-    //         val._Pagamenti?.forEach(x => {
-    //             this.retteMese[meseIndex].totPagamenti! += x.Pagamento!.importo;
-    //             this.totPagamentiAnno += x.Pagamento!.importo;
-    //         });
+    this.formRetta.controls['nomeCognomeAlunno'].setValue(
+      this.iscrizione.alunno.persona.nome + " " + this.iscrizione.alunno.persona.cognome
+    );
 
-    //         this.quotaConcordataAnno += val.quotaConcordata;
-    //         this.quotaDefaultAnno += val.quotaDefault;
+    function getUltimoGiornoDelMese(mese: number, anno: number): Date {
+      // mese: 0 = gennaio, 11 = dicembre
+      // Imposta il giorno 0 del mese successivo → equivale all'ultimo giorno del mese corrente
+      return new Date(anno, mese + 1, 0);
+    }
 
-    //       });
-    //       // for (let i = 0; i <= 11; i++) {
-    //       //   const mese = i;
-    //       //   console.log ("retteMese", mese, this.retteMese[mese])
-    //       // }
-          
-    //     }
-    //   },
-    //   error: (err) => {
-    //       console.error("Errore nel recupero dei dati:", err);
-    //   }
-    // });
+    this.retteMese = [];
+    //inizializzo i 12 retteMese
+    for (let i = 0; i <= 11; i++) {
+      const anno = i >= 8 ? this.anno1 : this.anno2;
+      this.retteMese[i] = {
+        iscrizioneID: this.iscrizione.id,
+        scadenzaRettaID: 0,
+        rettaID: this.iscrizione.retta? this.iscrizione.retta.id : null,  //serve nel caso in cui non esista scadenzaRetta e il compoment retta-mese debba crearla in fase di save
+        dtScadenza: getUltimoGiornoDelMese(i, anno), //devo mettere l'ultimo giorno del mese dell'anno giusto
+        quotaDefault: 0,
+        quotaConcordata: 0,
+        totPagamenti: 0,
+      };
+    }
+
+    console.log ("retta-edit - loadData - this.iscrizione", this.iscrizione);
+
+    const scadenzeRetta = this.iscrizione.retta?._ScadenzeRette;
+
+    scadenzeRetta?.forEach(scadenzaRetta => {
+      const data = new Date(scadenzaRetta.dtScadenza);
+      const mese = data.getMonth(); 
+      // Somma l'importo alla quotaConcordata del mese corrispondente
+      this.retteMese[mese].quotaConcordata += scadenzaRetta.importo;
+      this.retteMese[mese].scadenzaRettaID = scadenzaRetta.id;
+    });
+
+    const pagamentiRette = this.iscrizione.retta?._PagamentiRette;
+
+    this.totPagamentiAnno = 0;
+    pagamentiRette?.forEach(pagamentoRetta => {
+      const data = new Date(pagamentoRetta.pagamento!.dtPagamento);
+      const mese = data.getMonth();
+      // Somma l'importo al totPagamenti del mese corretto
+      this.retteMese[mese].totPagamenti! += pagamentoRetta.pagamento!.importo;
+      this.totPagamentiAnno += pagamentoRetta.pagamento!.importo;
+
+    });
+
+
   }
+
 
   compareAnni = (a: any, b: any): boolean => {
     return a && b && a.id === b.id;
@@ -256,28 +255,7 @@ export class RettaEditComponent implements OnInit {
 
 //#region ----- Interazioni Varie Interfaccia --
 
-  //nuovoPagamentoArrivato(str: string) {
-    //è stato inserito un nuovo pagamento: devo fare il refresh dei child: della lista (ChildPagamenti) e di retta edit che in cascata passa i totali aggiornati ai vari
-    //retta-mese edit e retta-anno-edit
-    // this.ChildPagamenti.loadData();
-    // this.loadData();
-    
-  //}
 
-  //pagamentoEliminatoArrivato () {
-    // this.loadData();
-  //}
-
-  ricalcoloRetteArrivato() {
-    // //è stato effettuato un ricalcolo delle rette calcolate: ora bisogna fare la refresh di tutti i 12 rettamese
-
-    // for (let i = 0; i < 12; i++) {
-    //   let childRettaMese = this.ChildrenRettaMese.find(childRettaMese => childRettaMese.indice == i);
-    //   childRettaMese!.ngOnChanges();
-    // }
-
-    this.loadData()
-  }
 
 
   mesePagamentoClicked (meseRettaClicked: number ){

@@ -205,7 +205,7 @@ export class ClassiSezioniAnniListComponent implements OnInit {
 
     
     this.currUser = Utility.getCurrentUser();
-    let objAnno = localStorage.getItem('AnnoCorrente');
+    let objAnno = sessionStorage.getItem('AnnoCorrente');
 
     this.form = this.fb.group( {
       selectAnnoScolastico:  + (JSON.parse(objAnno!) as _UT_Parametro).parValue,

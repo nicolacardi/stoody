@@ -95,7 +95,7 @@ export class VerbaliListComponent implements OnInit, OnChanges {
     private fb:                                 UntypedFormBuilder, 
 
   ) {
-    let obj = localStorage.getItem('AnnoCorrente');
+    let obj = sessionStorage.getItem('AnnoCorrente');
     this.form = this.fb.group({
       selectAnnoScolastico:  +(JSON.parse(obj!) as _UT_Parametro).parValue
     });

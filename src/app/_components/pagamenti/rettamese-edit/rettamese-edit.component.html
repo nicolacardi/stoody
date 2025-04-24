@@ -1,17 +1,13 @@
     <!-- <mat-form-field class="cellRetta center" [ngClass]="{'_highlightConc': quotaConcordata < quotaDefault}"> -->
 
 <form   [formGroup] = "form" >
-    <mat-form-field class="cellRetta center"  >
-        <input  matInput type="number"
-                (change) = "save()"
-                formControlName="quotaDefault" 
-                class="right"
-                #inpQuotaD>
-    </mat-form-field>
 
+    <div class="mt35">
+
+    </div>
     <mat-form-field class="cellRetta center">
         <input  matInput type="number"
-                formControlName="quotaConcordata"
+                formControlName="importo"
                 (change) = "save()" 
                 class="right"
                 #inpQuotaC >

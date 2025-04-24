@@ -77,7 +77,7 @@ constructor(private svcAnni:                        AnniScolasticiService,
 
   loadData() {
 
-    let objAnno = localStorage.getItem('AnnoCorrente');
+    let objAnno = sessionStorage.getItem('AnnoCorrente');
     this.annoCorrenteID = + (JSON.parse(objAnno!) as _UT_Parametro).parValue
 
     this.obsAnni$ = this.svcAnni.list();  

@@ -45,7 +45,7 @@ export class VerbaliPageComponent implements OnInit {
     // private fb:                                   UntypedFormBuilder 
   ) {
 
-    // let objAnno = localStorage.getItem('AnnoCorrente');
+    // let objAnno = sessionStorage.getItem('AnnoCorrente');
     // this.form = this.fb.group( {
     //   selectAnnoScolastico:  + (JSON.parse(objAnno!) as _UT_Parametro).parValue,
     // });

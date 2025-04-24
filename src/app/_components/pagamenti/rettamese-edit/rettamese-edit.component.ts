@@ -5,9 +5,11 @@ import { MatDialog }                                           from '@angular/ma
 
 //services
 import { RetteService }                                        from '../rette.service';
+import { ScadenzeRetteService } from '../scadenzeRette.service';
+import { concatMap, of, switchMap, tap } from 'rxjs';
 
 //models
-import { PAG_Retta }                                           from 'src/app/_models/PAG_Retta';
+
 
 //#endregion
 @Component({
@@ -26,7 +28,7 @@ export class RettameseEditComponent implements OnInit{
 //#region ----- ViewChild Input Output -------
 
 
-  @Input() rettaMese!      : PAG_Retta;
+  @Input() rettaMese!      : any;
   @Output() mesePagamentoClicked = new EventEmitter<number>();
   @Output() saved          = new EventEmitter<void>();
 //#endregion
@@ -34,19 +36,20 @@ export class RettameseEditComponent implements OnInit{
 //#region ----- Constructor --------------------
 
   constructor(
-    private fb       : UntypedFormBuilder,
-    private svcRette : RetteService,
-    public _dialog   : MatDialog,
+    private fb                      : UntypedFormBuilder,
+    private svcScadenzeRette        : ScadenzeRetteService,
+    private svcRette                : RetteService,
+    public _dialog                  : MatDialog,
   ) { 
 
     this.form = this.fb.group({
-      id:                     [null],
-      iscrizioneID:           [null],
-      annoRetta:              [null],
-      meseRetta:              [null],
-      quotaDefault:           [null],
-      quotaConcordata:        [null],
-      totPagamenti:           [null],
+      id                : [null],
+      iscrizioneID      : [null],
+      rettaID           : [''],
+      dtScadenza        : [''],
+      importo           : [0],
+      quotaDefault      : [0],
+      totPagamenti: [{ value: 0, disabled: true }],  // 👈 disabilitato subito
     });
   }
 //#endregion
@@ -54,7 +57,7 @@ export class RettameseEditComponent implements OnInit{
 //#region ----- LifeCycle Hooks e simili-------
 
   ngOnChanges() {
-    // console.log ("retta-mese - ngOnChanges - rettaMese", this.rettaMese);
+    //console.log ("retta-mese - ngOnChanges - rettaMese", this.rettaMese);
     if (this.rettaMese) {
       this.loadData();
 
@@ -66,15 +69,15 @@ export class RettameseEditComponent implements OnInit{
   }
   
   loadData(){
+
     if (this.rettaMese) {
       this.form.patchValue({
-        id:               this.rettaMese.id, 
-        iscrizioneID:     this.rettaMese.iscrizioneID,                    
-        //annoRetta:        this.rettaMese.annoRetta,
-        //meseRetta:        this.rettaMese.meseRetta,
-        quotaDefault:     this.rettaMese.quotaDefault,
-        quotaConcordata:  this.rettaMese.quotaConcordata,
-        totPagamenti:     this.rettaMese.totPagamenti,
+        id              : this.rettaMese.scadenzaRettaID,
+        rettaID         : this.rettaMese.rettaID,
+        dtScadenza      : this.formatDateToString(this.rettaMese.dtScadenza),
+        importo         : this.rettaMese.quotaConcordata,
+        quotaDefault    : this.rettaMese.quotaDefault,
+        totPagamenti    : this.rettaMese.totPagamenti,
       });
     }
   }
@@ -83,14 +86,75 @@ export class RettameseEditComponent implements OnInit{
 
 //#region ----- Operazioni CRUD ----------------
   save(){
-    if (this.form.controls['id'].value != null && this.form.controls['id'].value != 0) {
-      // console.log("rettamese-edit - put di this.form.value", this.form.value)
-      this.svcRette.put(this.form.value).subscribe(()=>this.saved.emit());
-    } else {
-      // console.log("rettamese-edit - post di this.form.value", this.form.value)
-      this.svcRette.post(this.form.value).subscribe(()=>this.saved.emit());
+
+
+
+    const rettaObs = this.rettaMese.rettaID == null
+    ? this.svcRette.post({
+          id: 0,
+          iscrizioneID: this.rettaMese.iscrizioneID,
+          quotaDefault: 0,
+          quotaConcordata: 0
+        }).pipe(
+          tap((res: any) => {
+            console.log('[DEBUG] POST retta result:', res);
+            this.rettaMese.rettaID = res.id;
+
+            // Aggiorniamo direttamente il form con il nuovo rettaID
+            this.form.patchValue({
+              rettaID: res.id
+            });
+            console.log('[DEBUG] Form dopo POST retta:', this.form.value);
+          })
+        )
+  : of(null).pipe(
+      tap(() => console.log('[DEBUG] Skipping POST retta (già esiste)'))
+    );
+
+  // Eseguiamo saveObs dopo che rettaID è stato settato
+  rettaObs.pipe(
+    switchMap(() => {
+      const saveObs = this.rettaMese.scadenzaRettaID != null && this.rettaMese.scadenzaRettaID != 0
+        ? this.svcScadenzeRette.put(this.form.value).pipe(
+            tap(() => console.log('[DEBUG] PUT scadenza', this.form.value))
+          )
+        : this.svcScadenzeRette.post(this.form.value).pipe(
+            tap(() => console.log('[DEBUG] POST scadenza', this.form.value))
+          );
+
+      return saveObs;
+    }),
+    concatMap(() => {
+      console.log('[DEBUG] Calling aggiornaQuotaTotale con rettaID:', this.rettaMese.rettaID);
+      return this.svcScadenzeRette.aggiornaQuotaTotale(this.rettaMese.rettaID);
+    })
+  ).subscribe({
+    next: () => {
+      console.log('[DEBUG] Operazioni completate correttamente.');
+      setTimeout(() => this.saved.emit(), 50); // micro-delay
+    },
+    error: (err) => {
+      console.error('[DEBUG] Errore nel salvataggio:', err);
     }
+  });
+
     
+  
+
+    
+    
+  }
+
+
+
+
+  formatDateToString(date: Date): string {
+    // Formato yyyy-MM-dd (compatibile con .NET DateTime)
+    const pad = (n: number) => n < 10 ? '0' + n : n;
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    return `${yyyy}-${mm}-${dd}`;
   }
 //#endregion
 

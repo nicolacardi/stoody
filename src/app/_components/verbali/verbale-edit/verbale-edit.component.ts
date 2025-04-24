@@ -223,7 +223,7 @@ export class VerbaleEditComponent implements OnInit {
       if (this.form.controls['id'].value == null) {
         
         //imposto per default l'anno corrente
-        //let objAnno = localStorage.getItem('AnnoCorrente');
+        //let objAnno = sessionStorage.getItem('AnnoCorrente');
         //this.form.controls['annoID'].setValue(JSON.parse(objAnno!).id);
         this.svcVerbali.post(this.form.value).subscribe({
           next: res=> {  

@@ -1,6 +1,7 @@
 
 import { CLS_Iscrizione } from "./CLS_Iscrizione";
 import { PAG_PagamentoRetta } from "./PAG_PagamentoRetta";
+import { PAG_ScadenzaRetta } from "./PAG_ScadenzaRetta";
 
 export interface PAG_Retta {
         id                 : number,
@@ -19,7 +20,8 @@ export interface PAG_Retta {
         userUpd?           : number;
 
         iscrizione?        : CLS_Iscrizione;
-        _Pagamenti?        : PAG_PagamentoRetta[];
+        _PagamentiRette?        : PAG_PagamentoRetta[];
+        _ScadenzeRette?        : PAG_ScadenzaRetta[];
 
         totPagamenti?      : number;
 }
